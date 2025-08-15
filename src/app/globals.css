@@ -128,6 +128,7 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-backdrop-filter: var(--blur-backdrop);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: var(--shadow-card);
+  height: fit-content;
 }
 
 .glass:hover {
@@ -270,19 +271,12 @@ h1, h2, h3, h4, h5, h6 {
   .container-responsive {
     max-width: var(--container-desktop);
     padding: 0 var(--spacing-desktop);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-desktop);
-    align-items: start;
   }
 }
 
 @media (min-width: 1440px) {
   .container-responsive {
     max-width: var(--container-large);
-    grid-template-columns: 450px 450px;
-    justify-content: center;
-    gap: 48px;
   }
 }
 
@@ -301,7 +295,28 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (min-width: 1024px) {
   .cards-grid {
-    gap: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: start;
+  }
+}
+
+@media (min-width: 1440px) {
+  .cards-grid {
+    gap: 48px;
+    max-width: 1400px;
+    align-items: start;
+  }
+}
+
+@media (min-width: 1920px) {
+  .cards-grid {
+    gap: 64px;
+    max-width: 1600px;
+    align-items: start;
   }
 }
 
@@ -349,8 +364,22 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (min-width: 1024px) {
   .attributes-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .attributes-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .attributes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
   }
 }
 
@@ -394,6 +423,13 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+@media (min-width: 1440px) {
+  .text-responsive-xl {
+    font-size: 3rem; /* 48px */
+    line-height: 1;
+  }
+}
+
 .text-responsive-lg {
   font-size: 1.25rem; /* 20px */
   line-height: 1.75rem; /* 28px */
@@ -415,7 +451,6 @@ h1, h2, h3, h4, h5, h6 {
 @media (min-width: 768px) {
   .header-responsive {
     margin-bottom: 32px;
-    grid-column: 1 / -1;
   }
 }
 
@@ -438,16 +473,13 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (min-width: 1024px) {
   .edit-controls {
-    grid-column: 1 / -1;
-    margin-bottom: 0;
-    margin-top: -16px;
+    margin-bottom: 40px;
   }
 }
 
 /* Footer Responsive */
 .footer-responsive {
   margin-top: 32px;
-  grid-column: 1 / -1;
 }
 
 @media (min-width: 768px) {

@@ -48,7 +48,7 @@ export default function CharacterOverview({
   };
 
   return (
-    <div className="glass rounded-2xl p-6 mb-6">
+    <div className="glass rounded-2xl p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-white">Character Overview</h2>
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">

@@ -125,13 +125,13 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-6">
+    <div className="min-h-screen">
       {/* Background gradient overlay */}
       <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-indigo-900/20 pointer-events-none"></div>
 
-      <div className="relative z-10 container-responsive">
-        {/* Header */}
-        <header className="header-responsive">
+      <div className="relative z-10 min-h-screen flex flex-col">
+        {/* Header - Full Width */}
+        <header className="w-full text-center py-6 md:py-8 lg:py-12 px-4 md:px-6">
           <h1 className="text-responsive-xl font-bold text-white mb-2 font-['Poppins']">
             Pokémon D&D Companion
           </h1>
@@ -140,54 +140,62 @@ export default function Home() {
           </p>
         </header>
 
-        {/* Edit/Save Controls */}
-        <div className="edit-controls">
-          {!isEditing ? (
-            <button
-              onClick={toggleEdit}
-              className="w-full btn-primary btn-responsive rounded-2xl font-semibold"
-            >
-              ✏️ Edit Mode
-            </button>
-          ) : (
-            <div className="flex gap-3">
+        {/* Main Content Container */}
+        <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+          {/* Edit/Save Controls - Centered */}
+          <div className="w-full max-w-md mx-auto mb-6 md:mb-8 lg:mb-10">
+            {!isEditing ? (
               <button
-                onClick={handleSave}
-                className="flex-1 btn-primary btn-responsive rounded-2xl font-semibold"
+                onClick={toggleEdit}
+                className="w-full btn-primary btn-responsive rounded-2xl font-semibold"
               >
-                ✅ Save
+                ✏️ Edit Mode
               </button>
-              <button
-                onClick={handleCancel}
-                className="flex-1 btn-secondary btn-responsive rounded-2xl font-semibold"
-              >
-                ❌ Cancel
-              </button>
+            ) : (
+              <div className="flex gap-3">
+                <button
+                  onClick={handleSave}
+                  className="flex-1 btn-primary btn-responsive rounded-2xl font-semibold"
+                >
+                  ✅ Save
+                </button>
+                <button
+                  onClick={handleCancel}
+                  className="flex-1 btn-secondary btn-responsive rounded-2xl font-semibold"
+                >
+                  ❌ Cancel
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Cards Grid - Responsive Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 xl:gap-16 max-w-6xl mx-auto">
+            {/* Character Overview */}
+            <div className="w-full">
+              <CharacterOverview
+                character={character}
+                isEditing={isEditing}
+                onAttributeChange={handleAttributeChange}
+                onHPChange={handleCharacterHPChange}
+              />
             </div>
-          )}
+
+            {/* Pokemon Overview */}
+            <div className="w-full">
+              <PokemonOverview
+                pokemon={pokemon}
+                isEditing={isEditing}
+                onPokemonHPChange={handlePokemonHPChange}
+                onPokemonXPChange={handlePokemonXPChange}
+              />
+            </div>
+          </div>
         </div>
 
-        <div className="cards-grid">
-          {/* Character Overview */}
-          <CharacterOverview
-            character={character}
-            isEditing={isEditing}
-            onAttributeChange={handleAttributeChange}
-            onHPChange={handleCharacterHPChange}
-          />
-
-          {/* Pokemon Overview */}
-          <PokemonOverview
-            pokemon={pokemon}
-            isEditing={isEditing}
-            onPokemonHPChange={handlePokemonHPChange}
-            onPokemonXPChange={handlePokemonXPChange}
-          />
-        </div>
-
-        {/* Footer */}
-        <footer className="footer-responsive text-center pb-6">
-          <div className="glass rounded-xl p-4 md:p-6">
+        {/* Footer - Full Width */}
+        <footer className="w-full text-center py-6 md:py-8 px-4 md:px-6">
+          <div className="glass rounded-xl p-4 md:p-6 max-w-md mx-auto">
             <p className="text-gray-400 text-xs md:text-sm">
               Made with ❤️ for D&D and Pokémon enthusiasts
             </p>
