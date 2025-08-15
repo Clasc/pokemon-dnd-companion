@@ -1,26 +1,223 @@
 @import "tailwindcss";
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Dark Theme Colors (Default) */
+  --bg-primary: #1E1A2C;
+  --bg-secondary: #2A2540;
+  --bg-card: rgba(42, 37, 64, 0.8);
+  --bg-card-hover: rgba(42, 37, 64, 0.9);
+  --text-primary: #F0F0F0;
+  --text-secondary: #A0A0A0;
+  --text-accent: #FFFFFF;
+
+  /* Accent Colors */
+  --accent-red: #E84B5B;
+  --accent-yellow: #F9C51D;
+  --accent-green: #5DB079;
+  --accent-blue: #4A90E2;
+  --accent-purple: #8B5FBF;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #1E1A2C 0%, #2A2540 100%);
+  --gradient-secondary: linear-gradient(135deg, #8B5FBF 0%, #4A90E2 100%);
+  --gradient-accent: linear-gradient(135deg, #E84B5B 0%, #F9C51D 100%);
+
+  /* Shadows and Effects */
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-button: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --blur-backdrop: blur(16px);
+
+  /* Border Radius */
+  --radius-card: 16px;
+  --radius-button: 12px;
+  --radius-input: 8px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Light Theme Colors */
+    --bg-primary: #F5F5F7;
+    --bg-secondary: #FFFFFF;
+    --bg-card: rgba(255, 255, 255, 0.8);
+    --bg-card-hover: rgba(255, 255, 255, 0.95);
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --text-accent: #000000;
+
+    /* Lighter shadows for light theme */
+    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --shadow-button: 0 4px 16px rgba(0, 0, 0, 0.08);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: var(--gradient-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-accent);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-purple);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-blue);
+}
+
+/* Glassmorphism Effect */
+.glass {
+  background: var(--bg-card);
+  backdrop-filter: var(--blur-backdrop);
+  -webkit-backdrop-filter: var(--blur-backdrop);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-card);
+}
+
+.glass:hover {
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* Button Styles */
+.btn-primary {
+  background: var(--gradient-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-button);
+  padding: 12px 24px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-button);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-button);
+  padding: 12px 24px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: var(--blur-backdrop);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* HP Bar Animations */
+.hp-bar {
+  background: linear-gradient(90deg, var(--accent-green) 0%, var(--accent-yellow) 60%, var(--accent-red) 100%);
+  height: 8px;
+  border-radius: 4px;
+  transition: all 0.6s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.hp-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* XP Bar */
+.xp-bar {
+  background: var(--gradient-secondary);
+  height: 6px;
+  border-radius: 3px;
+  transition: all 0.6s ease;
+}
+
+/* Input Styles */
+.input-field {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-input);
+  padding: 12px 16px;
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: all 0.3s ease;
+  backdrop-filter: var(--blur-backdrop);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Card Transitions */
+.card-enter {
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+}
+
+.card-enter-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: all 0.4s ease;
+}
+
+/* Pokemon Type Colors */
+.type-normal { background-color: #A8A878; }
+.type-fire { background-color: #F08030; }
+.type-water { background-color: #6890F0; }
+.type-electric { background-color: #F8D030; }
+.type-grass { background-color: #78C850; }
+.type-ice { background-color: #98D8D8; }
+.type-fighting { background-color: #C03028; }
+.type-poison { background-color: #A040A0; }
+.type-ground { background-color: #E0C068; }

@@ -1,6 +1,8 @@
 import { Character, DEFAULT_CHARACTER } from '../types/character';
+import { Pokemon, SAMPLE_POKEMON } from '../types/pokemon';
 
 const STORAGE_KEY = 'pokemon-dnd-character';
+const POKEMON_STORAGE_KEY = 'pokemon-dnd-team';
 
 export const saveCharacter = (character: Character): void => {
   try {
@@ -37,4 +39,43 @@ export const clearCharacter = (): void => {
   } catch (error) {
     console.error('Failed to clear character from localStorage:', error);
   }
+};
+
+// Pokemon storage utilities
+export const savePokemonTeam = (pokemon: Pokemon[]): void => {
+  try {
+    localStorage.setItem(POKEMON_STORAGE_KEY, JSON.stringify(pokemon));
+  } catch (error) {
+    console.error('Failed to save Pokemon team to localStorage:', error);
+  }
+};
+
+export const loadPokemonTeam = (): Pokemon[] => {
+  try {
+    const stored = localStorage.getItem(POKEMON_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed) ? parsed : SAMPLE_POKEMON;
+    }
+  } catch (error) {
+    console.error('Failed to load Pokemon team from localStorage:', error);
+  }
+  return SAMPLE_POKEMON;
+};
+
+export const clearPokemonTeam = (): void => {
+  try {
+    localStorage.removeItem(POKEMON_STORAGE_KEY);
+  } catch (error) {
+    console.error('Failed to clear Pokemon team from localStorage:', error);
+  }
+};
+
+export const updatePokemonInTeam = (pokemonId: number, updates: Partial<Pokemon>): Pokemon[] => {
+  const team = loadPokemonTeam();
+  const updatedTeam = team.map(pokemon =>
+    pokemon.id === pokemonId ? { ...pokemon, ...updates } : pokemon
+  );
+  savePokemonTeam(updatedTeam);
+  return updatedTeam;
 };
