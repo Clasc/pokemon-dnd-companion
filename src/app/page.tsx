@@ -115,7 +115,7 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="loading-container">
         <div className="glass rounded-2xl p-8">
           <div className="animate-spin w-8 h-8 border-2 border-white/30 border-t-white rounded-full mx-auto mb-4"></div>
           <p className="text-white text-center">Loading...</p>
@@ -129,23 +129,23 @@ export default function Home() {
       {/* Background gradient overlay */}
       <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-indigo-900/20 pointer-events-none"></div>
 
-      <div className="relative z-10 max-w-md mx-auto">
+      <div className="relative z-10 container-responsive">
         {/* Header */}
-        <header className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-white mb-2 font-['Poppins']">
+        <header className="header-responsive">
+          <h1 className="text-responsive-xl font-bold text-white mb-2 font-['Poppins']">
             Pokémon D&D Companion
           </h1>
-          <p className="text-gray-300 text-sm">
+          <p className="text-gray-300 text-sm md:text-base">
             Manage your character and Pokémon team
           </p>
         </header>
 
         {/* Edit/Save Controls */}
-        <div className="mb-6">
+        <div className="edit-controls">
           {!isEditing ? (
             <button
               onClick={toggleEdit}
-              className="w-full btn-primary rounded-2xl py-4 font-semibold text-lg"
+              className="w-full btn-primary btn-responsive rounded-2xl font-semibold"
             >
               ✏️ Edit Mode
             </button>
@@ -153,13 +153,13 @@ export default function Home() {
             <div className="flex gap-3">
               <button
                 onClick={handleSave}
-                className="flex-1 btn-primary rounded-2xl py-4 font-semibold"
+                className="flex-1 btn-primary btn-responsive rounded-2xl font-semibold"
               >
                 ✅ Save
               </button>
               <button
                 onClick={handleCancel}
-                className="flex-1 btn-secondary rounded-2xl py-4 font-semibold"
+                className="flex-1 btn-secondary btn-responsive rounded-2xl font-semibold"
               >
                 ❌ Cancel
               </button>
@@ -167,33 +167,35 @@ export default function Home() {
           )}
         </div>
 
-        {/* Character Overview */}
-        <CharacterOverview
-          character={character}
-          isEditing={isEditing}
-          onAttributeChange={handleAttributeChange}
-          onHPChange={handleCharacterHPChange}
-        />
+        <div className="cards-grid">
+          {/* Character Overview */}
+          <CharacterOverview
+            character={character}
+            isEditing={isEditing}
+            onAttributeChange={handleAttributeChange}
+            onHPChange={handleCharacterHPChange}
+          />
 
-        {/* Pokemon Overview */}
-        <PokemonOverview
-          pokemon={pokemon}
-          isEditing={isEditing}
-          onPokemonHPChange={handlePokemonHPChange}
-          onPokemonXPChange={handlePokemonXPChange}
-        />
+          {/* Pokemon Overview */}
+          <PokemonOverview
+            pokemon={pokemon}
+            isEditing={isEditing}
+            onPokemonHPChange={handlePokemonHPChange}
+            onPokemonXPChange={handlePokemonXPChange}
+          />
+        </div>
 
         {/* Footer */}
-        <footer className="text-center mt-8 pb-6">
-          <div className="glass rounded-xl p-4">
-            <p className="text-gray-400 text-xs">
+        <footer className="footer-responsive text-center pb-6">
+          <div className="glass rounded-xl p-4 md:p-6">
+            <p className="text-gray-400 text-xs md:text-sm">
               Made with ❤️ for D&D and Pokémon enthusiasts
             </p>
-            <div className="flex justify-center gap-4 mt-2">
-              <span className="text-xs text-gray-500">
+            <div className="flex justify-center gap-4 md:gap-6 mt-2">
+              <span className="text-xs md:text-sm text-gray-500">
                 Character Lv.{character.level}
               </span>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs md:text-sm text-gray-500">
                 Team: {pokemon.length}/6
               </span>
             </div>

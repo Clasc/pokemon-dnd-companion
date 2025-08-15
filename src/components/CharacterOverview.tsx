@@ -71,10 +71,10 @@ export default function CharacterOverview({
       </div>
 
       {/* Attributes */}
-      <div className="space-y-3 mb-6">
+      <div className="attributes-grid mb-6">
         {attributeNames.map((attr) => (
-          <div key={attr} className="flex items-center justify-between">
-            <span className="text-gray-300 text-sm font-medium">
+          <div key={attr} className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10">
+            <span className="text-gray-300 text-sm md:text-base font-medium">
               {getAttributeDisplayName(attr)}
             </span>
             <div className="flex items-center gap-2">
@@ -88,8 +88,8 @@ export default function CharacterOverview({
                   </button>
                 </>
               )}
-              <div className="w-12 h-8 bg-white/10 rounded-lg flex items-center justify-center border border-white/20">
-                <span className="text-white font-semibold text-sm">
+              <div className="w-12 h-8 md:w-14 md:h-10 bg-white/10 rounded-lg flex items-center justify-center border border-white/20">
+                <span className="text-white font-semibold text-sm md:text-base">
                   {character.attributes[attr]}
                 </span>
               </div>
@@ -111,7 +111,7 @@ export default function CharacterOverview({
       {/* Hit Points */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-gray-300 text-sm font-medium">Hit Points</span>
+          <span className="text-gray-300 text-sm md:text-base font-medium">Hit Points</span>
           <div className="flex items-center gap-2">
             {isEditing && (
               <>
@@ -133,7 +133,7 @@ export default function CharacterOverview({
         </div>
 
         {/* HP Bar */}
-        <div className="w-full bg-gray-600/50 rounded-full h-3 overflow-hidden mb-2">
+        <div className="w-full bg-gray-600/50 rounded-full h-3 md:h-4 overflow-hidden mb-2">
           <div
             className="h-full rounded-full transition-all duration-500 relative"
             style={{
@@ -146,7 +146,7 @@ export default function CharacterOverview({
         </div>
 
         <div className="flex justify-between items-center">
-          <div className="text-xs text-gray-400">
+          <div className="text-xs md:text-sm text-gray-400">
             {character.currentHP}/{character.maxHP}
           </div>
           {isEditing && (
@@ -157,7 +157,7 @@ export default function CharacterOverview({
               >
                 -
               </button>
-              <span className="text-xs text-gray-400 px-1">Max</span>
+              <span className="text-xs md:text-sm text-gray-400 px-1">Max</span>
               <button
                 onClick={() => onHPChange?.('max', 1)}
                 className="w-5 h-5 rounded bg-green-500/60 hover:bg-green-500/80 text-white text-xs font-bold transition-colors"
