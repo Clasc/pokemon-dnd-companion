@@ -11,7 +11,7 @@ interface AppState {
   removePokemon: (id: number) => void;
   setTrainer: (trainer: Trainer) => void;
   isLoading: boolean;
-  loadData: () => void;
+  initialize: () => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -45,7 +45,7 @@ export const useAppStore = create<AppState>((set) => ({
     })),
   setTrainer: (trainer) => set({ trainer: trainer }),
   isLoading: true,
-  loadData: () =>
+  initialize: () =>
     set(() => {
       const loadedTrainer = loadTrainer();
       const loadedPokemon = loadPokemonTeam();

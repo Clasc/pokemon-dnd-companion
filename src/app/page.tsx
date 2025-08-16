@@ -6,35 +6,15 @@ import PokemonOverview from "../components/PokemonOverview";
 import { useAppStore } from "@/store";
 
 export default function Home() {
-  const updatePokemon = useAppStore((state) => state.updatePokemon);
   const pokemon = useAppStore((state) => state.pokemonList);
   const isLoading = useAppStore((state) => state.isLoading);
-  const loadData = useAppStore((state) => state.loadData);
+  const initialize = useAppStore((state) => state.initialize);
   const trainer = useAppStore((state) => state.trainer);
 
   useEffect(() => {
     // Load initial trainer data from store
-    loadData();
-  }, [loadData]);
-
-  // Pokemon handlers
-  const handlePokemonHPChange = (pokemonId: number, delta: number) => {
-    const updatedPokemon = pokemon.find((p) => p.id === pokemonId);
-    if (!updatedPokemon) return;
-
-    const newHP = Math.max(
-      0,
-      Math.min(updatedPokemon.maxHP, updatedPokemon.currentHP + delta),
-    );
-    updatePokemon({ ...updatedPokemon, currentHP: newHP });
-  };
-
-  const handlePokemonXPChange = (pokemonId: number, delta: number) => {
-    const p = pokemon.find((p) => p.id === pokemonId);
-    if (!p) return;
-    const newXP = Math.max(0, p.experience + delta);
-    updatePokemon({ ...p, experience: newXP });
-  };
+    initialize();
+  }, [initialize]);
 
   if (isLoading) {
     return (
