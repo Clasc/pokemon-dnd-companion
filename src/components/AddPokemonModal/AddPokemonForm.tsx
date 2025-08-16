@@ -1,179 +1,185 @@
 "use client";
 
+import { Pokemon, Attributes, PokemonType } from "../../types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
-import { Pokemon, TYPE_COLORS } from "../../types/pokemon";
 
 interface AddPokemonFormProps {
   pokemon: Pokemon;
   setPokemon: (pokemon: Pokemon | ((prev: Pokemon) => Pokemon)) => void;
 }
 
-const InputField = ({
-  label,
-  type,
-  value,
-  onChange,
-  name,
-}: {
-  label: string;
-  type: string;
-  value: string | number;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  name: string;
-}) => (
-  <div>
-    <label
-      htmlFor={name}
-      className="block text-sm font-medium text-gray-300 mb-1"
-    >
-      {label}
-    </label>
-    <input
-      type={type}
-      name={name}
-      id={name}
-      value={value}
-      onChange={onChange}
-      className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-    />
-  </div>
-);
-
-const AttributeFields = ({
-  attributes,
-  onChange,
-}: {
-  attributes: Pokemon["attributes"];
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => (
-  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-    {Object.entries(attributes).map(([key, value]) => (
-      <InputField
-        key={key}
-        label={key.charAt(0).toUpperCase() + key.slice(1)}
-        type="number"
-        name={key}
-        value={value}
-        onChange={onChange}
-      />
-    ))}
-  </div>
-);
-
 export default function AddPokemonForm({
   pokemon,
   setPokemon,
 }: AddPokemonFormProps) {
-  const handleBasicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = e.target;
-    const parsedValue = type === "number" ? parseInt(value, 10) || 0 : value;
-
-    setPokemon((prev) => {
-      const updatedPokemon = { ...prev, [name]: parsedValue };
-      // Keep currentHP in sync with maxHP when maxHP changes
-      if (name === "maxHP") {
-        updatedPokemon.currentHP = parsedValue as number;
-      }
-      return updatedPokemon;
-    });
+  const handleInputChange = (
+    field: keyof Pokemon,
+    value:
+      | string
+      | number
+      | null
+      | undefined
+      | { condition: string; duration?: number },
+  ) => {
+    setPokemon((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleAttributeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleAttributeChange = (attr: keyof Attributes, value: number) => {
     setPokemon((prev) => ({
       ...prev,
       attributes: {
         ...prev.attributes,
-        [name]: parseInt(value, 10) || 0,
+        [attr]: value,
       },
     }));
   };
 
-  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setPokemon((prev) => ({ ...prev, [name]: value }));
+  const attributeNames: (keyof Attributes)[] = [
+    "strength",
+    "dexterity",
+    "constitution",
+    "intelligence",
+    "wisdom",
+    "charisma",
+  ];
+
+  const getAttributeShortName = (attr: keyof Attributes) => {
+    const shortNames = {
+      strength: "STR",
+      dexterity: "DEX",
+      constitution: "CON",
+      intelligence: "INT",
+      wisdom: "WIS",
+      charisma: "CHA",
+    };
+    return shortNames[attr];
+  };
+
+  const pokemonTypes: PokemonType[] = [
+    "normal",
+    "fire",
+    "water",
+    "electric",
+    "grass",
+    "ice",
+    "fighting",
+    "poison",
+    "ground",
+    "flying",
+    "psychic",
+    "bug",
+    "rock",
+    "ghost",
+    "dragon",
+    "dark",
+    "steel",
+    "fairy",
+  ];
+
+  const hpPercentage =
+    pokemon.maxHP > 0 ? (pokemon.currentHP / pokemon.maxHP) * 100 : 0;
+
+  const xpPercentage =
+    pokemon.experienceToNext > 0
+      ? (pokemon.experience / (pokemon.experience + pokemon.experienceToNext)) *
+        100
+      : 0;
+
+  const getHPColor = () => {
+    if (hpPercentage > 60) return "var(--accent-green)";
+    if (hpPercentage > 30) return "var(--accent-yellow)";
+    return "var(--accent-red)";
   };
 
   return (
-    <form className="space-y-6">
-      {/* Section: Basic Info */}
-      <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-        <h3 className="text-lg font-semibold text-white mb-4">Basic Info</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <InputField
-            label="Name"
-            type="text"
-            name="name"
-            value={pokemon.name}
-            onChange={handleBasicChange}
-          />
-          <InputField
-            label="Level"
-            type="number"
-            name="level"
-            value={pokemon.level}
-            onChange={handleBasicChange}
-          />
-          <InputField
-            label="Max HP"
-            type="number"
-            name="maxHP"
-            value={pokemon.maxHP}
-            onChange={handleBasicChange}
-          />
-          <InputField
-            label="Sprite (Emoji)"
-            type="text"
-            name="sprite"
-            value={""}
-            onChange={handleBasicChange}
-          />
+    <div className="space-y-6 max-h-[60vh] overflow-y-auto">
+      {/* Pokemon Info Header */}
+      <div className="flex items-start gap-4">
+        {/* Pokemon Sprite/Icon */}
+        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-2xl border border-white/10">
+          {getPokemonIcon(pokemon.type1, pokemon.type2)}
+        </div>
+
+        {/* Pokemon Basic Info */}
+        <div className="flex-1 min-w-0 space-y-3">
+          {/* Species */}
+          <div>
+            <label className="block text-sm text-gray-300 mb-1">Species</label>
+            <input
+              type="text"
+              value={pokemon.type || ""}
+              onChange={(e) => handleInputChange("type", e.target.value)}
+              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+              placeholder="e.g., Pikachu, Charizard"
+            />
+          </div>
+
+          {/* Name */}
+          <div>
+            <label className="block text-sm text-gray-300 mb-1">Nickname</label>
+            <input
+              type="text"
+              value={pokemon.name}
+              onChange={(e) => handleInputChange("name", e.target.value)}
+              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+              placeholder="Custom name for your Pokémon"
+            />
+          </div>
+
+          {/* Level */}
+          <div>
+            <label className="block text-sm text-gray-300 mb-1">Level</label>
+            <input
+              type="number"
+              min="1"
+              max="100"
+              value={pokemon.level}
+              onChange={(e) =>
+                handleInputChange("level", parseInt(e.target.value) || 1)
+              }
+              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+            />
+          </div>
         </div>
       </div>
 
-      {/* Section: Typing */}
-      <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-        <h3 className="text-lg font-semibold text-white mb-4">Typing</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Types */}
+      <div>
+        <label className="block text-sm text-gray-300 mb-2">Types</label>
+        <div className="grid grid-cols-2 gap-3">
           <div>
-            <label
-              htmlFor="type1"
-              className="block text-sm font-medium text-gray-300 mb-1"
-            >
-              Primary Type
-            </label>
+            <label className="block text-xs text-gray-400 mb-1">Type 1</label>
             <select
-              name="type1"
-              id="type1"
               value={pokemon.type1}
-              onChange={handleTypeChange}
-              className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              onChange={(e) =>
+                handleInputChange("type1", e.target.value as PokemonType)
+              }
+              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-blue-400"
             >
-              {Object.keys(TYPE_COLORS).map((type) => (
-                <option key={type} value={type}>
-                  {type}
+              {pokemonTypes.map((type) => (
+                <option key={type} value={type} className="bg-gray-800">
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
                 </option>
               ))}
             </select>
           </div>
           <div>
-            <label
-              htmlFor="type2"
-              className="block text-sm font-medium text-gray-300 mb-1"
-            >
-              Secondary Type (Optional)
+            <label className="block text-xs text-gray-400 mb-1">
+              Type 2 (Optional)
             </label>
             <select
-              name="type2"
-              id="type2"
               value={pokemon.type2 || ""}
-              onChange={handleTypeChange}
-              className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              onChange={(e) =>
+                handleInputChange("type2", e.target.value || null)
+              }
+              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-blue-400"
             >
-              <option value="">None</option>
-              {Object.keys(TYPE_COLORS).map((type) => (
-                <option key={type} value={type}>
-                  {type}
+              <option value="" className="bg-gray-800">
+                None
+              </option>
+              {pokemonTypes.map((type) => (
+                <option key={type} value={type} className="bg-gray-800">
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
                 </option>
               ))}
             </select>
@@ -181,35 +187,197 @@ export default function AddPokemonForm({
         </div>
       </div>
 
-      {/* Section: Attributes */}
-      <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-        <h3 className="text-lg font-semibold text-white mb-4">Attributes</h3>
-        <AttributeFields
-          attributes={pokemon.attributes}
-          onChange={handleAttributeChange}
-        />
-      </div>
-
-      {/* Section: Experience */}
-      <div className="p-4 rounded-lg bg-white/5 border border-white/10">
-        <h3 className="text-lg font-semibold text-white mb-4">Experience</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <InputField
-            label="Current XP"
-            type="number"
-            name="experience"
-            value={pokemon.experience}
-            onChange={handleBasicChange}
-          />
-          <InputField
-            label="XP for Next Level"
-            type="number"
-            name="experienceToNext"
-            value={pokemon.experienceToNext}
-            onChange={handleBasicChange}
-          />
+      {/* HP */}
+      <div>
+        <label className="block text-sm text-gray-300 mb-2">Hit Points</label>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">
+              Current HP
+            </label>
+            <input
+              type="number"
+              min="0"
+              max={pokemon.maxHP}
+              value={pokemon.currentHP}
+              onChange={(e) =>
+                handleInputChange("currentHP", parseInt(e.target.value) || 0)
+              }
+              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Max HP</label>
+            <input
+              type="number"
+              min="1"
+              value={pokemon.maxHP}
+              onChange={(e) => {
+                const maxHP = parseInt(e.target.value) || 1;
+                handleInputChange("maxHP", maxHP);
+                // Auto-set current HP to max HP when creating new Pokemon
+                if (pokemon.currentHP === 0 || pokemon.currentHP > maxHP) {
+                  handleInputChange("currentHP", maxHP);
+                }
+              }}
+              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+            />
+          </div>
+        </div>
+        {/* HP Bar */}
+        <div className="mt-2">
+          <div className="w-full bg-gray-600/50 rounded-full h-2 overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${Math.min(100, hpPercentage)}%`,
+                backgroundColor: getHPColor(),
+              }}
+            />
+          </div>
         </div>
       </div>
-    </form>
+
+      {/* Experience */}
+      <div>
+        <label className="block text-sm text-gray-300 mb-2">Experience</label>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">
+              Current XP
+            </label>
+            <input
+              type="number"
+              min="0"
+              value={pokemon.experience}
+              onChange={(e) =>
+                handleInputChange("experience", parseInt(e.target.value) || 0)
+              }
+              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">
+              XP to Next Level
+            </label>
+            <input
+              type="number"
+              min="0"
+              value={pokemon.experienceToNext}
+              onChange={(e) =>
+                handleInputChange(
+                  "experienceToNext",
+                  parseInt(e.target.value) || 0,
+                )
+              }
+              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+            />
+          </div>
+        </div>
+        {/* XP Bar */}
+        <div className="mt-2">
+          <div className="w-full bg-gray-600/50 rounded-full h-2 overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500 xp-bar"
+              style={{
+                width: `${Math.min(100, xpPercentage)}%`,
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Attributes */}
+      <div>
+        <label className="block text-sm text-gray-300 mb-3">Attributes</label>
+        <div className="grid grid-cols-2 gap-3">
+          {attributeNames.map((attr) => (
+            <div key={attr}>
+              <label className="block text-xs text-gray-400 mb-1">
+                {getAttributeShortName(attr)} (
+                {attr.charAt(0).toUpperCase() + attr.slice(1)})
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="30"
+                value={pokemon.attributes[attr]}
+                onChange={(e) =>
+                  handleAttributeChange(attr, parseInt(e.target.value) || 1)
+                }
+                className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Status Condition */}
+      <div>
+        <label className="block text-sm text-gray-300 mb-2">
+          Status Condition
+        </label>
+        <select
+          value={pokemon.status?.condition || "healthy"}
+          onChange={(e) => {
+            const condition = e.target.value;
+            if (condition === "healthy") {
+              handleInputChange("status", undefined);
+            } else {
+              handleInputChange("status", { condition });
+            }
+          }}
+          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-blue-400"
+        >
+          <option value="healthy" className="bg-gray-800">
+            Healthy
+          </option>
+          <option value="poisoned" className="bg-gray-800">
+            Poisoned
+          </option>
+          <option value="paralyzed" className="bg-gray-800">
+            Paralyzed
+          </option>
+          <option value="asleep" className="bg-gray-800">
+            Asleep
+          </option>
+          <option value="burned" className="bg-gray-800">
+            Burned
+          </option>
+          <option value="frozen" className="bg-gray-800">
+            Frozen
+          </option>
+          <option value="confused" className="bg-gray-800">
+            Confused
+          </option>
+          <option value="fainted" className="bg-gray-800">
+            Fainted
+          </option>
+        </select>
+      </div>
+
+      {/* Status Duration */}
+      {pokemon.status?.condition && pokemon.status.condition !== "healthy" && (
+        <div>
+          <label className="block text-sm text-gray-300 mb-2">
+            Duration (turns)
+          </label>
+          <input
+            type="number"
+            min="0"
+            value={pokemon.status?.duration || ""}
+            onChange={(e) => {
+              const duration = parseInt(e.target.value) || undefined;
+              handleInputChange("status", {
+                condition: pokemon.status?.condition || "healthy",
+                duration,
+              });
+            }}
+            className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+            placeholder="Optional - leave empty for indefinite"
+          />
+        </div>
+      )}
+    </div>
   );
 }

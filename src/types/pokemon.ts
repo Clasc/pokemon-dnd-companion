@@ -101,6 +101,7 @@ const makeAttributes = (attrs: Partial<Attributes> = {}) => ({
 // Sample Pokemon data for the mockup
 export const SAMPLE_TEAM: PokemonTeam = {
   "25": {
+    type: "Pikachu",
     name: "Pikachu",
     type1: "electric",
     level: 25,
@@ -111,6 +112,7 @@ export const SAMPLE_TEAM: PokemonTeam = {
     attributes: makeAttributes(),
   },
   "6": {
+    type: "Charizard",
     name: "Charizard",
     type1: "fire",
     type2: "flying",
@@ -122,6 +124,7 @@ export const SAMPLE_TEAM: PokemonTeam = {
     attributes: makeAttributes(),
   },
   "150": {
+    type: "Mewtwo",
     name: "Mewtwo",
     type1: "psychic",
     level: 42,
@@ -132,6 +135,7 @@ export const SAMPLE_TEAM: PokemonTeam = {
     attributes: makeAttributes(),
   },
   "133": {
+    type: "Eevee",
     name: "Eevee",
     type1: "normal",
     level: 18,
@@ -142,6 +146,7 @@ export const SAMPLE_TEAM: PokemonTeam = {
     attributes: makeAttributes(),
   },
   "3": {
+    type: "Bulbasaur",
     name: "Bulbasaur",
     type1: "grass",
     type2: "poison",

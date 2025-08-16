@@ -11,6 +11,7 @@ interface AddPokemonModalProps {
 }
 
 const initialPokemonState: Pokemon = {
+  type: "",
   name: "",
   level: 1,
   type1: "normal",
@@ -45,8 +46,8 @@ export default function AddPokemonModal({
 
   const handleSave = () => {
     // Basic validation
-    if (!newPokemon.name || !newPokemon.type1) {
-      alert("Please fill in at least the name and primary type.");
+    if (!newPokemon.name || !newPokemon.type || !newPokemon.type1) {
+      alert("Please fill in at least the name, species, and primary type.");
       return;
     }
 

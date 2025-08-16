@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Pokemon, Attributes, TYPE_COLORS } from "../types/pokemon";
+import { Pokemon, Attributes, PokemonType } from "../types/pokemon";
 import EditButtons from "./EditButtons";
 import { useAppStore } from "../store";
 import { getPokemonIcon } from "@/utils/IconMapper";
@@ -33,17 +33,26 @@ export default function PokemonEditModal({
     setEditedPokemon(pokemon);
   }, [pokemon]);
 
-  const onHPChange = (hpDelta: number) => {
-    const newHP = Math.max(
-      0,
-      Math.min(editedPokemon.maxHP, editedPokemon.currentHP + hpDelta),
-    );
-    setEditedPokemon({ ...editedPokemon, currentHP: newHP });
+  const handleInputChange = (
+    field: keyof Pokemon,
+    value:
+      | string
+      | number
+      | null
+      | undefined
+      | { condition: string; duration?: number },
+  ) => {
+    setEditedPokemon({ ...editedPokemon, [field]: value });
   };
 
-  const onXPChange = (xpDelta: number) => {
-    const newXP = Math.max(0, editedPokemon.experience + xpDelta);
-    setEditedPokemon({ ...editedPokemon, experience: newXP });
+  const handleAttributeChange = (attr: keyof Attributes, value: number) => {
+    setEditedPokemon({
+      ...editedPokemon,
+      attributes: {
+        ...editedPokemon.attributes,
+        [attr]: value,
+      },
+    });
   };
 
   const handleSave = () => {
@@ -74,10 +83,6 @@ export default function PokemonEditModal({
     return "var(--accent-red)";
   };
 
-  const getTypeColor = (type: string) => {
-    return TYPE_COLORS[type as keyof typeof TYPE_COLORS] || "#A8A878";
-  };
-
   const attributeNames: (keyof Attributes)[] = [
     "strength",
     "dexterity",
@@ -99,15 +104,36 @@ export default function PokemonEditModal({
     return shortNames[attr];
   };
 
+  const pokemonTypes: PokemonType[] = [
+    "normal",
+    "fire",
+    "water",
+    "electric",
+    "grass",
+    "ice",
+    "fighting",
+    "poison",
+    "ground",
+    "flying",
+    "psychic",
+    "bug",
+    "rock",
+    "ghost",
+    "dragon",
+    "dark",
+    "steel",
+    "fairy",
+  ];
+
   if (!mounted || !isOpen) return null;
 
   return createPortal(
     <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex justify-center items-center p-4 z-50">
-      <div className="w-full max-w-lg glass rounded-2xl p-6 relative">
+      <div className="w-full max-w-2xl glass rounded-2xl p-6 relative max-h-[90vh] overflow-y-auto">
         {/* Close Button */}
         <button
           onClick={handleCancel}
-          className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center"
+          className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center z-10"
         >
           <svg
             className="w-5 h-5 text-white"
@@ -131,7 +157,7 @@ export default function PokemonEditModal({
         </div>
 
         {/* Pokemon Info */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div className="flex items-start gap-4">
             {/* Pokemon Sprite/Icon */}
             <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-2xl border border-white/10">
@@ -139,136 +165,309 @@ export default function PokemonEditModal({
             </div>
 
             {/* Pokemon Basic Info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-3 mb-2">
-                <h3 className="font-semibold text-white text-lg truncate">
-                  {editedPokemon.name}
-                </h3>
-                <span className="text-sm text-gray-300 bg-white/10 px-2 py-0.5 rounded-md">
-                  Lv.{editedPokemon.level}
-                </span>
+            <div className="flex-1 min-w-0 space-y-3">
+              {/* Species */}
+              <div>
+                <label className="block text-sm text-gray-300 mb-1">
+                  Species
+                </label>
+                <input
+                  type="text"
+                  value={editedPokemon.type || ""}
+                  onChange={(e) => handleInputChange("type", e.target.value)}
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+                  placeholder="e.g., Pikachu, Charizard"
+                />
               </div>
 
-              {/* Type Badges */}
-              <div className="flex gap-2 mb-3">
-                <span
-                  className="text-xs px-2 py-1 rounded-md text-white font-medium"
-                  style={{ backgroundColor: getTypeColor(editedPokemon.type1) }}
-                >
-                  {editedPokemon.type1.toUpperCase()}
-                </span>
-                {editedPokemon.type2 && (
-                  <span
-                    className="text-xs px-2 py-1 rounded-md text-white font-medium"
-                    style={{ backgroundColor: getTypeColor(editedPokemon.type2) }}
-                  >
-                    {editedPokemon.type2.toUpperCase()}
-                  </span>
-                )}
+              {/* Name */}
+              <div>
+                <label className="block text-sm text-gray-300 mb-1">
+                  Nickname
+                </label>
+                <input
+                  type="text"
+                  value={editedPokemon.name}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+                  placeholder="Custom name for your Pokémon"
+                />
+              </div>
+
+              {/* Level */}
+              <div>
+                <label className="block text-sm text-gray-300 mb-1">
+                  Level
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="100"
+                  value={editedPokemon.level}
+                  onChange={(e) =>
+                    handleInputChange("level", parseInt(e.target.value) || 1)
+                  }
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+                />
               </div>
             </div>
           </div>
 
-          {/* Attributes Chips */}
+          {/* Types */}
           <div>
-            <div className="flex flex-wrap justify-start gap-1.5">
-              {attributeNames.map((attr) => (
-                <div
-                  key={attr}
-                  className="bg-white/10 rounded-full px-3 py-1 text-sm font-medium text-white flex items-center gap-2"
+            <label className="block text-sm text-gray-300 mb-2">Types</label>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">
+                  Type 1
+                </label>
+                <select
+                  value={editedPokemon.type1}
+                  onChange={(e) =>
+                    handleInputChange("type1", e.target.value as PokemonType)
+                  }
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-blue-400"
                 >
-                  <span className="text-gray-300 font-semibold">
-                    {getAttributeShortName(attr)}
-                  </span>
-                  <span className="font-bold">
-                    {editedPokemon.attributes[attr]}
-                  </span>
+                  {pokemonTypes.map((type) => (
+                    <option key={type} value={type} className="bg-gray-800">
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">
+                  Type 2 (Optional)
+                </label>
+                <select
+                  value={editedPokemon.type2 || ""}
+                  onChange={(e) =>
+                    handleInputChange("type2", e.target.value || null)
+                  }
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-blue-400"
+                >
+                  <option value="" className="bg-gray-800">
+                    None
+                  </option>
+                  {pokemonTypes.map((type) => (
+                    <option key={type} value={type} className="bg-gray-800">
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* HP */}
+          <div>
+            <label className="block text-sm text-gray-300 mb-2">
+              Hit Points
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">
+                  Current HP
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max={editedPokemon.maxHP}
+                  value={editedPokemon.currentHP}
+                  onChange={(e) =>
+                    handleInputChange(
+                      "currentHP",
+                      parseInt(e.target.value) || 0,
+                    )
+                  }
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">
+                  Max HP
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={editedPokemon.maxHP}
+                  onChange={(e) =>
+                    handleInputChange("maxHP", parseInt(e.target.value) || 1)
+                  }
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+                />
+              </div>
+            </div>
+            {/* HP Bar */}
+            <div className="mt-2">
+              <div className="w-full bg-gray-600/50 rounded-full h-2 overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: `${Math.min(100, hpPercentage)}%`,
+                    backgroundColor: getHPColor(),
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Experience */}
+          <div>
+            <label className="block text-sm text-gray-300 mb-2">
+              Experience
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">
+                  Current XP
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={editedPokemon.experience}
+                  onChange={(e) =>
+                    handleInputChange(
+                      "experience",
+                      parseInt(e.target.value) || 0,
+                    )
+                  }
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">
+                  XP to Next Level
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={editedPokemon.experienceToNext}
+                  onChange={(e) =>
+                    handleInputChange(
+                      "experienceToNext",
+                      parseInt(e.target.value) || 0,
+                    )
+                  }
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+                />
+              </div>
+            </div>
+            {/* XP Bar */}
+            <div className="mt-2">
+              <div className="w-full bg-gray-600/50 rounded-full h-2 overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-500 xp-bar"
+                  style={{
+                    width: `${Math.min(100, xpPercentage)}%`,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Attributes */}
+          <div>
+            <label className="block text-sm text-gray-300 mb-3">
+              Attributes
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {attributeNames.map((attr) => (
+                <div key={attr}>
+                  <label className="block text-xs text-gray-400 mb-1">
+                    {getAttributeShortName(attr)} (
+                    {attr.charAt(0).toUpperCase() + attr.slice(1)})
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="30"
+                    value={editedPokemon.attributes[attr]}
+                    onChange={(e) =>
+                      handleAttributeChange(attr, parseInt(e.target.value) || 1)
+                    }
+                    className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+                  />
                 </div>
               ))}
             </div>
           </div>
 
-          {/* HP Bar */}
+          {/* Status Condition */}
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-300 font-medium">
-                HP
-              </span>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => onHPChange(-1)}
-                  className="w-8 h-8 rounded-md bg-red-500/80 hover:bg-red-500 text-white text-sm font-bold transition-colors"
-                >
-                  -
-                </button>
-                <button
-                  onClick={() => onHPChange(1)}
-                  className="w-8 h-8 rounded-md bg-green-500/80 hover:bg-green-500 text-white text-sm font-bold transition-colors"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-            <div className="w-full bg-gray-600/50 rounded-full h-3 overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-500 relative"
-                style={{
-                  width: `${Math.min(100, hpPercentage)}%`,
-                  backgroundColor: getHPColor(),
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
-              </div>
-            </div>
-            <div className="text-sm text-gray-300 mt-2 text-right font-medium">
-              {editedPokemon.currentHP}/{editedPokemon.maxHP}
-            </div>
+            <label className="block text-sm text-gray-300 mb-2">
+              Status Condition
+            </label>
+            <select
+              value={editedPokemon.status?.condition || "healthy"}
+              onChange={(e) => {
+                const condition = e.target.value;
+                if (condition === "healthy") {
+                  handleInputChange("status", undefined);
+                } else {
+                  handleInputChange("status", { condition });
+                }
+              }}
+              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-blue-400"
+            >
+              <option value="healthy" className="bg-gray-800">
+                Healthy
+              </option>
+              <option value="poisoned" className="bg-gray-800">
+                Poisoned
+              </option>
+              <option value="paralyzed" className="bg-gray-800">
+                Paralyzed
+              </option>
+              <option value="asleep" className="bg-gray-800">
+                Asleep
+              </option>
+              <option value="burned" className="bg-gray-800">
+                Burned
+              </option>
+              <option value="frozen" className="bg-gray-800">
+                Frozen
+              </option>
+              <option value="confused" className="bg-gray-800">
+                Confused
+              </option>
+              <option value="fainted" className="bg-gray-800">
+                Fainted
+              </option>
+            </select>
           </div>
 
-          {/* XP Bar */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-300 font-medium">
-                XP
-              </span>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => onXPChange(-10)}
-                  className="w-8 h-8 rounded-md bg-purple-500/80 hover:bg-purple-500 text-white text-sm font-bold transition-colors"
-                >
-                  -
-                </button>
-                <button
-                  onClick={() => onXPChange(10)}
-                  className="w-8 h-8 rounded-md bg-blue-500/80 hover:bg-blue-500 text-white text-sm font-bold transition-colors"
-                >
-                  +
-                </button>
+          {/* Status Duration */}
+          {editedPokemon.status?.condition &&
+            editedPokemon.status.condition !== "healthy" && (
+              <div>
+                <label className="block text-sm text-gray-300 mb-2">
+                  Duration (turns)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={editedPokemon.status?.duration || ""}
+                  onChange={(e) => {
+                    const duration = parseInt(e.target.value) || undefined;
+                    handleInputChange("status", {
+                      condition: editedPokemon.status?.condition || "healthy",
+                      duration,
+                    });
+                  }}
+                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
+                  placeholder="Optional - leave empty for indefinite"
+                />
               </div>
-            </div>
-            <div className="w-full bg-gray-600/50 rounded-full h-3 overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-500 xp-bar"
-                style={{
-                  width: `${Math.min(100, xpPercentage)}%`,
-                }}
-              />
-            </div>
-            <div className="text-sm text-gray-300 mt-2 text-right font-medium">
-              {editedPokemon.experience}/{editedPokemon.experienceToNext}
-            </div>
-          </div>
+            )}
 
           {/* Action Buttons */}
-          <div className="mt-6">
-            <EditButtons
-              handleCancel={handleCancel}
-              handleSave={handleSave}
-            />
+          <div className="mt-6 pt-4 border-t border-white/10">
+            <EditButtons handleCancel={handleCancel} handleSave={handleSave} />
           </div>
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
