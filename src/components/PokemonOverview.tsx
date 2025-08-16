@@ -1,19 +1,14 @@
 "use client";
 
+import { updatePokemonInTeam } from "@/utils/storage";
 import { Pokemon } from "../types/pokemon";
 import PokemonCard from "./PokemonCard";
 
 interface PokemonOverviewProps {
   pokemon: Pokemon[];
-  onPokemonHPChange?: (pokemonId: number, delta: number) => void;
-  onPokemonXPChange?: (pokemonId: number, delta: number) => void;
 }
 
-export default function PokemonOverview({
-  pokemon,
-  onPokemonHPChange,
-  onPokemonXPChange,
-}: PokemonOverviewProps) {
+export default function PokemonOverview({ pokemon }: PokemonOverviewProps) {
   return (
     <div className="glass rounded-2xl p-6 md:p-8">
       <div className="flex items-center justify-between mb-8">
@@ -44,14 +39,7 @@ export default function PokemonOverview({
             </p>
           </div>
         ) : (
-          pokemon.map((poke) => (
-            <PokemonCard
-              key={poke.id}
-              pokemon={poke}
-              onHPChange={onPokemonHPChange}
-              onXPChange={onPokemonXPChange}
-            />
-          ))
+          pokemon.map((poke) => <PokemonCard key={poke.id} pokemon={poke} />)
         )}
       </div>
 

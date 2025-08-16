@@ -6,42 +6,32 @@ import EditButtons from "./EditButtons";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
-  onHPChange?: (pokemonId: number, delta: number) => void;
-  onXPChange?: (pokemonId: number, delta: number) => void;
+  onChange?: (pokemon: Pokemon) => void;
 }
 
-export default function PokemonCard({
-  pokemon,
-  onHPChange,
-  onXPChange,
-}: PokemonCardProps) {
+export default function PokemonCard({ pokemon, onChange }: PokemonCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedPokemon, setEditedPokemon] = useState<Pokemon>(pokemon);
 
   useEffect(() => {
     setEditedPokemon(pokemon);
-  }, [pokemon]);
+    onChange?.(pokemon);
+  }, [pokemon, onChange]);
 
-  const handleLocalHPChange = (delta: number) => {
+  const onHPChange = (hpDelta: number) => {
     const newHP = Math.max(
       0,
-      Math.min(editedPokemon.maxHP, editedPokemon.currentHP + delta),
+      Math.min(editedPokemon.maxHP, editedPokemon.currentHP + hpDelta),
     );
     setEditedPokemon({ ...editedPokemon, currentHP: newHP });
   };
 
-  const handleLocalXPChange = (delta: number) => {
-    const newXP = Math.max(0, editedPokemon.experience + delta);
+  const onXPChange = (xpDelta: number) => {
+    const newXP = Math.max(0, editedPokemon.experience + xpDelta);
     setEditedPokemon({ ...editedPokemon, experience: newXP });
   };
 
   const handleSave = () => {
-    const hpDelta = editedPokemon.currentHP - pokemon.currentHP;
-    const xpDelta = editedPokemon.experience - pokemon.experience;
-    if (hpDelta !== 0) onHPChange?.(pokemon.id, hpDelta);
-    if (xpDelta !== 0) onXPChange?.(pokemon.id, xpDelta);
-    handleLocalHPChange(hpDelta);
-    handleLocalXPChange(xpDelta);
     setIsEditing(false);
   };
 
@@ -54,6 +44,7 @@ export default function PokemonCard({
     editedPokemon.maxHP > 0
       ? (editedPokemon.currentHP / editedPokemon.maxHP) * 100
       : 0;
+
   const xpPercentage =
     editedPokemon.experienceToNext > 0
       ? (editedPokemon.experience /
@@ -123,13 +114,13 @@ export default function PokemonCard({
                 {isEditing && (
                   <>
                     <button
-                      onClick={() => onHPChange?.(pokemon.id, -1)}
+                      onClick={() => onHPChange(-1)}
                       className="w-7 h-7 md:w-8 md:h-8 rounded-md bg-red-500/80 hover:bg-red-500 text-white text-xs font-bold transition-colors"
                     >
                       -
                     </button>
                     <button
-                      onClick={() => onHPChange?.(pokemon.id, 1)}
+                      onClick={() => onHPChange(1)}
                       className="w-7 h-7 md:w-8 md:h-8 rounded-md bg-green-500/80 hover:bg-green-500 text-white text-xs font-bold transition-colors"
                     >
                       +
@@ -164,13 +155,13 @@ export default function PokemonCard({
                 {isEditing && (
                   <>
                     <button
-                      onClick={() => onXPChange?.(pokemon.id, -10)}
+                      onClick={() => onXPChange(-10)}
                       className="w-7 h-7 md:w-8 md:h-8 rounded-md bg-purple-500/80 hover:bg-purple-500 text-white text-xs font-bold transition-colors"
                     >
                       -
                     </button>
                     <button
-                      onClick={() => onXPChange?.(pokemon.id, 10)}
+                      onClick={() => onXPChange(10)}
                       className="w-7 h-7 md:w-8 md:h-8 rounded-md bg-blue-500/80 hover:bg-blue-500 text-white text-xs font-bold transition-colors"
                     >
                       +
