@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Character } from '../types/character';
-import { Pokemon } from '../types/pokemon';
+import { useState, useEffect } from "react";
+import { Character } from "../types/character";
+import { Pokemon } from "../types/pokemon";
 import {
   saveCharacter,
   loadCharacter,
   savePokemonTeam,
-  loadPokemonTeam
-} from '../utils/storage';
-import CharacterOverview from '../components/CharacterOverview';
-import PokemonOverview from '../components/PokemonOverview';
+  loadPokemonTeam,
+} from "../utils/storage";
+import CharacterOverview from "../components/CharacterOverview";
+import PokemonOverview from "../components/PokemonOverview";
 
 export default function Home() {
   const [character, setCharacter] = useState<Character>({
-    name: '',
+    name: "",
     level: 1,
-    class: '',
+    class: "",
     attributes: {
       strength: 10,
       dexterity: 10,
@@ -30,7 +30,7 @@ export default function Home() {
   });
 
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
-  const [isEditing, setIsEditing] = useState(false);
+
   const [isLoading, setIsLoading] = useState(true);
 
   // Load data on mount
@@ -43,37 +43,14 @@ export default function Home() {
     setIsLoading(false);
   }, []);
 
-  // Character handlers
-  const handleAttributeChange = (attribute: keyof Character['attributes'], value: number) => {
-    const updatedCharacter = {
-      ...character,
-      attributes: {
-        ...character.attributes,
-        [attribute]: Math.max(1, Math.min(20, value)), // Clamp between 1-20
-      },
-    };
+  const handleCharacterSave = (updatedCharacter: Character) => {
     setCharacter(updatedCharacter);
-  };
-
-  const handleCharacterHPChange = (type: 'current' | 'max', delta: number) => {
-    const field = type === 'current' ? 'currentHP' : 'maxHP';
-    const newValue = Math.max(0, character[field] + delta);
-    const updatedCharacter = { ...character, [field]: newValue };
-
-    // Ensure current HP doesn't exceed max HP
-    if (type === 'max' && updatedCharacter.currentHP > newValue) {
-      updatedCharacter.currentHP = newValue;
-    }
-    if (type === 'current' && newValue > character.maxHP) {
-      updatedCharacter.currentHP = character.maxHP;
-    }
-
-    setCharacter(updatedCharacter);
+    saveCharacter(updatedCharacter);
   };
 
   // Pokemon handlers
   const handlePokemonHPChange = (pokemonId: number, delta: number) => {
-    const updatedTeam = pokemon.map(p => {
+    const updatedTeam = pokemon.map((p) => {
       if (p.id === pokemonId) {
         const newHP = Math.max(0, Math.min(p.maxHP, p.currentHP + delta));
         return { ...p, currentHP: newHP };
@@ -84,7 +61,7 @@ export default function Home() {
   };
 
   const handlePokemonXPChange = (pokemonId: number, delta: number) => {
-    const updatedTeam = pokemon.map(p => {
+    const updatedTeam = pokemon.map((p) => {
       if (p.id === pokemonId) {
         const newXP = Math.max(0, p.experience + delta);
         return { ...p, experience: newXP };
@@ -92,25 +69,6 @@ export default function Home() {
       return p;
     });
     setPokemon(updatedTeam);
-  };
-
-  // Save handlers
-  const handleSave = () => {
-    saveCharacter(character);
-    savePokemonTeam(pokemon);
-    setIsEditing(false);
-  };
-
-  const handleCancel = () => {
-    const loadedCharacter = loadCharacter();
-    const loadedPokemon = loadPokemonTeam();
-    setCharacter(loadedCharacter);
-    setPokemon(loadedPokemon);
-    setIsEditing(false);
-  };
-
-  const toggleEdit = () => {
-    setIsEditing(!isEditing);
   };
 
   if (isLoading) {
@@ -142,42 +100,13 @@ export default function Home() {
 
         {/* Main Content Container */}
         <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-          {/* Edit/Save Controls - Centered */}
-          <div className="w-full max-w-md mx-auto mb-6 md:mb-8 lg:mb-10">
-            {!isEditing ? (
-              <button
-                onClick={toggleEdit}
-                className="w-full btn-primary btn-responsive rounded-2xl font-semibold"
-              >
-                ✏️ Edit Mode
-              </button>
-            ) : (
-              <div className="flex gap-3">
-                <button
-                  onClick={handleSave}
-                  className="flex-1 btn-primary btn-responsive rounded-2xl font-semibold"
-                >
-                  ✅ Save
-                </button>
-                <button
-                  onClick={handleCancel}
-                  className="flex-1 btn-secondary btn-responsive rounded-2xl font-semibold"
-                >
-                  ❌ Cancel
-                </button>
-              </div>
-            )}
-          </div>
-
           {/* Cards Grid - Responsive Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 xl:gap-16 max-w-6xl mx-auto">
             {/* Character Overview */}
             <div className="w-full">
               <CharacterOverview
                 character={character}
-                isEditing={isEditing}
-                onAttributeChange={handleAttributeChange}
-                onHPChange={handleCharacterHPChange}
+                onSave={handleCharacterSave}
               />
             </div>
 
@@ -185,7 +114,6 @@ export default function Home() {
             <div className="w-full">
               <PokemonOverview
                 pokemon={pokemon}
-                isEditing={isEditing}
                 onPokemonHPChange={handlePokemonHPChange}
                 onPokemonXPChange={handlePokemonXPChange}
               />

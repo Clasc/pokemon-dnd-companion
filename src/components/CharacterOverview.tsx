@@ -1,23 +1,63 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Character } from "../types/character";
 
 interface CharacterOverviewProps {
   character: Character;
-  isEditing: boolean;
-  onAttributeChange?: (
-    attribute: keyof Character["attributes"],
-    value: number,
-  ) => void;
-  onHPChange?: (type: "current" | "max", delta: number) => void;
+  onSave: (character: Character) => void;
 }
 
 export default function CharacterOverview({
   character,
-  isEditing,
-  onAttributeChange,
-  onHPChange,
+  onSave,
 }: CharacterOverviewProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedCharacter, setEditedCharacter] = useState<Character>(character);
+
+  useEffect(() => {
+    setEditedCharacter(character);
+  }, [character]);
+
+  const handleAttributeChange = (
+    attribute: keyof Character["attributes"],
+    value: number,
+  ) => {
+    const updatedCharacter = {
+      ...editedCharacter,
+      attributes: {
+        ...editedCharacter.attributes,
+        [attribute]: Math.max(1, Math.min(20, value)), // Clamp between 1-20
+      },
+    };
+    setEditedCharacter(updatedCharacter);
+  };
+
+  const handleHPChange = (type: "current" | "max", delta: number) => {
+    const field = type === "current" ? "currentHP" : "maxHP";
+    const newValue = Math.max(0, editedCharacter[field] + delta);
+    const updatedCharacter = { ...editedCharacter, [field]: newValue };
+
+    // Ensure current HP doesn't exceed max HP
+    if (type === "max" && updatedCharacter.currentHP > newValue) {
+      updatedCharacter.currentHP = newValue;
+    }
+    if (type === "current" && newValue > editedCharacter.maxHP) {
+      updatedCharacter.currentHP = editedCharacter.maxHP;
+    }
+
+    setEditedCharacter(updatedCharacter);
+  };
+
+  const handleSave = () => {
+    onSave(editedCharacter);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditedCharacter(character);
+    setIsEditing(false);
+  };
   const attributeNames: (keyof Character["attributes"])[] = [
     "strength",
     "dexterity",
@@ -47,8 +87,8 @@ export default function CharacterOverview({
   };
 
   const getHPPercentage = () => {
-    return character.maxHP > 0
-      ? (character.currentHP / character.maxHP) * 100
+    return editedCharacter.maxHP > 0
+      ? (editedCharacter.currentHP / editedCharacter.maxHP) * 100
       : 0;
   };
 
@@ -60,12 +100,17 @@ export default function CharacterOverview({
   };
 
   return (
-    <div className="glass rounded-2xl p-6">
+    <div
+      className={`glass rounded-2xl p-6 ${
+        !isEditing ? "cursor-pointer hover:bg-white/10" : ""
+      }`}
+      onClick={() => !isEditing && setIsEditing(true)}
+    >
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-white">Character Overview</h2>
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
           <span className="text-white text-sm font-bold">
-            {character.level || 1}
+            {editedCharacter.level || 1}
           </span>
         </div>
       </div>
@@ -74,10 +119,11 @@ export default function CharacterOverview({
       <div className="mb-8">
         <div className="text-center mb-6 p-4 bg-white/5 rounded-lg border border-white/10">
           <h3 className="text-lg font-semibold text-white mb-2">
-            {character.name || "Unnamed Character"}
+            {editedCharacter.name || "Unnamed Character"}
           </h3>
           <p className="text-gray-300 text-sm">
-            Level {character.level} {character.class || "Adventurer"}
+            Level {editedCharacter.level}{" "}
+            {editedCharacter.class || "Adventurer"}
           </p>
         </div>
       </div>
@@ -99,9 +145,9 @@ export default function CharacterOverview({
                   <>
                     <button
                       onClick={() =>
-                        onAttributeChange?.(
+                        handleAttributeChange(
                           attr,
-                          character.attributes[attr] - 1,
+                          editedCharacter.attributes[attr] - 1,
                         )
                       }
                       className="w-7 h-7 rounded-md bg-red-500/80 hover:bg-red-500 text-white text-xs font-bold transition-colors"
@@ -112,16 +158,16 @@ export default function CharacterOverview({
                 )}
                 <div className="w-14 h-10 md:w-16 md:h-12 bg-white/10 rounded-lg flex items-center justify-center border border-white/20">
                   <span className="text-white font-semibold text-sm md:text-base">
-                    {character.attributes[attr]}
+                    {editedCharacter.attributes[attr]}
                   </span>
                 </div>
                 {isEditing && (
                   <>
                     <button
                       onClick={() =>
-                        onAttributeChange?.(
+                        handleAttributeChange(
                           attr,
-                          character.attributes[attr] + 1,
+                          editedCharacter.attributes[attr] + 1,
                         )
                       }
                       className="w-7 h-7 rounded-md bg-green-500/80 hover:bg-green-500 text-white text-xs font-bold transition-colors"
@@ -144,13 +190,13 @@ export default function CharacterOverview({
             {isEditing && (
               <>
                 <button
-                  onClick={() => onHPChange?.("current", -1)}
+                  onClick={() => handleHPChange("current", -1)}
                   className="w-7 h-7 rounded-md bg-red-500/80 hover:bg-red-500 text-white text-xs font-bold transition-colors"
                 >
                   -
                 </button>
                 <button
-                  onClick={() => onHPChange?.("current", 1)}
+                  onClick={() => handleHPChange("current", 1)}
                   className="w-7 h-7 rounded-md bg-green-500/80 hover:bg-green-500 text-white text-xs font-bold transition-colors"
                 >
                   +
@@ -175,19 +221,19 @@ export default function CharacterOverview({
 
         <div className="flex justify-between items-center">
           <div className="text-sm md:text-base text-gray-300 font-medium">
-            {character.currentHP}/{character.maxHP}
+            {editedCharacter.currentHP}/{editedCharacter.maxHP}
           </div>
           {isEditing && (
             <div className="flex items-center gap-2">
               <button
-                onClick={() => onHPChange?.("max", -1)}
+                onClick={() => handleHPChange("max", -1)}
                 className="w-6 h-6 rounded bg-red-500/60 hover:bg-red-500/80 text-white text-xs font-bold transition-colors"
               >
                 -
               </button>
               <span className="text-xs md:text-sm text-gray-400 px-2">Max</span>
               <button
-                onClick={() => onHPChange?.("max", 1)}
+                onClick={() => handleHPChange("max", 1)}
                 className="w-6 h-6 rounded bg-green-500/60 hover:bg-green-500/80 text-white text-xs font-bold transition-colors"
               >
                 +
@@ -196,6 +242,22 @@ export default function CharacterOverview({
           )}
         </div>
       </div>
+      {isEditing && (
+        <div className="flex gap-3 mt-6">
+          <button
+            onClick={handleSave}
+            className="flex-1 btn-primary btn-responsive rounded-2xl font-semibold"
+          >
+            ✅ Save
+          </button>
+          <button
+            onClick={handleCancel}
+            className="flex-1 btn-secondary btn-responsive rounded-2xl font-semibold"
+          >
+            ❌ Cancel
+          </button>
+        </div>
+      )}
     </div>
   );
 }

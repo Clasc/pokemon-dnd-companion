@@ -1,26 +1,69 @@
-'use client';
+"use client";
 
-import { Pokemon, TYPE_COLORS } from '../types/pokemon';
+import { useState, useEffect } from "react";
+import { Pokemon, TYPE_COLORS } from "../types/pokemon";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
-  isEditing: boolean;
   onHPChange?: (pokemonId: number, delta: number) => void;
   onXPChange?: (pokemonId: number, delta: number) => void;
 }
 
-export default function PokemonCard({ pokemon, isEditing, onHPChange, onXPChange }: PokemonCardProps) {
-  const hpPercentage = pokemon.maxHP > 0 ? (pokemon.currentHP / pokemon.maxHP) * 100 : 0;
-  const xpPercentage = pokemon.experienceToNext > 0 ? (pokemon.experience / (pokemon.experience + pokemon.experienceToNext)) * 100 : 0;
+export default function PokemonCard({
+  pokemon,
+  onHPChange,
+  onXPChange,
+}: PokemonCardProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedPokemon, setEditedPokemon] = useState<Pokemon>(pokemon);
+
+  useEffect(() => {
+    setEditedPokemon(pokemon);
+  }, [pokemon]);
+
+  const handleLocalHPChange = (delta: number) => {
+    const newHP = Math.max(
+      0,
+      Math.min(editedPokemon.maxHP, editedPokemon.currentHP + delta),
+    );
+    setEditedPokemon({ ...editedPokemon, currentHP: newHP });
+  };
+
+  const handleLocalXPChange = (delta: number) => {
+    const newXP = Math.max(0, editedPokemon.experience + delta);
+    setEditedPokemon({ ...editedPokemon, experience: newXP });
+  };
+
+  const handleSave = () => {
+    const hpDelta = editedPokemon.currentHP - pokemon.currentHP;
+    const xpDelta = editedPokemon.experience - pokemon.experience;
+    if (hpDelta !== 0) onHPChange?.(pokemon.id, hpDelta);
+    if (xpDelta !== 0) onXPChange?.(pokemon.id, xpDelta);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditedPokemon(pokemon);
+  };
+  const hpPercentage =
+    editedPokemon.maxHP > 0
+      ? (editedPokemon.currentHP / editedPokemon.maxHP) * 100
+      : 0;
+  const xpPercentage =
+    editedPokemon.experienceToNext > 0
+      ? (editedPokemon.experience /
+          (editedPokemon.experience + editedPokemon.experienceToNext)) *
+        100
+      : 0;
 
   const getHPColor = () => {
-    if (hpPercentage > 60) return 'var(--accent-green)';
-    if (hpPercentage > 30) return 'var(--accent-yellow)';
-    return 'var(--accent-red)';
+    if (hpPercentage > 60) return "var(--accent-green)";
+    if (hpPercentage > 30) return "var(--accent-yellow)";
+    return "var(--accent-red)";
   };
 
   const getTypeColor = (type: string) => {
-    return TYPE_COLORS[type as keyof typeof TYPE_COLORS] || '#A8A878';
+    return TYPE_COLORS[type as keyof typeof TYPE_COLORS] || "#A8A878";
   };
 
   return (
@@ -28,13 +71,15 @@ export default function PokemonCard({ pokemon, isEditing, onHPChange, onXPChange
       <div className="flex items-center gap-4 md:gap-6">
         {/* Pokemon Sprite/Icon */}
         <div className="w-14 h-14 md:w-18 md:h-18 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-2xl md:text-3xl border border-white/10">
-          {pokemon.sprite || '❓'}
+          {pokemon.sprite || "❓"}
         </div>
 
         {/* Pokemon Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-3">
-            <h3 className="font-semibold text-white text-lg md:text-xl truncate">{pokemon.name}</h3>
+            <h3 className="font-semibold text-white text-lg md:text-xl truncate">
+              {pokemon.name}
+            </h3>
             <span className="text-sm md:text-base text-gray-300 bg-white/10 px-3 py-1 rounded-md">
               Lv.{pokemon.level}
             </span>
@@ -61,7 +106,9 @@ export default function PokemonCard({ pokemon, isEditing, onHPChange, onXPChange
           {/* HP Bar */}
           <div className="mb-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm md:text-base text-gray-300 font-medium">HP</span>
+              <span className="text-sm md:text-base text-gray-300 font-medium">
+                HP
+              </span>
               <div className="flex items-center gap-3">
                 {isEditing && (
                   <>
@@ -100,7 +147,9 @@ export default function PokemonCard({ pokemon, isEditing, onHPChange, onXPChange
           {/* XP Bar */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm md:text-base text-gray-300 font-medium">XP</span>
+              <span className="text-sm md:text-base text-gray-300 font-medium">
+                XP
+              </span>
               <div className="flex items-center gap-3">
                 {isEditing && (
                   <>
@@ -129,7 +178,8 @@ export default function PokemonCard({ pokemon, isEditing, onHPChange, onXPChange
               />
             </div>
             <div className="text-sm md:text-base text-gray-300 mt-2 text-right font-medium">
-              {pokemon.experience}/{pokemon.experience + pokemon.experienceToNext}
+              {pokemon.experience}/
+              {pokemon.experience + pokemon.experienceToNext}
             </div>
           </div>
         </div>
