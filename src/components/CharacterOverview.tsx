@@ -1,55 +1,67 @@
-'use client';
+"use client";
 
-import { Character } from '../types/character';
+import { Character } from "../types/character";
 
 interface CharacterOverviewProps {
   character: Character;
   isEditing: boolean;
-  onAttributeChange?: (attribute: keyof Character['attributes'], value: number) => void;
-  onHPChange?: (type: 'current' | 'max', delta: number) => void;
+  onAttributeChange?: (
+    attribute: keyof Character["attributes"],
+    value: number,
+  ) => void;
+  onHPChange?: (type: "current" | "max", delta: number) => void;
 }
 
 export default function CharacterOverview({
   character,
   isEditing,
   onAttributeChange,
-  onHPChange
+  onHPChange,
 }: CharacterOverviewProps) {
-  const attributeNames: (keyof Character['attributes'])[] = [
-    'strength',
-    'dexterity',
-    'constitution',
-    'intelligence',
-    'wisdom',
-    'charisma',
+  const attributeNames: (keyof Character["attributes"])[] = [
+    "strength",
+    "dexterity",
+    "constitution",
+    "intelligence",
+    "wisdom",
+    "charisma",
   ];
 
   const getAttributeDisplayName = (attr: string) => {
     switch (attr) {
-      case 'strength': return 'Strength';
-      case 'dexterity': return 'Dexterity';
-      case 'constitution': return 'Constitution';
-      case 'intelligence': return 'Intelligence';
-      case 'wisdom': return 'Wisdom';
-      case 'charisma': return 'Charisma';
-      default: return attr;
+      case "strength":
+        return "Strength";
+      case "dexterity":
+        return "Dexterity";
+      case "constitution":
+        return "Constitution";
+      case "intelligence":
+        return "Intelligence";
+      case "wisdom":
+        return "Wisdom";
+      case "charisma":
+        return "Charisma";
+      default:
+        return attr;
     }
   };
 
   const getHPPercentage = () => {
-    return character.maxHP > 0 ? (character.currentHP / character.maxHP) * 100 : 0;
+    return character.maxHP > 0
+      ? (character.currentHP / character.maxHP) * 100
+      : 0;
   };
 
   const getHPColor = () => {
     const percentage = getHPPercentage();
-    if (percentage > 60) return 'var(--accent-green)';
-    if (percentage > 30) return 'var(--accent-yellow)';
-    return 'var(--accent-red)';
+    if (percentage > 60) return "var(--accent-green)";
+    if (percentage > 30) return "var(--accent-yellow)";
+    return "var(--accent-red)";
   };
 
   return (
     <div className="glass rounded-2xl p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-white">Character Overview</h2>
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
           <span className="text-white text-sm font-bold">
@@ -62,10 +74,10 @@ export default function CharacterOverview({
       <div className="mb-8">
         <div className="text-center mb-6 p-4 bg-white/5 rounded-lg border border-white/10">
           <h3 className="text-lg font-semibold text-white mb-2">
-            {character.name || 'Unnamed Character'}
+            {character.name || "Unnamed Character"}
           </h3>
           <p className="text-gray-300 text-sm">
-            Level {character.level} {character.class || 'Adventurer'}
+            Level {character.level} {character.class || "Adventurer"}
           </p>
         </div>
       </div>
@@ -75,7 +87,10 @@ export default function CharacterOverview({
         <h3 className="text-lg font-semibold text-white mb-4">Attributes</h3>
         <div className="attributes-grid space-y-3">
           {attributeNames.map((attr) => (
-            <div key={attr} className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10">
+            <div
+              key={attr}
+              className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10"
+            >
               <span className="text-gray-300 text-sm md:text-base font-medium">
                 {getAttributeDisplayName(attr)}
               </span>
@@ -83,7 +98,12 @@ export default function CharacterOverview({
                 {isEditing && (
                   <>
                     <button
-                      onClick={() => onAttributeChange?.(attr, character.attributes[attr] - 1)}
+                      onClick={() =>
+                        onAttributeChange?.(
+                          attr,
+                          character.attributes[attr] - 1,
+                        )
+                      }
                       className="w-7 h-7 rounded-md bg-red-500/80 hover:bg-red-500 text-white text-xs font-bold transition-colors"
                     >
                       -
@@ -98,7 +118,12 @@ export default function CharacterOverview({
                 {isEditing && (
                   <>
                     <button
-                      onClick={() => onAttributeChange?.(attr, character.attributes[attr] + 1)}
+                      onClick={() =>
+                        onAttributeChange?.(
+                          attr,
+                          character.attributes[attr] + 1,
+                        )
+                      }
                       className="w-7 h-7 rounded-md bg-green-500/80 hover:bg-green-500 text-white text-xs font-bold transition-colors"
                     >
                       +
@@ -119,13 +144,13 @@ export default function CharacterOverview({
             {isEditing && (
               <>
                 <button
-                  onClick={() => onHPChange?.('current', -1)}
+                  onClick={() => onHPChange?.("current", -1)}
                   className="w-7 h-7 rounded-md bg-red-500/80 hover:bg-red-500 text-white text-xs font-bold transition-colors"
                 >
                   -
                 </button>
                 <button
-                  onClick={() => onHPChange?.('current', 1)}
+                  onClick={() => onHPChange?.("current", 1)}
                   className="w-7 h-7 rounded-md bg-green-500/80 hover:bg-green-500 text-white text-xs font-bold transition-colors"
                 >
                   +
@@ -155,14 +180,14 @@ export default function CharacterOverview({
           {isEditing && (
             <div className="flex items-center gap-2">
               <button
-                onClick={() => onHPChange?.('max', -1)}
+                onClick={() => onHPChange?.("max", -1)}
                 className="w-6 h-6 rounded bg-red-500/60 hover:bg-red-500/80 text-white text-xs font-bold transition-colors"
               >
                 -
               </button>
               <span className="text-xs md:text-sm text-gray-400 px-2">Max</span>
               <button
-                onClick={() => onHPChange?.('max', 1)}
+                onClick={() => onHPChange?.("max", 1)}
                 className="w-6 h-6 rounded bg-green-500/60 hover:bg-green-500/80 text-white text-xs font-bold transition-colors"
               >
                 +
