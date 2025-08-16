@@ -7,7 +7,6 @@ export interface Pokemon {
   maxHP: number;
   experience: number;
   experienceToNext: number;
-  sprite?: string;
   attributes: {
     strength: number;
     dexterity: number;
@@ -109,7 +108,6 @@ export const SAMPLE_TEAM: PokemonTeam = {
     experience: 0,
     experienceToNext: 250,
     attributes: makeAttributes(),
-    sprite: "⚡",
   },
   "6": {
     name: "Charizard",
@@ -120,7 +118,6 @@ export const SAMPLE_TEAM: PokemonTeam = {
     maxHP: 140,
     experience: 1500,
     experienceToNext: 1800,
-    sprite: "🔥",
     attributes: makeAttributes(),
   },
   "150": {
@@ -131,7 +128,6 @@ export const SAMPLE_TEAM: PokemonTeam = {
     maxHP: 155,
     experience: 2100,
     experienceToNext: 2500,
-    sprite: "🧠",
     attributes: makeAttributes(),
   },
   "133": {
@@ -142,7 +138,6 @@ export const SAMPLE_TEAM: PokemonTeam = {
     maxHP: 65,
     experience: 320,
     experienceToNext: 400,
-    sprite: "🦊",
     attributes: makeAttributes(),
   },
   "3": {
@@ -154,7 +149,6 @@ export const SAMPLE_TEAM: PokemonTeam = {
     maxHP: 80,
     experience: 580,
     experienceToNext: 700,
-    sprite: "🌱",
     attributes: makeAttributes(),
   },
 };

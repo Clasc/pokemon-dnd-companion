@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Pokemon, TYPE_COLORS } from "../types/pokemon";
 import EditButtons from "./EditButtons";
 import { useAppStore } from "../store";
+import { getPokemonIcon } from "@/utils/IconMapper";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -76,7 +77,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
       <div className="flex items-center gap-4 md:gap-6">
         {/* Pokemon Sprite/Icon */}
         <div className="w-14 h-14 md:w-18 md:h-18 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-2xl md:text-3xl border border-white/10">
-          {viewedPokemon.sprite || "❓"}
+          {getPokemonIcon(viewedPokemon.type1, viewedPokemon.type2)}
         </div>
 
         {/* Pokemon Info */}

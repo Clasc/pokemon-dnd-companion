@@ -18,7 +18,6 @@ const initialPokemonState: Pokemon = {
   maxHP: 10,
   experience: 0,
   experienceToNext: 100,
-  sprite: "❓",
   attributes: {
     strength: 10,
     dexterity: 10,
