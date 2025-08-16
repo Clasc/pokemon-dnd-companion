@@ -1,74 +1,39 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Trainer } from "../types/trainer";
-import { Pokemon } from "../types/pokemon";
-import {
-  saveTrainer,
-  loadTrainer,
-  savePokemonTeam,
-  loadPokemonTeam,
-} from "../utils/storage";
+import { useEffect } from "react";
 import TrainerOverview from "../components/TrainerOverview";
 import PokemonOverview from "../components/PokemonOverview";
+import { useAppStore } from "@/store";
 
 export default function Home() {
-  const [trainer, setTrainer] = useState<Trainer>({
-    name: "",
-    level: 1,
-    class: "",
-    attributes: {
-      strength: 10,
-      dexterity: 10,
-      constitution: 10,
-      intelligence: 10,
-      wisdom: 10,
-      charisma: 10,
-    },
-    currentHP: 0,
-    maxHP: 0,
-  });
+  const updatePokemon = useAppStore((state) => state.updatePokemon);
+  const pokemon = useAppStore((state) => state.pokemonList);
+  const isLoading = useAppStore((state) => state.isLoading);
+  const loadData = useAppStore((state) => state.loadData);
+  const trainer = useAppStore((state) => state.trainer);
 
-  const [pokemon, setPokemon] = useState<Pokemon[]>([]);
-
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Load data on mount
   useEffect(() => {
-    const loadedTrainer = loadTrainer();
-    const loadedPokemon = loadPokemonTeam();
-
-    setTrainer(loadedTrainer);
-    setPokemon(loadedPokemon);
-    setIsLoading(false);
-  }, []);
-
-  const handleTrainerSave = (updatedTrainer: Trainer) => {
-    setTrainer(updatedTrainer);
-    saveTrainer(updatedTrainer);
-  };
+    // Load initial trainer data from store
+    loadData();
+  }, [loadData]);
 
   // Pokemon handlers
   const handlePokemonHPChange = (pokemonId: number, delta: number) => {
-    const updatedTeam = pokemon.map((p) => {
-      if (p.id === pokemonId) {
-        const newHP = Math.max(0, Math.min(p.maxHP, p.currentHP + delta));
-        return { ...p, currentHP: newHP };
-      }
-      return p;
-    });
-    setPokemon(updatedTeam);
+    const updatedPokemon = pokemon.find((p) => p.id === pokemonId);
+    if (!updatedPokemon) return;
+
+    const newHP = Math.max(
+      0,
+      Math.min(updatedPokemon.maxHP, updatedPokemon.currentHP + delta),
+    );
+    updatePokemon({ ...updatedPokemon, currentHP: newHP });
   };
 
   const handlePokemonXPChange = (pokemonId: number, delta: number) => {
-    const updatedTeam = pokemon.map((p) => {
-      if (p.id === pokemonId) {
-        const newXP = Math.max(0, p.experience + delta);
-        return { ...p, experience: newXP };
-      }
-      return p;
-    });
-    setPokemon(updatedTeam);
+    const p = pokemon.find((p) => p.id === pokemonId);
+    if (!p) return;
+    const newXP = Math.max(0, p.experience + delta);
+    updatePokemon({ ...p, experience: newXP });
   };
 
   if (isLoading) {
@@ -104,16 +69,12 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 xl:gap-16 max-w-6xl mx-auto">
             {/* Trainer Overview */}
             <div className="w-full">
-              <TrainerOverview trainer={trainer} onSave={handleTrainerSave} />
+              <TrainerOverview />
             </div>
 
             {/* Pokemon Overview */}
             <div className="w-full">
-              <PokemonOverview
-                pokemon={pokemon}
-                onPokemonHPChange={handlePokemonHPChange}
-                onPokemonXPChange={handlePokemonXPChange}
-              />
+              <PokemonOverview pokemon={pokemon} />
             </div>
           </div>
         </div>

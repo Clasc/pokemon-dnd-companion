@@ -3,20 +3,20 @@
 import { useState, useEffect } from "react";
 import { Pokemon, TYPE_COLORS } from "../types/pokemon";
 import EditButtons from "./EditButtons";
+import { useAppStore } from "../store";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
-  onChange?: (pokemon: Pokemon) => void;
 }
 
-export default function PokemonCard({ pokemon, onChange }: PokemonCardProps) {
+export default function PokemonCard({ pokemon }: PokemonCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedPokemon, setEditedPokemon] = useState<Pokemon>(pokemon);
+  const updatePokemonInStore = useAppStore((state) => state.updatePokemon);
 
   useEffect(() => {
     setEditedPokemon(pokemon);
-    onChange?.(pokemon);
-  }, [pokemon, onChange]);
+  }, [pokemon]);
 
   const onHPChange = (hpDelta: number) => {
     const newHP = Math.max(
@@ -32,6 +32,7 @@ export default function PokemonCard({ pokemon, onChange }: PokemonCardProps) {
   };
 
   const handleSave = () => {
+    updatePokemonInStore(editedPokemon);
     setIsEditing(false);
   };
 

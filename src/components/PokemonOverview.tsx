@@ -1,6 +1,4 @@
 "use client";
-
-import { updatePokemonInTeam } from "@/utils/storage";
 import { Pokemon } from "../types/pokemon";
 import PokemonCard from "./PokemonCard";
 

@@ -3,18 +3,13 @@
 import { useState, useEffect } from "react";
 import { Trainer } from "../types/trainer";
 import EditButtons from "./EditButtons";
+import { useAppStore } from "../store";
 
-interface TrainerOverviewProps {
-  trainer: Trainer;
-  onSave: (trainer: Trainer) => void;
-}
-
-export default function TrainerOverview({
-  trainer: trainer,
-  onSave,
-}: TrainerOverviewProps) {
+export default function TrainerOverview() {
   const [isEditing, setIsEditing] = useState(false);
+  const trainer = useAppStore((state) => state.trainer);
   const [editedTrainer, setEditedTrainer] = useState<Trainer>(trainer);
+  const setTrainerInStore = useAppStore((state) => state.setTrainer);
 
   useEffect(() => {
     setEditedTrainer(trainer);
@@ -51,7 +46,7 @@ export default function TrainerOverview({
   };
 
   const handleSave = () => {
-    onSave(editedTrainer);
+    setTrainerInStore(editedTrainer);
     setIsEditing(false);
   };
 
