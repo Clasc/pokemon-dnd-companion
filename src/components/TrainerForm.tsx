@@ -4,14 +4,12 @@ import { useState, useEffect } from "react";
 import { Trainer, DnDAttributes } from "../types/trainer";
 import { saveTrainer, loadTrainer } from "../utils/storage";
 
-interface CharacterFormProps {
-  onCharacterUpdate?: (character: Trainer) => void;
+interface TrainerFormProps {
+  onTrainerUpdate?: (character: Trainer) => void;
 }
 
-export default function CharacterForm({
-  onCharacterUpdate,
-}: CharacterFormProps) {
-  const [character, setCharacter] = useState<Trainer>({
+export default function TrainerForm({ onTrainerUpdate }: TrainerFormProps) {
+  const [character, setTrainer] = useState<Trainer>({
     name: "",
     level: 1,
     class: "",
@@ -31,55 +29,55 @@ export default function CharacterForm({
 
   // Load character from localStorage on component mount
   useEffect(() => {
-    const loadedCharacter = loadTrainer();
-    setCharacter(loadedCharacter);
-    onCharacterUpdate?.(loadedCharacter);
-  }, [onCharacterUpdate]);
+    const loadedTrainer = loadTrainer();
+    setTrainer(loadedTrainer);
+    onTrainerUpdate?.(loadedTrainer);
+  }, [onTrainerUpdate]);
 
   const handleInputChange = (field: keyof Trainer, value: string | number) => {
-    const updatedCharacter = { ...character, [field]: value };
-    setCharacter(updatedCharacter);
+    const updatedTrainer = { ...character, [field]: value };
+    setTrainer(updatedTrainer);
   };
 
   const handleAttributeChange = (
     attribute: keyof DnDAttributes,
     value: number,
   ) => {
-    const updatedCharacter = {
+    const updatedTrainer = {
       ...character,
       attributes: {
         ...character.attributes,
         [attribute]: value,
       },
     };
-    setCharacter(updatedCharacter);
+    setTrainer(updatedTrainer);
   };
 
   const handleHPChange = (type: "current" | "max", delta: number) => {
     const field = type === "current" ? "currentHP" : "maxHP";
     const newValue = Math.max(0, character[field] + delta);
-    const updatedCharacter = { ...character, [field]: newValue };
+    const updatedTrainer = { ...character, [field]: newValue };
 
     // Ensure current HP doesn't exceed max HP
-    if (type === "max" && updatedCharacter.currentHP > newValue) {
-      updatedCharacter.currentHP = newValue;
+    if (type === "max" && updatedTrainer.currentHP > newValue) {
+      updatedTrainer.currentHP = newValue;
     }
     if (type === "current" && newValue > character.maxHP) {
-      updatedCharacter.currentHP = character.maxHP;
+      updatedTrainer.currentHP = character.maxHP;
     }
 
-    setCharacter(updatedCharacter);
+    setTrainer(updatedTrainer);
   };
 
   const handleSave = () => {
     saveTrainer(character);
     setIsEditing(false);
-    onCharacterUpdate?.(character);
+    onTrainerUpdate?.(character);
   };
 
   const handleCancel = () => {
-    const loadedCharacter = loadTrainer();
-    setCharacter(loadedCharacter);
+    const loadedTrainer = loadTrainer();
+    setTrainer(loadedTrainer);
     setIsEditing(false);
   };
 
@@ -96,14 +94,14 @@ export default function CharacterForm({
     <div className="max-w-md mx-auto p-6 sm:p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-          Character
+          Trainer
         </h2>
         {!isEditing ? (
           <button
             onClick={() => setIsEditing(true)}
             className="w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors font-medium"
           >
-            Edit Character
+            Edit Trainer
           </button>
         ) : (
           <div className="flex gap-2 w-full sm:w-auto">
@@ -127,7 +125,7 @@ export default function CharacterForm({
         {/* Basic Info */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Character Name
+            Trainer Name
           </label>
           {isEditing ? (
             <input

@@ -118,11 +118,11 @@ export default function TrainerOverview({
         </div>
       </div>
 
-      {/* Character Name & Class */}
+      {/* Trainer Name & Class */}
       <div className="mb-8">
         <div className="text-center mb-6 p-4 bg-white/5 rounded-lg border border-white/10">
           <h3 className="text-lg font-semibold text-white mb-2">
-            {editedTrainer.name || "Unnamed Character"}
+            {editedTrainer.name || "Unnamed Trainer"}
           </h3>
           <p className="text-gray-300 text-sm">
             Level {editedTrainer.level} {editedTrainer.class || "Adventurer"}

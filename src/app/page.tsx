@@ -102,7 +102,7 @@ export default function Home() {
         <div className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           {/* Cards Grid - Responsive Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 xl:gap-16 max-w-6xl mx-auto">
-            {/* Character Overview */}
+            {/* Trainer Overview */}
             <div className="w-full">
               <TrainerOverview trainer={trainer} onSave={handleTrainerSave} />
             </div>

@@ -33,7 +33,7 @@ export const loadTrainer = (): Trainer => {
   return DEFAULT_TRAINER;
 };
 
-export const clearCharacter = (): void => {
+export const clearTrainer = (): void => {
   try {
     localStorage.removeItem(STORAGE_KEY);
   } catch (error) {
