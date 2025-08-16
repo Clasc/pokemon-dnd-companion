@@ -108,7 +108,9 @@ export default function CharacterOverview({
       onClick={() => !isEditing && setIsEditing(true)}
     >
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Character Overview</h2>
+        <h2 className="text-xl font-bold text-white p-2 mb-1">
+          Character Overview
+        </h2>
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
           <span className="text-white text-sm font-bold">
             {editedCharacter.level || 1}
