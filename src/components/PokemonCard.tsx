@@ -84,17 +84,20 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
 
           {/* Pokemon Info */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-2 mb-2">
               <h3 className="font-semibold text-white text-base md:text-lg truncate">
                 {pokemon.name}
               </h3>
+              <span className="text-xs text-gray-400 truncate">
+                ({pokemon.type})
+              </span>
               <span className="text-xs md:text-sm text-gray-300 bg-white/10 px-2 py-0.5 rounded-md">
                 Lv.{pokemon.level}
               </span>
             </div>
 
-            {/* Type Badges */}
-            <div className="flex gap-2 mb-3">
+            {/* Type Badges and Status */}
+            <div className="flex items-center gap-2 mb-2">
               <span
                 className="text-xs px-2 py-1 rounded-md text-white font-medium"
                 style={{ backgroundColor: getTypeColor(pokemon.type1) }}
@@ -109,15 +112,21 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                   {pokemon.type2.toUpperCase()}
                 </span>
               )}
+              {pokemon.status && pokemon.status.condition !== "healthy" && (
+                <span className="text-xs px-2 py-1 rounded-md bg-orange-500/80 text-white font-medium">
+                  {pokemon.status.condition.toUpperCase()}
+                  {pokemon.status.duration && ` (${pokemon.status.duration})`}
+                </span>
+              )}
             </div>
 
             {/* Attributes Chips */}
-            <div className="mb-3">
-              <div className="flex flex-wrap justify-start gap-1.5">
+            <div className="mb-2">
+              <div className="flex flex-wrap justify-start gap-1">
                 {attributeNames.map((attr) => (
                   <div
                     key={attr}
-                    className="bg-white/10 rounded-full px-2 py-0.5 text-xs font-medium text-white flex items-center gap-1.5"
+                    className="bg-white/10 rounded-full px-1.5 py-0.5 text-xs font-medium text-white flex items-center gap-1"
                   >
                     <span className="text-gray-300 font-semibold">
                       {getAttributeShortName(attr)}
@@ -131,13 +140,14 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             </div>
 
             {/* HP Bar */}
-            <div className="mb-3">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs md:text-sm text-gray-300 font-medium">
-                  HP
+            <div className="mb-2">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs text-gray-300 font-medium">HP</span>
+                <span className="text-xs text-gray-300 font-medium">
+                  {pokemon.currentHP}/{pokemon.maxHP}
                 </span>
               </div>
-              <div className="w-full bg-gray-600/50 rounded-full h-2 md:h-2.5 overflow-hidden">
+              <div className="w-full bg-gray-600/50 rounded-full h-2 overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-500 relative"
                   style={{
@@ -148,28 +158,24 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
                 </div>
               </div>
-              <div className="text-xs md:text-sm text-gray-300 mt-1.5 text-right font-medium">
-                {pokemon.currentHP}/{pokemon.maxHP}
-              </div>
             </div>
 
             {/* XP Bar */}
-            <div className="mt-2">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs md:text-sm text-gray-300 font-medium">
-                  XP
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs text-gray-300 font-medium">XP</span>
+                <span className="text-xs text-gray-300 font-medium">
+                  {pokemon.experience}/
+                  {pokemon.experience + pokemon.experienceToNext}
                 </span>
               </div>
-              <div className="w-full bg-gray-600/50 rounded-full h-2.5 md:h-3 overflow-hidden">
+              <div className="w-full bg-gray-600/50 rounded-full h-2 overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-500 xp-bar"
                   style={{
                     width: `${Math.min(100, xpPercentage)}%`,
                   }}
                 />
-              </div>
-              <div className="text-xs md:text-sm text-gray-300 mt-1.5 text-right font-medium">
-                {pokemon.experience}/{pokemon.experienceToNext}
               </div>
             </div>
           </div>
