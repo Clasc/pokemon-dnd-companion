@@ -41,7 +41,7 @@ Headers: A slightly more stylized, yet still readable, font like Oswald or Robot
 Layout & Structure
 The layout is designed for easy, single-handed use on mobile devices and a clear overview on tablets.
 
-Tabs/Sections: The main view is split into two clear, switchable sections: Character Overview and Pokémon Overview. On a tablet, these could be presented side-by-side.
+Tabs/Sections: The main view is split into two clear, switchable sections: Trainer Overview and Pokémon Overview. On a tablet, these could be presented side-by-side.
 
 Cards: All character and Pokémon information should be contained within distinct, rounded "cards" with a slight drop shadow or blur effect. This visually separates information and makes it easy to scan.
 
@@ -123,7 +123,7 @@ The app follows a mobile-first approach with carefully chosen breakpoints to opt
 - iPad Pro 12.9" (1024×1366) in landscape
 
 **Major Layout Shift:**
-- Two-column grid: Character Overview | Pokemon Overview
+- Two-column grid: Trainer Overview | Pokemon Overview
 - Attribute grid: Back to 1 column (optimized for sidebar)
 - Edit controls span full width above columns
 - Generous spacing (32px margins)
@@ -163,7 +163,7 @@ The app follows a mobile-first approach with carefully chosen breakpoints to opt
 
 ### Responsive Component Behavior
 
-#### Character Overview
+#### Trainer Overview
 - **Mobile**: Vertical attribute list for easy scanning
 - **Tablet**: 3-column attribute grid for space efficiency
 - **Desktop**: Returns to single column in sidebar layout

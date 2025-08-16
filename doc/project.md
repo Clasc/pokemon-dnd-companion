@@ -24,11 +24,11 @@ The primary user is a **player** in a campaign. The Game Master (DM) is not the 
 
 ### 4. Features (MVP)
 
-#### 4.1. Main View: Character & Pokémon
+#### 4.1. Main View: Trainer & Pokémon
 
 The app's home screen is divided into two clear, switchable sections:
 
-* **Character Overview:**
+* **Trainer Overview:**
     * Input field for the **character's name**.
     * Input fields for the player's **Level** and **Class**.
     * Input fields for the character's **D&D attributes** (Strength, Dexterity, Constitution, Intelligence, Wisdom, and Charisma).
