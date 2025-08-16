@@ -181,8 +181,7 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
               />
             </div>
             <div className="text-sm md:text-base text-gray-300 mt-2 text-right font-medium">
-              {viewedPokemon.experience}/
-              {viewedPokemon.experience + viewedPokemon.experienceToNext}
+              {viewedPokemon.experience}/{viewedPokemon.experienceToNext}
             </div>
 
             {isEditing && (
