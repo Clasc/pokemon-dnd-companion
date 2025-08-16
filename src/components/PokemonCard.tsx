@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Pokemon, TYPE_COLORS } from "../types/pokemon";
+import EditButtons from "./EditButtons";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -39,12 +40,16 @@ export default function PokemonCard({
     const xpDelta = editedPokemon.experience - pokemon.experience;
     if (hpDelta !== 0) onHPChange?.(pokemon.id, hpDelta);
     if (xpDelta !== 0) onXPChange?.(pokemon.id, xpDelta);
+    handleLocalHPChange(hpDelta);
+    handleLocalXPChange(xpDelta);
     setIsEditing(false);
   };
 
   const handleCancel = () => {
+    setIsEditing(false);
     setEditedPokemon(pokemon);
   };
+
   const hpPercentage =
     editedPokemon.maxHP > 0
       ? (editedPokemon.currentHP / editedPokemon.maxHP) * 100
@@ -68,8 +73,10 @@ export default function PokemonCard({
 
   return (
     <div
-      className="glass rounded-2xl cursor-pointer p-5 md:p-7 mb-4 transition-all duration-300 hover:transform hover:-translate-y-1"
-      onClick={() => setIsEditing(true)}
+      className={`glass rounded-2xl p-6 ${
+        !isEditing ? "cursor-pointer hover:bg-white/10" : ""
+      }`}
+      onClick={() => !isEditing && setIsEditing(true)}
     >
       <div className="flex items-center gap-4 md:gap-6">
         {/* Pokemon Sprite/Icon */}
@@ -184,6 +191,13 @@ export default function PokemonCard({
               {pokemon.experience}/
               {pokemon.experience + pokemon.experienceToNext}
             </div>
+
+            {isEditing && (
+              <EditButtons
+                handleCancel={handleCancel}
+                handleSave={handleSave}
+              ></EditButtons>
+            )}
           </div>
         </div>
       </div>

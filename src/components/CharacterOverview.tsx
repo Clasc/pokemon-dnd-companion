@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Character } from "../types/character";
+import EditButtons from "./EditButtons";
 
 interface CharacterOverviewProps {
   character: Character;
@@ -243,20 +244,10 @@ export default function CharacterOverview({
         </div>
       </div>
       {isEditing && (
-        <div className="flex gap-3 mt-6">
-          <button
-            onClick={handleSave}
-            className="flex-1 btn-primary btn-responsive rounded-2xl font-semibold"
-          >
-            ✅ Save
-          </button>
-          <button
-            onClick={handleCancel}
-            className="flex-1 btn-secondary btn-responsive rounded-2xl font-semibold"
-          >
-            ❌ Cancel
-          </button>
-        </div>
+        <EditButtons
+          handleCancel={handleCancel}
+          handleSave={handleSave}
+        ></EditButtons>
       )}
     </div>
   );
