@@ -67,7 +67,10 @@ export default function PokemonCard({
   };
 
   return (
-    <div className="glass rounded-2xl p-5 md:p-7 mb-4 transition-all duration-300 hover:transform hover:-translate-y-1">
+    <div
+      className="glass rounded-2xl cursor-pointer p-5 md:p-7 mb-4 transition-all duration-300 hover:transform hover:-translate-y-1"
+      onClick={() => setIsEditing(true)}
+    >
       <div className="flex items-center gap-4 md:gap-6">
         {/* Pokemon Sprite/Icon */}
         <div className="w-14 h-14 md:w-18 md:h-18 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-2xl md:text-3xl border border-white/10">
