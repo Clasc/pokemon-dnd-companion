@@ -78,7 +78,7 @@ export const TYPE_COLORS: Record<PokemonType, Color> = {
   fairy: "#EE99AC",
 };
 
-type Attributes = {
+export type Attributes = {
   strength: 55;
   dexterity: 90;
   constitution: 40;

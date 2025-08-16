@@ -1,5 +1,6 @@
 "use client";
 
+import { getPokemonIcon } from "@/utils/IconMapper";
 import { Pokemon, TYPE_COLORS } from "../../types/pokemon";
 
 interface AddPokemonFormProps {
@@ -124,7 +125,7 @@ export default function AddPokemonForm({
             label="Sprite (Emoji)"
             type="text"
             name="sprite"
-            value={pokemon.sprite || ""}
+            value={""}
             onChange={handleBasicChange}
           />
         </div>
