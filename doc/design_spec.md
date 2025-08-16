@@ -43,7 +43,7 @@ The layout is designed for easy, single-handed use on mobile devices and a clear
 
 Tabs/Sections: The main view is split into two clear, switchable sections: Trainer Overview and Pokémon Overview. On a tablet, these could be presented side-by-side.
 
-Cards: All character and Pokémon information should be contained within distinct, rounded "cards" with a slight drop shadow or blur effect. This visually separates information and makes it easy to scan.
+Cards: All Trainer and Pokémon information should be contained within distinct, rounded "cards" with a slight drop shadow or blur effect. This visually separates information and makes it easy to scan.
 
 Read-Only Mode: To prevent accidental changes, all fields are read-only by default. They should have a subtle, non-interactive visual style (e.g., a simple text display).
 
