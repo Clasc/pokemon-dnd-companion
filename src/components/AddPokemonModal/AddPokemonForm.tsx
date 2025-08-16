@@ -3,12 +3,8 @@
 import { Pokemon, TYPE_COLORS } from "../../types/pokemon";
 
 interface AddPokemonFormProps {
-  pokemon: Omit<Pokemon, "id">;
-  setPokemon: (
-    pokemon:
-      | Omit<Pokemon, "id">
-      | ((prev: Omit<Pokemon, "id">) => Omit<Pokemon, "id">),
-  ) => void;
+  pokemon: Pokemon;
+  setPokemon: (pokemon: Pokemon | ((prev: Pokemon) => Pokemon)) => void;
 }
 
 const InputField = ({

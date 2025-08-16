@@ -1,5 +1,4 @@
 export interface Pokemon {
-  id: number;
   name: string;
   type1: PokemonType;
   type2?: PokemonType;
@@ -31,119 +30,131 @@ export interface Pokemon {
   };
 }
 
-export enum PokemonType {
-  NORMAL = "normal",
-  FIRE = "fire",
-  WATER = "water",
-  ELECTRIC = "electric",
-  GRASS = "grass",
-  ICE = "ice",
-  FIGHTING = "fighting",
-  POISON = "poison",
-  GROUND = "ground",
-  FLYING = "flying",
-  PSYCHIC = "psychic",
-  BUG = "bug",
-  ROCK = "rock",
-  GHOST = "ghost",
-  DRAGON = "dragon",
-  DARK = "dark",
-  STEEL = "steel",
-  FAIRY = "fairy",
-}
+export type PokemonType =
+  | "normal"
+  | "fire"
+  | "water"
+  | "electric"
+  | "grass"
+  | "ice"
+  | "fighting"
+  | "poison"
+  | "ground"
+  | "flying"
+  | "psychic"
+  | "bug"
+  | "rock"
+  | "ghost"
+  | "dragon"
+  | "dark"
+  | "steel"
+  | "fairy";
+
+type uuid = string;
 
 export interface PokemonTeam {
-  pokemon: Pokemon[];
+  [key: uuid]: Pokemon;
 }
 
-export const TYPE_COLORS: Record<PokemonType, string> = {
-  [PokemonType.NORMAL]: "#A8A878",
-  [PokemonType.FIRE]: "#F08030",
-  [PokemonType.WATER]: "#6890F0",
-  [PokemonType.ELECTRIC]: "#F8D030",
-  [PokemonType.GRASS]: "#78C850",
-  [PokemonType.ICE]: "#98D8D8",
-  [PokemonType.FIGHTING]: "#C03028",
-  [PokemonType.POISON]: "#A040A0",
-  [PokemonType.GROUND]: "#E0C068",
-  [PokemonType.FLYING]: "#A890F0",
-  [PokemonType.PSYCHIC]: "#F85888",
-  [PokemonType.BUG]: "#A8B820",
-  [PokemonType.ROCK]: "#B8A038",
-  [PokemonType.GHOST]: "#705898",
-  [PokemonType.DRAGON]: "#7038F8",
-  [PokemonType.DARK]: "#705848",
-  [PokemonType.STEEL]: "#B8B8D0",
-  [PokemonType.FAIRY]: "#EE99AC",
+type Color = `#${string}`;
+
+export const TYPE_COLORS: Record<PokemonType, Color> = {
+  normal: "#A8A878",
+  fire: "#F08030",
+  water: "#6890F0",
+  electric: "#F8D030",
+  grass: "#78C850",
+  ice: "#98D8D8",
+  fighting: "#C03028",
+  poison: "#A040A0",
+  ground: "#E0C068",
+  flying: "#A890F0",
+  psychic: "#F85888",
+  bug: "#A8B820",
+  rock: "#B8A038",
+  ghost: "#705898",
+  dragon: "#7038F8",
+  dark: "#705848",
+  steel: "#B8B8D0",
+  fairy: "#EE99AC",
 };
 
-export const DEFAULT_POKEMON: Omit<Pokemon, "id"> = {
-  name: "",
-  type1: PokemonType.NORMAL,
-  level: 1,
-  currentHP: 0,
-  maxHP: 0,
-  experience: 0,
-  experienceToNext: 100,
+type Attributes = {
+  strength: 55;
+  dexterity: 90;
+  constitution: 40;
+  intelligence: 50;
+  wisdom: 50;
+  charisma: 60;
 };
+
+const makeAttributes = (attrs: Partial<Attributes> = {}) => ({
+  strength: 10,
+  dexterity: 10,
+  constitution: 10,
+  intelligence: 10,
+  wisdom: 10,
+  charisma: 10,
+  ...attrs,
+});
 
 // Sample Pokemon data for the mockup
-export const SAMPLE_POKEMON: Pokemon[] = [
-  {
-    id: 25,
+export const SAMPLE_TEAM: PokemonTeam = {
+  "25": {
     name: "Pikachu",
-    type1: PokemonType.ELECTRIC,
+    type1: "electric",
     level: 25,
     currentHP: 78,
     maxHP: 95,
     experience: 0,
     experienceToNext: 250,
+    attributes: makeAttributes(),
     sprite: "⚡",
   },
-  {
-    id: 6,
+  "6": {
     name: "Charizard",
-    type1: PokemonType.FIRE,
-    type2: PokemonType.FLYING,
+    type1: "fire",
+    type2: "flying",
     level: 36,
     currentHP: 125,
     maxHP: 140,
     experience: 1500,
     experienceToNext: 1800,
     sprite: "🔥",
+    attributes: makeAttributes(),
   },
-  {
-    id: 150,
+  "150": {
     name: "Mewtwo",
-    type1: PokemonType.PSYCHIC,
+    type1: "psychic",
     level: 42,
     currentHP: 98,
     maxHP: 155,
     experience: 2100,
     experienceToNext: 2500,
     sprite: "🧠",
+    attributes: makeAttributes(),
   },
-  {
-    id: 133,
+  "133": {
     name: "Eevee",
-    type1: PokemonType.NORMAL,
+    type1: "normal",
     level: 18,
     currentHP: 52,
     maxHP: 65,
     experience: 320,
     experienceToNext: 400,
     sprite: "🦊",
+    attributes: makeAttributes(),
   },
-  {
-    id: 3,
+  "3": {
     name: "Bulbasaur",
-    type1: PokemonType.GRASS,
-    type2: PokemonType.POISON,
+    type1: "grass",
+    type2: "poison",
     level: 22,
     currentHP: 68,
     maxHP: 80,
     experience: 580,
     experienceToNext: 700,
     sprite: "🌱",
+    attributes: makeAttributes(),
   },
-];
+};

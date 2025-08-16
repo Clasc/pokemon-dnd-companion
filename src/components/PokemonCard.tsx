@@ -7,9 +7,10 @@ import { useAppStore } from "../store";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
+  uuid: string;
 }
 
-export default function PokemonCard({ pokemon }: PokemonCardProps) {
+export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedPokemon, setEditedPokemon] = useState<Pokemon>(pokemon);
 
@@ -34,7 +35,7 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
   };
 
   const handleSave = () => {
-    updatePokemon(editedPokemon);
+    updatePokemon(editedPokemon, uuid);
     setIsEditing(false);
   };
 

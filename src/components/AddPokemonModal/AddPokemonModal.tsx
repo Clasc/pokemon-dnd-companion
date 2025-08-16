@@ -10,11 +10,10 @@ interface AddPokemonModalProps {
   onSave: (pokemon: Pokemon) => void;
 }
 
-const initialPokemonState: Omit<Pokemon, "id"> = {
+const initialPokemonState: Pokemon = {
   name: "",
   level: 1,
-  type1: "Normal",
-  type2: "",
+  type1: "normal",
   currentHP: 10,
   maxHP: 10,
   experience: 0,
@@ -36,8 +35,7 @@ export default function AddPokemonModal({
   onClose,
   onSave,
 }: AddPokemonModalProps) {
-  const [newPokemon, setNewPokemon] =
-    useState<Omit<Pokemon, "id">>(initialPokemonState);
+  const [newPokemon, setNewPokemon] = useState(initialPokemonState);
 
   useEffect(() => {
     // Reset form when modal opens
@@ -53,12 +51,7 @@ export default function AddPokemonModal({
       return;
     }
 
-    const pokemonToSave: Pokemon = {
-      ...newPokemon,
-      id: crypto.randomUUID(), // Generate a unique ID
-    };
-
-    onSave(pokemonToSave);
+    onSave(newPokemon);
     onClose();
   };
 

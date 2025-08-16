@@ -3,20 +3,16 @@
 import TrainerOverview from "../components/TrainerOverview";
 import PokemonOverview from "../components/PokemonOverview";
 import { useAppStore } from "@/store";
+import TrainerForm from "@/components/TrainerForm";
 
 export default function Home() {
-  const pokemon = useAppStore.use.pokemonList();
+  const pokemon = useAppStore.use.pokemonTeam();
 
   const trainer = useAppStore.use.trainer();
+  const setTrainer = useAppStore.use.setTrainer();
+
   if (!trainer) {
-    return (
-      <div className="loading-container">
-        <div className="glass rounded-2xl p-8">
-          <div className="animate-spin w-8 h-8 border-2 border-white/30 border-t-white rounded-full mx-auto mb-4"></div>
-          <p className="text-white text-center">Loading...</p>
-        </div>
-      </div>
-    );
+    return <TrainerForm onTrainerUpdate={setTrainer}></TrainerForm>;
   }
   return (
     <div className="min-h-screen">
@@ -61,7 +57,7 @@ export default function Home() {
                 Trainer Lv.{trainer.level}
               </span>
               <span className="text-xs md:text-sm text-gray-500">
-                Team: {pokemon.length}/6
+                Team: {Object.keys(pokemon).length}/6
               </span>
             </div>
           </div>

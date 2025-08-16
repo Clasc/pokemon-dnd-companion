@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Trainer, DnDAttributes } from "../types/trainer";
-import { saveTrainer, loadTrainer } from "../utils/storage";
 
 interface TrainerFormProps {
   onTrainerUpdate?: (character: Trainer) => void;
@@ -26,13 +25,6 @@ export default function TrainerForm({ onTrainerUpdate }: TrainerFormProps) {
   });
 
   const [isEditing, setIsEditing] = useState(false);
-
-  // Load character from localStorage on component mount
-  useEffect(() => {
-    const loadedTrainer = loadTrainer();
-    setTrainer(loadedTrainer);
-    onTrainerUpdate?.(loadedTrainer);
-  }, [onTrainerUpdate]);
 
   const handleInputChange = (field: keyof Trainer, value: string | number) => {
     const updatedTrainer = { ...character, [field]: value };
@@ -70,14 +62,11 @@ export default function TrainerForm({ onTrainerUpdate }: TrainerFormProps) {
   };
 
   const handleSave = () => {
-    saveTrainer(character);
     setIsEditing(false);
     onTrainerUpdate?.(character);
   };
 
   const handleCancel = () => {
-    const loadedTrainer = loadTrainer();
-    setTrainer(loadedTrainer);
     setIsEditing(false);
   };
 
