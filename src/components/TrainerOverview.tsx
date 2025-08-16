@@ -9,11 +9,15 @@ export default function TrainerOverview() {
   const [isEditing, setIsEditing] = useState(false);
   const trainer = useAppStore.use.trainer();
   const setTrainer = useAppStore.use.setTrainer();
-  const [editedTrainer, setEditedTrainer] = useState<Trainer>(trainer);
+  const [editedTrainer, setEditedTrainer] = useState<Trainer>(trainer!);
 
   useEffect(() => {
-    setEditedTrainer(trainer);
+    setEditedTrainer(trainer!);
   }, [trainer]);
+
+  if (!trainer) {
+    return null;
+  }
 
   const handleAttributeChange = (
     attribute: keyof Trainer["attributes"],

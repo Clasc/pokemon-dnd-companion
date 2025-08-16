@@ -1,22 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
 import TrainerOverview from "../components/TrainerOverview";
 import PokemonOverview from "../components/PokemonOverview";
 import { useAppStore } from "@/store";
 
 export default function Home() {
   const pokemon = useAppStore.use.pokemonList();
-  const isLoading = useAppStore.use.isLoading();
-  const initialize = useAppStore.use.initialize();
+
   const trainer = useAppStore.use.trainer();
-
-  useEffect(() => {
-    // Load initial trainer data from store
-    initialize();
-  }, [initialize]);
-
-  if (isLoading) {
+  if (!trainer) {
     return (
       <div className="loading-container">
         <div className="glass rounded-2xl p-8">
@@ -26,7 +18,6 @@ export default function Home() {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen">
       {/* Background gradient overlay */}
