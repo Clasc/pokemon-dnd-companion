@@ -1,18 +1,20 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Character, DnDAttributes } from '../types/character';
-import { saveCharacter, loadCharacter } from '../utils/storage';
+import { useState, useEffect } from "react";
+import { Trainer, DnDAttributes } from "../types/trainer";
+import { saveTrainer, loadTrainer } from "../utils/storage";
 
 interface CharacterFormProps {
-  onCharacterUpdate?: (character: Character) => void;
+  onCharacterUpdate?: (character: Trainer) => void;
 }
 
-export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps) {
-  const [character, setCharacter] = useState<Character>({
-    name: '',
+export default function CharacterForm({
+  onCharacterUpdate,
+}: CharacterFormProps) {
+  const [character, setCharacter] = useState<Trainer>({
+    name: "",
     level: 1,
-    class: '',
+    class: "",
     attributes: {
       strength: 10,
       dexterity: 10,
@@ -29,17 +31,20 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
 
   // Load character from localStorage on component mount
   useEffect(() => {
-    const loadedCharacter = loadCharacter();
+    const loadedCharacter = loadTrainer();
     setCharacter(loadedCharacter);
     onCharacterUpdate?.(loadedCharacter);
   }, [onCharacterUpdate]);
 
-  const handleInputChange = (field: keyof Character, value: string | number) => {
+  const handleInputChange = (field: keyof Trainer, value: string | number) => {
     const updatedCharacter = { ...character, [field]: value };
     setCharacter(updatedCharacter);
   };
 
-  const handleAttributeChange = (attribute: keyof DnDAttributes, value: number) => {
+  const handleAttributeChange = (
+    attribute: keyof DnDAttributes,
+    value: number,
+  ) => {
     const updatedCharacter = {
       ...character,
       attributes: {
@@ -50,16 +55,16 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
     setCharacter(updatedCharacter);
   };
 
-  const handleHPChange = (type: 'current' | 'max', delta: number) => {
-    const field = type === 'current' ? 'currentHP' : 'maxHP';
+  const handleHPChange = (type: "current" | "max", delta: number) => {
+    const field = type === "current" ? "currentHP" : "maxHP";
     const newValue = Math.max(0, character[field] + delta);
     const updatedCharacter = { ...character, [field]: newValue };
 
     // Ensure current HP doesn't exceed max HP
-    if (type === 'max' && updatedCharacter.currentHP > newValue) {
+    if (type === "max" && updatedCharacter.currentHP > newValue) {
       updatedCharacter.currentHP = newValue;
     }
-    if (type === 'current' && newValue > character.maxHP) {
+    if (type === "current" && newValue > character.maxHP) {
       updatedCharacter.currentHP = character.maxHP;
     }
 
@@ -67,30 +72,32 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
   };
 
   const handleSave = () => {
-    saveCharacter(character);
+    saveTrainer(character);
     setIsEditing(false);
     onCharacterUpdate?.(character);
   };
 
   const handleCancel = () => {
-    const loadedCharacter = loadCharacter();
+    const loadedCharacter = loadTrainer();
     setCharacter(loadedCharacter);
     setIsEditing(false);
   };
 
   const attributeNames: (keyof DnDAttributes)[] = [
-    'strength',
-    'dexterity',
-    'constitution',
-    'intelligence',
-    'wisdom',
-    'charisma',
+    "strength",
+    "dexterity",
+    "constitution",
+    "intelligence",
+    "wisdom",
+    "charisma",
   ];
 
   return (
     <div className="max-w-md mx-auto p-6 sm:p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Character</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+          Character
+        </h2>
         {!isEditing ? (
           <button
             onClick={() => setIsEditing(true)}
@@ -126,13 +133,13 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
             <input
               type="text"
               value={character.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
+              onChange={(e) => handleInputChange("name", e.target.value)}
               className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter character name"
             />
           ) : (
             <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-md text-gray-900 dark:text-white font-medium">
-              {character.name || 'No name set'}
+              {character.name || "No name set"}
             </div>
           )}
         </div>
@@ -147,7 +154,9 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
                 type="number"
                 min="1"
                 value={character.level}
-                onChange={(e) => handleInputChange('level', parseInt(e.target.value) || 1)}
+                onChange={(e) =>
+                  handleInputChange("level", parseInt(e.target.value) || 1)
+                }
                 className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             ) : (
@@ -165,13 +174,13 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
               <input
                 type="text"
                 value={character.class}
-                onChange={(e) => handleInputChange('class', e.target.value)}
+                onChange={(e) => handleInputChange("class", e.target.value)}
                 className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter class"
               />
             ) : (
               <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-md text-gray-900 dark:text-white font-medium">
-                {character.class || 'No class set'}
+                {character.class || "No class set"}
               </div>
             )}
           </div>
@@ -179,7 +188,9 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
 
         {/* Attributes */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">D&D Attributes</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+            D&D Attributes
+          </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {attributeNames.map((attr) => (
               <div key={attr}>
@@ -192,7 +203,9 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
                     min="1"
                     max="20"
                     value={character.attributes[attr]}
-                    onChange={(e) => handleAttributeChange(attr, parseInt(e.target.value) || 1)}
+                    onChange={(e) =>
+                      handleAttributeChange(attr, parseInt(e.target.value) || 1)
+                    }
                     className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-center focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 ) : (
@@ -207,7 +220,9 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
 
         {/* Hit Points */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Hit Points</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+            Hit Points
+          </h3>
 
           <div className="space-y-5">
             <div>
@@ -216,7 +231,7 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
               </label>
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => handleHPChange('max', -1)}
+                  onClick={() => handleHPChange("max", -1)}
                   disabled={!isEditing}
                   className="w-12 h-12 bg-red-500 text-white rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-red-600 transition-colors font-bold"
                 >
@@ -226,7 +241,7 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
                   {character.maxHP}
                 </div>
                 <button
-                  onClick={() => handleHPChange('max', 1)}
+                  onClick={() => handleHPChange("max", 1)}
                   disabled={!isEditing}
                   className="w-12 h-12 bg-green-500 text-white rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-green-600 transition-colors font-bold"
                 >
@@ -241,7 +256,7 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
               </label>
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => handleHPChange('current', -1)}
+                  onClick={() => handleHPChange("current", -1)}
                   disabled={!isEditing}
                   className="w-12 h-12 bg-red-500 text-white rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-red-600 transition-colors font-bold"
                 >
@@ -251,7 +266,7 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
                   {character.currentHP}
                 </div>
                 <button
-                  onClick={() => handleHPChange('current', 1)}
+                  onClick={() => handleHPChange("current", 1)}
                   disabled={!isEditing}
                   className="w-12 h-12 bg-green-500 text-white rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-green-600 transition-colors font-bold"
                 >
@@ -266,10 +281,10 @@ export default function CharacterForm({ onCharacterUpdate }: CharacterFormProps)
                     <div
                       className={`h-5 rounded-full transition-all duration-300 ${
                         character.currentHP / character.maxHP > 0.6
-                          ? 'bg-green-500'
+                          ? "bg-green-500"
                           : character.currentHP / character.maxHP > 0.3
-                          ? 'bg-yellow-500'
-                          : 'bg-red-500'
+                            ? "bg-yellow-500"
+                            : "bg-red-500"
                       }`}
                       style={{
                         width: `${Math.min(100, (character.currentHP / character.maxHP) * 100)}%`,

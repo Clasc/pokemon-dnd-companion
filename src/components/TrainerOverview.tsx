@@ -1,65 +1,65 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Character } from "../types/character";
+import { Trainer } from "../types/trainer";
 import EditButtons from "./EditButtons";
 
-interface CharacterOverviewProps {
-  character: Character;
-  onSave: (character: Character) => void;
+interface TrainerOverviewProps {
+  trainer: Trainer;
+  onSave: (trainer: Trainer) => void;
 }
 
-export default function CharacterOverview({
-  character,
+export default function TrainerOverview({
+  trainer: trainer,
   onSave,
-}: CharacterOverviewProps) {
+}: TrainerOverviewProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedCharacter, setEditedCharacter] = useState<Character>(character);
+  const [editedTrainer, setEditedTrainer] = useState<Trainer>(trainer);
 
   useEffect(() => {
-    setEditedCharacter(character);
-  }, [character]);
+    setEditedTrainer(trainer);
+  }, [trainer]);
 
   const handleAttributeChange = (
-    attribute: keyof Character["attributes"],
+    attribute: keyof Trainer["attributes"],
     value: number,
   ) => {
-    const updatedCharacter = {
-      ...editedCharacter,
+    const updatedTrainer = {
+      ...editedTrainer,
       attributes: {
-        ...editedCharacter.attributes,
+        ...editedTrainer.attributes,
         [attribute]: Math.max(1, Math.min(20, value)), // Clamp between 1-20
       },
     };
-    setEditedCharacter(updatedCharacter);
+    setEditedTrainer(updatedTrainer);
   };
 
   const handleHPChange = (type: "current" | "max", delta: number) => {
     const field = type === "current" ? "currentHP" : "maxHP";
-    const newValue = Math.max(0, editedCharacter[field] + delta);
-    const updatedCharacter = { ...editedCharacter, [field]: newValue };
+    const newValue = Math.max(0, editedTrainer[field] + delta);
+    const updatedTrainer = { ...editedTrainer, [field]: newValue };
 
     // Ensure current HP doesn't exceed max HP
-    if (type === "max" && updatedCharacter.currentHP > newValue) {
-      updatedCharacter.currentHP = newValue;
+    if (type === "max" && updatedTrainer.currentHP > newValue) {
+      updatedTrainer.currentHP = newValue;
     }
-    if (type === "current" && newValue > editedCharacter.maxHP) {
-      updatedCharacter.currentHP = editedCharacter.maxHP;
+    if (type === "current" && newValue > editedTrainer.maxHP) {
+      updatedTrainer.currentHP = editedTrainer.maxHP;
     }
 
-    setEditedCharacter(updatedCharacter);
+    setEditedTrainer(updatedTrainer);
   };
 
   const handleSave = () => {
-    onSave(editedCharacter);
+    onSave(editedTrainer);
     setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setEditedCharacter(character);
+    setEditedTrainer(trainer);
     setIsEditing(false);
   };
-  const attributeNames: (keyof Character["attributes"])[] = [
+  const attributeNames: (keyof Trainer["attributes"])[] = [
     "strength",
     "dexterity",
     "constitution",
@@ -88,8 +88,8 @@ export default function CharacterOverview({
   };
 
   const getHPPercentage = () => {
-    return editedCharacter.maxHP > 0
-      ? (editedCharacter.currentHP / editedCharacter.maxHP) * 100
+    return editedTrainer.maxHP > 0
+      ? (editedTrainer.currentHP / editedTrainer.maxHP) * 100
       : 0;
   };
 
@@ -109,11 +109,11 @@ export default function CharacterOverview({
     >
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-white p-2 mb-1">
-          Character Overview
+          Trainer Overview
         </h2>
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
           <span className="text-white text-sm font-bold">
-            {editedCharacter.level || 1}
+            {editedTrainer.level || 1}
           </span>
         </div>
       </div>
@@ -122,11 +122,10 @@ export default function CharacterOverview({
       <div className="mb-8">
         <div className="text-center mb-6 p-4 bg-white/5 rounded-lg border border-white/10">
           <h3 className="text-lg font-semibold text-white mb-2">
-            {editedCharacter.name || "Unnamed Character"}
+            {editedTrainer.name || "Unnamed Character"}
           </h3>
           <p className="text-gray-300 text-sm">
-            Level {editedCharacter.level}{" "}
-            {editedCharacter.class || "Adventurer"}
+            Level {editedTrainer.level} {editedTrainer.class || "Adventurer"}
           </p>
         </div>
       </div>
@@ -150,7 +149,7 @@ export default function CharacterOverview({
                       onClick={() =>
                         handleAttributeChange(
                           attr,
-                          editedCharacter.attributes[attr] - 1,
+                          editedTrainer.attributes[attr] - 1,
                         )
                       }
                       className="w-7 h-7 rounded-md bg-red-500/80 hover:bg-red-500 text-white text-xs font-bold transition-colors"
@@ -161,7 +160,7 @@ export default function CharacterOverview({
                 )}
                 <div className="w-14 h-10 md:w-16 md:h-12 bg-white/10 rounded-lg flex items-center justify-center border border-white/20">
                   <span className="text-white font-semibold text-sm md:text-base">
-                    {editedCharacter.attributes[attr]}
+                    {editedTrainer.attributes[attr]}
                   </span>
                 </div>
                 {isEditing && (
@@ -170,7 +169,7 @@ export default function CharacterOverview({
                       onClick={() =>
                         handleAttributeChange(
                           attr,
-                          editedCharacter.attributes[attr] + 1,
+                          editedTrainer.attributes[attr] + 1,
                         )
                       }
                       className="w-7 h-7 rounded-md bg-green-500/80 hover:bg-green-500 text-white text-xs font-bold transition-colors"
@@ -224,7 +223,7 @@ export default function CharacterOverview({
 
         <div className="flex justify-between items-center">
           <div className="text-sm md:text-base text-gray-300 font-medium">
-            {editedCharacter.currentHP}/{editedCharacter.maxHP}
+            {editedTrainer.currentHP}/{editedTrainer.maxHP}
           </div>
           {isEditing && (
             <div className="flex items-center gap-2">

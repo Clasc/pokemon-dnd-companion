@@ -7,7 +7,7 @@ export interface DnDAttributes {
   charisma: number;
 }
 
-export interface Character {
+export interface Trainer {
   name: string;
   level: number;
   class: string;
@@ -25,7 +25,7 @@ export const DEFAULT_ATTRIBUTES: DnDAttributes = {
   charisma: 10,
 };
 
-export const DEFAULT_CHARACTER: Character = {
+export const DEFAULT_TRAINER: Trainer = {
   name: "",
   level: 1,
   class: "",

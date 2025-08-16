@@ -1,19 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Character } from "../types/character";
+import { Trainer } from "../types/trainer";
 import { Pokemon } from "../types/pokemon";
 import {
-  saveCharacter,
-  loadCharacter,
+  saveTrainer,
+  loadTrainer,
   savePokemonTeam,
   loadPokemonTeam,
 } from "../utils/storage";
-import CharacterOverview from "../components/CharacterOverview";
+import TrainerOverview from "../components/TrainerOverview";
 import PokemonOverview from "../components/PokemonOverview";
 
 export default function Home() {
-  const [character, setCharacter] = useState<Character>({
+  const [trainer, setTrainer] = useState<Trainer>({
     name: "",
     level: 1,
     class: "",
@@ -35,17 +35,17 @@ export default function Home() {
 
   // Load data on mount
   useEffect(() => {
-    const loadedCharacter = loadCharacter();
+    const loadedTrainer = loadTrainer();
     const loadedPokemon = loadPokemonTeam();
 
-    setCharacter(loadedCharacter);
+    setTrainer(loadedTrainer);
     setPokemon(loadedPokemon);
     setIsLoading(false);
   }, []);
 
-  const handleCharacterSave = (updatedCharacter: Character) => {
-    setCharacter(updatedCharacter);
-    saveCharacter(updatedCharacter);
+  const handleTrainerSave = (updatedTrainer: Trainer) => {
+    setTrainer(updatedTrainer);
+    saveTrainer(updatedTrainer);
   };
 
   // Pokemon handlers
@@ -104,10 +104,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 xl:gap-16 max-w-6xl mx-auto">
             {/* Character Overview */}
             <div className="w-full">
-              <CharacterOverview
-                character={character}
-                onSave={handleCharacterSave}
-              />
+              <TrainerOverview trainer={trainer} onSave={handleTrainerSave} />
             </div>
 
             {/* Pokemon Overview */}
@@ -129,7 +126,7 @@ export default function Home() {
             </p>
             <div className="flex justify-center gap-4 md:gap-6 mt-2">
               <span className="text-xs md:text-sm text-gray-500">
-                Character Lv.{character.level}
+                Trainer Lv.{trainer.level}
               </span>
               <span className="text-xs md:text-sm text-gray-500">
                 Team: {pokemon.length}/6

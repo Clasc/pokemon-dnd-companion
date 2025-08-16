@@ -17,7 +17,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Pokémon D&D Companion",
-  description: "A companion app for managing your Pokémon D&D character and team",
+  description:
+    "A companion app for managing your Pokémon D&D Trainer and Pokemon Team",
 };
 
 export default function RootLayout({
@@ -27,9 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} ${poppins.variable} antialiased`}
-      >
+      <body className={`${inter.variable} ${poppins.variable} antialiased`}>
         {children}
       </body>
     </html>
