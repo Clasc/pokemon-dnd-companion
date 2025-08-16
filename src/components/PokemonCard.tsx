@@ -13,6 +13,7 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedPokemon, setEditedPokemon] = useState<Pokemon>(pokemon);
   const updatePokemonInStore = useAppStore((state) => state.updatePokemon);
+  const viewedPokemon = isEditing ? editedPokemon : pokemon;
 
   useEffect(() => {
     setEditedPokemon(pokemon);
@@ -73,17 +74,17 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
       <div className="flex items-center gap-4 md:gap-6">
         {/* Pokemon Sprite/Icon */}
         <div className="w-14 h-14 md:w-18 md:h-18 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-2xl md:text-3xl border border-white/10">
-          {pokemon.sprite || "❓"}
+          {viewedPokemon.sprite || "❓"}
         </div>
 
         {/* Pokemon Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-3">
             <h3 className="font-semibold text-white text-lg md:text-xl truncate">
-              {pokemon.name}
+              {viewedPokemon.name}
             </h3>
             <span className="text-sm md:text-base text-gray-300 bg-white/10 px-3 py-1 rounded-md">
-              Lv.{pokemon.level}
+              Lv.{viewedPokemon.level}
             </span>
           </div>
 
@@ -91,16 +92,16 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
           <div className="flex gap-2 md:gap-3 mb-4">
             <span
               className="text-xs md:text-sm px-3 py-1.5 rounded-md text-white font-medium"
-              style={{ backgroundColor: getTypeColor(pokemon.type1) }}
+              style={{ backgroundColor: getTypeColor(viewedPokemon.type1) }}
             >
-              {pokemon.type1.toUpperCase()}
+              {viewedPokemon.type1.toUpperCase()}
             </span>
-            {pokemon.type2 && (
+            {viewedPokemon.type2 && (
               <span
                 className="text-xs md:text-sm px-3 py-1.5 rounded-md text-white font-medium"
-                style={{ backgroundColor: getTypeColor(pokemon.type2) }}
+                style={{ backgroundColor: getTypeColor(viewedPokemon.type2) }}
               >
-                {pokemon.type2.toUpperCase()}
+                {viewedPokemon.type2.toUpperCase()}
               </span>
             )}
           </div>
@@ -142,7 +143,7 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
               </div>
             </div>
             <div className="text-sm md:text-base text-gray-300 mt-2 text-right font-medium">
-              {pokemon.currentHP}/{pokemon.maxHP}
+              {viewedPokemon.currentHP}/{viewedPokemon.maxHP}
             </div>
           </div>
 
@@ -180,8 +181,8 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
               />
             </div>
             <div className="text-sm md:text-base text-gray-300 mt-2 text-right font-medium">
-              {pokemon.experience}/
-              {pokemon.experience + pokemon.experienceToNext}
+              {viewedPokemon.experience}/
+              {viewedPokemon.experience + viewedPokemon.experienceToNext}
             </div>
 
             {isEditing && (
