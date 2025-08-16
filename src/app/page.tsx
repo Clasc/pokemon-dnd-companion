@@ -6,10 +6,10 @@ import PokemonOverview from "../components/PokemonOverview";
 import { useAppStore } from "@/store";
 
 export default function Home() {
-  const pokemon = useAppStore((state) => state.pokemonList);
-  const isLoading = useAppStore((state) => state.isLoading);
-  const initialize = useAppStore((state) => state.initialize);
-  const trainer = useAppStore((state) => state.trainer);
+  const pokemon = useAppStore.use.pokemonList();
+  const isLoading = useAppStore.use.isLoading();
+  const initialize = useAppStore.use.initialize();
+  const trainer = useAppStore.use.trainer();
 
   useEffect(() => {
     // Load initial trainer data from store

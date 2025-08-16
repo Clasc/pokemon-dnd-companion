@@ -7,9 +7,9 @@ import { useAppStore } from "../store";
 
 export default function TrainerOverview() {
   const [isEditing, setIsEditing] = useState(false);
-  const trainer = useAppStore((state) => state.trainer);
+  const trainer = useAppStore.use.trainer();
+  const setTrainer = useAppStore.use.setTrainer();
   const [editedTrainer, setEditedTrainer] = useState<Trainer>(trainer);
-  const setTrainerInStore = useAppStore((state) => state.setTrainer);
 
   useEffect(() => {
     setEditedTrainer(trainer);
@@ -46,7 +46,7 @@ export default function TrainerOverview() {
   };
 
   const handleSave = () => {
-    setTrainerInStore(editedTrainer);
+    setTrainer(editedTrainer);
     setIsEditing(false);
   };
 

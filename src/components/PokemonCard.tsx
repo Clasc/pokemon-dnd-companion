@@ -12,7 +12,8 @@ interface PokemonCardProps {
 export default function PokemonCard({ pokemon }: PokemonCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedPokemon, setEditedPokemon] = useState<Pokemon>(pokemon);
-  const updatePokemonInStore = useAppStore((state) => state.updatePokemon);
+
+  const updatePokemon = useAppStore.use.updatePokemon();
   const viewedPokemon = isEditing ? editedPokemon : pokemon;
 
   useEffect(() => {
@@ -33,7 +34,7 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
   };
 
   const handleSave = () => {
-    updatePokemonInStore(editedPokemon);
+    updatePokemon(editedPokemon);
     setIsEditing(false);
   };
 
