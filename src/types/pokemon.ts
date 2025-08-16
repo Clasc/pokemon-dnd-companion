@@ -9,6 +9,26 @@ export interface Pokemon {
   experience: number;
   experienceToNext: number;
   sprite?: string;
+  attributes: {
+    strength: number;
+    dexterity: number;
+    constitution: number;
+    intelligence: number;
+    wisdom: number;
+    charisma: number;
+  };
+  attacks?: {
+    name: string;
+    type: PokemonType;
+    power: number;
+    accuracy: number;
+    pp: number;
+  }[];
+
+  status?: {
+    condition: string;
+    duration?: number; // Duration in turns, if applicable
+  };
 }
 
 export enum PokemonType {

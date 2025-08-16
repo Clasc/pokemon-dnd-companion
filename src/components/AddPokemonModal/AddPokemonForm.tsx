@@ -5,7 +5,9 @@ import { Pokemon, TYPE_COLORS } from "../../types/pokemon";
 interface AddPokemonFormProps {
   pokemon: Omit<Pokemon, "id">;
   setPokemon: (
-    pokemon: Omit<Pokemon, "id"> | ((prev: Omit<Pokemon, "id">) => Omit<Pokemon, "id">),
+    pokemon:
+      | Omit<Pokemon, "id">
+      | ((prev: Omit<Pokemon, "id">) => Omit<Pokemon, "id">),
   ) => void;
 }
 

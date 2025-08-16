@@ -36,9 +36,8 @@ export default function AddPokemonModal({
   onClose,
   onSave,
 }: AddPokemonModalProps) {
-  const [newPokemon, setNewPokemon] = useState<Omit<Pokemon, "id">>(
-    initialPokemonState,
-  );
+  const [newPokemon, setNewPokemon] =
+    useState<Omit<Pokemon, "id">>(initialPokemonState);
 
   useEffect(() => {
     // Reset form when modal opens
