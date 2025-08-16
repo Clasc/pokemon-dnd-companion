@@ -1,76 +1,187 @@
-## Product Specification: Pokémon & D&D Companion App (MVP)
+## Product Specification: Pokémon & D&D Companion App (Current Implementation)
 
 ### 1. Introduction
 
-This specification describes the Minimum Viable Product (MVP) of a **Single Page Application (SPA)** designed as a companion app for a homebrewed version of Dungeons & Dragons with Pokémon elements. The app is primarily for players and aims to simplify character and Pokémon management on mobile devices and tablets.
+This specification describes the current implementation of a **Single Page Application (SPA)** designed as a companion app for a homebrewed version of Dungeons & Dragons with Pokémon elements. The app is primarily for players and aims to simplify character and Pokémon management on mobile devices and tablets.
 
 ---
 
 ### 2. Target Audience
 
-The primary user is a **player** in a campaign. The Game Master (DM) is not the main target audience. The app should support the flow of the game, not complicate it.
+The primary user is a **player** in a campaign. The Game Master (DM) is not the main target audience. The app supports the flow of the game by providing an intuitive interface for character and Pokémon management.
 
 ---
 
-### 3. Technical Requirements
+### 3. Technical Implementation
 
-* **Type:** Single Page Application (SPA).
-* **Platform:** Optimized for mobile browsers (iOS/Android) and tablets. No native app is planned for the MVP.
+* **Type:** Single Page Application (SPA) built with Next.js
+* **Platform:** Optimized for mobile browsers (iOS/Android) and tablets with responsive design
 * **Technology Stack:**
-    * **Frontend:** HTML5, CSS3, JavaScript (e.g., using a framework like Vue.js or React).
-    * **Data Persistence:** Local storage (LocalStorage) will be used to save player data without needing a backend database.
+    * **Frontend:** Next.js 14+ with React, TypeScript
+    * **Styling:** Custom CSS with CSS Variables, Tailwind CSS integration
+    * **State Management:** Zustand with persistence middleware
+    * **Data Persistence:** Local storage (localStorage) with automatic state persistence
+    * **Icons:** Custom emoji-based icon system for Pokémon types
 
 ---
 
-### 4. Features (MVP)
+### 4. Current Features
 
-#### 4.1. Main View: Trainer & Pokémon
+#### 4.1. Trainer Management
 
-The app's home screen is divided into two clear, switchable sections:
+**Trainer Overview Card:**
+* Display and edit trainer name, level, and class
+* Full D&D attribute system (Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma)
+* Hit Points management with visual HP bar
+* Interactive HP adjustment with +/- controls
+* Glassmorphism design with hover effects
+* Click-to-edit functionality with modal overlay
 
-* **Trainer Overview:**
-    * Input field for the **character's name**.
-    * Input fields for the player's **Level** and **Class**.
-    * Input fields for the character's **D&D attributes** (Strength, Dexterity, Constitution, Intelligence, Wisdom, and Charisma).
-    * Input field for the current and maximum **Hit Points (HP)**.
-    * HP can be adjusted with simple "+" and "-" buttons.
+**Trainer Creation Flow:**
+* Initial onboarding form for new users
+* Required trainer setup before accessing main features
+* Persistent storage of trainer data
 
-* **Pokémon Overview:**
-    * A list of the player's Pokémon (up to 6).
-    * Each Pokémon displays its **Name** and **Level**.
-    * An **HP bar** visually represents the current HP relative to the maximum HP.
-    * Tapping on a Pokémon opens a detailed profile (see 4.2).
+#### 4.2. Pokémon Team Management
 
-#### 4.2. Pokémon Details View
+**Pokémon Overview:**
+* Team roster display (up to 6 Pokémon)
+* Real-time team statistics (total levels, total HP, average health)
+* Add new Pokémon with comprehensive creation modal
+* Empty state with encouraging messaging
 
-Selecting a Pokémon takes the player to a new view with the following information and features:
+**Individual Pokémon Cards:**
+* Compact card layout with essential information
+* Pokémon species, nickname, and level
+* Dual-type system with color-coded type badges
+* HP and XP progress bars with smooth animations
+* Status condition indicators
+* D&D attribute chips display
+* Quick action buttons (edit, delete)
 
-* **Pokémon Profile:**
-    * **Name:** Display field.
-    * **D&D Attributes:** Input fields for the attributes **Strength, Dexterity, Constitution, Intelligence, Wisdom,** and **Charisma**.
-    * **Level & XP:** The current level and an editable field for accumulated **XP**. A progress bar visualizes the progress toward the next level.
-    * **HP:** Current and maximum HP with simple adjustment options. An **HP bar** visualizes the Pokémon's current condition.
-    * **Attacks:** An editable list of up to 4 attacks. Each attack has a field for its **Name** and a field for a short **description** (e.g., "d10 damage, causes fear on a 19+").
+#### 4.3. Pokémon Details & Editing
+
+**Comprehensive Pokémon Profiles:**
+* Species and nickname fields
+* Dual Pokémon type system (18 types available)
+* Level management (1-100)
+* HP system with current/max values and visual feedback
+* Experience point tracking with progress visualization
+* Full D&D attribute system
+* Status condition system with duration tracking
+* Type-based emoji icons for visual identification
+
+**Advanced Editing Modal:**
+* Full-screen modal for detailed Pokémon editing
+* Real-time preview of changes
+* Validation and error handling
+* Save/cancel functionality
+
+#### 4.4. User Interface & Experience
+
+**Design System:**
+* Dark/light theme support with system preference detection
+* Glassmorphism effects with backdrop blur
+* Responsive grid layouts for different screen sizes
+* Custom CSS variables for consistent theming
+* Smooth animations and transitions
+* Mobile-first responsive design
+
+**Navigation & Interaction:**
+* Modal-based editing system
+* Confirmation dialogs for destructive actions
+* Intuitive touch-friendly controls
+* Keyboard accessibility
+
+#### 4.5. Data Management
+
+**State Management:**
+* Zustand store with persistence
+* Automatic local storage synchronization
+* Optimistic updates for smooth UX
+* Type-safe state management with TypeScript
+
+**Data Structure:**
+* UUID-based Pokémon identification
+* Comprehensive type definitions
+* Normalized data storage
 
 ---
 
-### 5. User Interaction & Workflow
+### 5. User Workflow
 
-The entire workflow is designed for simplicity and based on a clear **read-only mode**.
-
-1.  The player opens the app. All values are in **read-only mode** by default and cannot be changed accidentally.
-2.  To edit values, the player must explicitly switch to **edit mode** (e.g., via an "Edit" button).
-3.  In **edit mode**, the player can adjust their character's or Pokémon's attributes, HP, XP, or attacks.
-4.  After editing, the player saves the changes and returns to **read-only mode** to prevent unintentional modifications.
-5.  The player can update a Pokémon's XP, which will automatically update the progress bar.
+1. **First Visit:** User is prompted to create trainer profile
+2. **Main Dashboard:** Two-panel layout showing trainer and Pokémon overview
+3. **Trainer Editing:** Click trainer card to open editing modal
+4. **Pokémon Management:** 
+   - Add new Pokémon via dedicated creation modal
+   - Edit existing Pokémon through card action buttons
+   - Delete Pokémon with confirmation dialog
+5. **Data Persistence:** All changes automatically saved to local storage
 
 ---
 
-### 6. Not Included in the MVP (Future Scope)
+### 6. Current Status vs Original MVP
 
-* Backend or user account system.
-* Combat simulation or dice-rolling interface.
-* Game Master (DM) functionalities like a bestiary.
-* Status effect tracker (e.g., for poison or burn).
-* Graphics and images of the Pokémon.
-* Special Pokémon abilities (as they only have attacks).
+**Implemented Beyond MVP:**
+* ✅ Full dual-type Pokémon system
+* ✅ Status condition tracking with duration
+* ✅ Advanced UI with glassmorphism design
+* ✅ Comprehensive responsive design
+* ✅ Type-safe TypeScript implementation
+* ✅ Sophisticated state management
+* ✅ Visual progress indicators and animations
+* ✅ Emoji-based type icon system
+* ✅ Team statistics and analytics
+* ✅ Modal-based editing system
+
+**Not Yet Implemented (Future Scope):**
+* Attack/move management system
+* Combat simulation or dice-rolling interface
+* Game Master (DM) functionalities
+* Backend synchronization
+* User accounts and cloud storage
+* Pokémon images/sprites
+* Special abilities beyond basic stats
+
+---
+
+### 7. Technical Architecture
+
+**Component Structure:**
+```
+src/
+├── app/                     # Next.js app directory
+├── components/              # React components
+│   ├── AddPokemonModal/     # Pokemon creation flow
+│   ├── Shared/              # Reusable components
+│   └── ...                  # Feature-specific components
+├── store/                   # Zustand state management
+├── types/                   # TypeScript type definitions
+└── utils/                   # Utility functions
+```
+
+**Key Design Patterns:**
+* Custom hooks for state management
+* Compound component patterns for modals
+* Responsive CSS with container queries
+* Accessibility-first interactive elements
+
+---
+
+### 8. Performance & Optimization
+
+* Client-side rendering with Next.js
+* Efficient re-rendering with Zustand selectors
+* CSS-based animations for smooth performance
+* Optimized bundle size with tree shaking
+* Local storage for instant data access
+
+---
+
+### 9. Browser Support
+
+* Modern mobile browsers (iOS Safari, Chrome Android)
+* Progressive enhancement for older browsers
+* Touch-optimized interface
+* Responsive breakpoints: mobile (320px+), tablet (768px+), desktop (1024px+)
