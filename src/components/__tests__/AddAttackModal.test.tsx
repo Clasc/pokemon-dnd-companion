@@ -49,10 +49,10 @@ describe("AddAttackModal", () => {
     );
     expect(screen.getByText("Add New Attack")).toBeInTheDocument();
     expect(screen.getByLabelText("Attack Name")).toBeInTheDocument();
-    expect(screen.getByLabelText("PP")).toBeInTheDocument();
-    expect(screen.getByLabelText("Move Bonus")).toBeInTheDocument();
+    expect(screen.getByLabelText("Max PP")).toBeInTheDocument();
+    expect(screen.getByLabelText("Max PP")).toBeInTheDocument();
     expect(screen.getByLabelText("Action Type")).toBeInTheDocument();
-    expect(screen.getByLabelText("Damage Dice")).toBeInTheDocument();
+    expect(screen.getByLabelText("Max PP")).toBeInTheDocument();
   });
 
   it("allows typing in form fields", () => {
@@ -69,7 +69,7 @@ describe("AddAttackModal", () => {
     fireEvent.change(nameInput, { target: { value: "Tackle" } });
     expect(nameInput.value).toBe("Tackle");
 
-    const ppInput = screen.getByLabelText("PP") as HTMLInputElement;
+    const ppInput = screen.getByLabelText("Max PP") as HTMLInputElement;
     fireEvent.change(ppInput, { target: { value: "20" } });
     expect(ppInput.value).toBe("20");
 
@@ -93,7 +93,9 @@ describe("AddAttackModal", () => {
     fireEvent.change(screen.getByLabelText("Attack Name"), {
       target: { value: "Quick Attack" },
     });
-    fireEvent.change(screen.getByLabelText("PP"), { target: { value: "30" } });
+    fireEvent.change(screen.getByLabelText("Max PP"), {
+      target: { value: "30" },
+    });
     fireEvent.change(screen.getByLabelText("Move Bonus"), {
       target: { value: "5" },
     });
@@ -116,7 +118,7 @@ describe("AddAttackModal", () => {
     expect(addAttackMock).toHaveBeenCalledTimes(1);
     expect(addAttackMock).toHaveBeenCalledWith("test-uuid", 0, {
       name: "Quick Attack",
-      pp: 30,
+      maxPp: 30,
       moveBonus: 5,
       actionType: "bonus action",
       damageDice: "d6",

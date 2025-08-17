@@ -2,7 +2,8 @@ export type ActionType = "action" | "bonus action";
 
 export interface Attack {
   name: string;
-  pp: number;
+  currentPp: number;
+  maxPp: number;
   actionType: ActionType;
   moveBonus: number;
   specialEffect?: string;

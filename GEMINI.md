@@ -15,7 +15,23 @@ npm run dev
 ```
 
 ## Testing
+### Testing Standards
+- All new features and modifications must be accompanied by tests.
+- Tests should cover both the functionality and edge cases.
+- Use Jest for unit and integration tests.
+- Do not mock components in tests unless absolutely necessary. Instead, use the actual components to ensure realistic testing.
+- Never  mock Zustand store in tests. Use the actual Zustand store to ensure realistic testing.
+- Never use snapshot tests. Instead, write tests that check the actual behavior of the components and functions. If you encounter a snapshot test, refactor it to a more appropriate test that checks the actual behavior, after confirming with the user that the snapshot test is not needed.
+- Ensure that all tests pass before committing any changes.
+### Querying DOM
+When querying the DOM in tests, use the following methods, with the following priorities:
+- Use `getByRole` to find elements by their role.
+- Use `getByText` to find elements by their text content.
+- Use `getByTestId` to find elements by their `data-testid` attribute.
+- Use `queryByText` and `queryByRole` for assertions that may not find an element, allowing for more flexible tests.
+If a test cannot be queried using getByRole, consider adding a role to the element in question to make it more accessible and easier to test. If there is no role that fits the element, use `getByText` or `getByTestId` as a fallback and add a data-test-id attribute to the element if necessary.
 
+### Running Tests
 To run the test suite, use the following command:
 
 ```bash

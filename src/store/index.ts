@@ -50,7 +50,10 @@ export const useAppStore = createSelectors(
             if (!pokemon) return state;
 
             const newAttacks = [...(pokemon.attacks || [])];
-            newAttacks[attackIndex] = attack;
+            newAttacks[attackIndex] = {
+              ...attack,
+              currentPp: attack.maxPp,
+            };
 
             return {
               pokemonTeam: {
@@ -70,8 +73,8 @@ export const useAppStore = createSelectors(
             const newAttacks = [...pokemon.attacks];
             const attack = { ...newAttacks[attackIndex] };
 
-            if (attack.pp > 0) {
-              attack.pp -= 1;
+            if (attack.currentPp > 0) {
+              attack.currentPp -= 1;
             }
             newAttacks[attackIndex] = attack;
             return {

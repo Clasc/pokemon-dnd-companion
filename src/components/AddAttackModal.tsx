@@ -11,9 +11,9 @@ interface AddAttackModalProps {
   attackIndex: number;
 }
 
-const initialState: Attack = {
+const initialState: Omit<Attack, "currentPp"> = {
   name: "",
-  pp: 10,
+  maxPp: 10,
   actionType: "action",
   moveBonus: 0,
   damageDice: "d4",
@@ -28,7 +28,7 @@ export default function AddAttackModal({
   attackIndex,
 }: AddAttackModalProps) {
   const addAttack = useAppStore.use.addAttack();
-  const [attack, setAttack] = useState<Attack>(initialState);
+  const [attack, setAttack] = useState<Omit<Attack, "currentPp">>(initialState);
 
   useEffect(() => {
     if (isOpen) {
@@ -51,7 +51,7 @@ export default function AddAttackModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addAttack(pokemonUuid, attackIndex, attack);
+    addAttack(pokemonUuid, attackIndex, attack as Attack);
     onClose();
   };
 
@@ -91,16 +91,16 @@ export default function AddAttackModal({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label
-                htmlFor="pp"
+                htmlFor="maxPp"
                 className="block text-sm font-medium text-gray-300 mb-1"
               >
-                PP
+                Max PP
               </label>
               <input
                 type="number"
-                name="pp"
-                id="pp"
-                value={attack.pp}
+                name="maxPp"
+                id="maxPp"
+                value={attack.maxPp}
                 onChange={handleChange}
                 className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-blue-500"
                 required

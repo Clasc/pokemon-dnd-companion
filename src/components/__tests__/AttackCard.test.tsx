@@ -35,7 +35,8 @@ describe("AttackCard", () => {
 
   const attackWithPP: Attack = {
     name: "Thunder Shock",
-    pp: 10,
+    currentPp: 10,
+    maxPp: 15,
     actionType: "action",
     moveBonus: 3,
     damageDice: "d6",
@@ -43,7 +44,7 @@ describe("AttackCard", () => {
     specialEffect: "Paralyzes on 20",
   };
 
-  const attackWithoutPP: Attack = { ...attackWithPP, pp: 0 };
+  const attackWithoutPP: Attack = { ...attackWithPP, currentPp: 0 };
 
   it("renders attack details correctly when an attack is provided", () => {
     render(
@@ -55,7 +56,7 @@ describe("AttackCard", () => {
     );
 
     expect(screen.getByText("Thunder Shock")).toBeInTheDocument();
-    expect(screen.getByText(/PP: 10/i)).toBeInTheDocument();
+    expect(screen.getByText(/PP: 10 \/ 15/i)).toBeInTheDocument();
     expect(screen.getByText(/Action/i)).toBeInTheDocument(); // For Action Type
     expect(screen.getByText("d6")).toBeInTheDocument(); // For Damage Dice
     expect(screen.getByText("+3")).toBeInTheDocument(); // For Move Bonus
@@ -72,7 +73,7 @@ describe("AttackCard", () => {
     // For this component test, we just ensure the button is there.
   });
 
-  it('enables the "Perform Attack" button and calls decreasePP on click when pp > 0', () => {
+  it('enables the "Perform Attack" button and calls decreasePP on click when currentPp > 0', () => {
     render(
       <AttackCard
         attack={attackWithPP}
@@ -92,7 +93,7 @@ describe("AttackCard", () => {
     expect(decreaseAttackPPMock).toHaveBeenCalledWith("test-uuid-3", 0);
   });
 
-  it('disables the "Perform Attack" button when pp is 0', () => {
+  it('disables the "Perform Attack" button when currentPp is 0', () => {
     render(
       <AttackCard
         attack={attackWithoutPP}

@@ -22,7 +22,7 @@ export default function AttackCard({
 
   const handlePerformAttack = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (attack && attack.pp > 0) {
+    if (attack && attack.currentPp > 0) {
       decreasePP(pokemonUuid, attackIndex);
     }
   };
@@ -60,7 +60,9 @@ export default function AttackCard({
         <div className="flex justify-between items-start mb-2">
           <h4 className="font-bold text-base">{attack.name}</h4>
           <div className="text-right shrink-0 ml-2">
-            <p className="font-semibold">PP: {attack.pp}</p>
+            <p className="font-semibold">
+              PP: {attack.currentPp} / {attack.maxPp}
+            </p>
             <p className="text-xs text-gray-400 capitalize">
               {attack.actionType}
             </p>
@@ -90,7 +92,7 @@ export default function AttackCard({
       </div>
       <button
         onClick={handlePerformAttack}
-        disabled={attack.pp === 0}
+        disabled={attack.currentPp === 0}
         className="w-full mt-auto bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600/50 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-bold py-1.5 px-2 rounded-md transition-colors text-xs"
       >
         Perform Attack
