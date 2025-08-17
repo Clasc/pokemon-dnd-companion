@@ -1,11 +1,13 @@
-import '@testing-library/jest-dom'
+import "@testing-library/jest-dom";
 
 // Mock crypto.randomUUID since it's not available in jsdom
-Object.defineProperty(global, 'crypto', {
+Object.defineProperty(global, "crypto", {
   value: {
-    randomUUID: () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-  }
-})
+    randomUUID: () =>
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15),
+  },
+});
 
 // Mock localStorage
 const localStorageMock = {
@@ -13,13 +15,14 @@ const localStorageMock = {
   setItem: jest.fn(),
   removeItem: jest.fn(),
   clear: jest.fn(),
-}
-global.localStorage = localStorageMock
+};
+global.localStorage = localStorageMock;
+global.alert = jest.fn(); // Mock alert to prevent it from showing during tests
 
 // Mock matchMedia
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: jest.fn().mockImplementation(query => ({
+  value: jest.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -29,4 +32,4 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: jest.fn(),
     dispatchEvent: jest.fn(),
   })),
-})
+});

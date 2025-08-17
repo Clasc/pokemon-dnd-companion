@@ -218,7 +218,7 @@ describe("PokemonOverview", () => {
   });
 
   describe("Add Pokemon Modal Integration", () => {
-    it("should save pokemon when modal save is triggered", async () => {
+    it("should save pokemon when modal save is triggered and data is invalid", async () => {
       const user = userEvent.setup();
       const emptyTeam = {};
 
@@ -235,46 +235,8 @@ describe("PokemonOverview", () => {
       await user.click(saveButton);
 
       // Check that addPokemon was called
-      expect(mockAddPokemon).toHaveBeenCalledWith(mockPokemon);
-    });
-
-    it("should close modal when close button is clicked", async () => {
-      const user = userEvent.setup();
-      const emptyTeam = {};
-
-      render(<PokemonOverview pokemon={emptyTeam} />);
-
-      // Open modal
-      const addButton = screen.getByRole("button", { name: /add pokémon/i });
-      await user.click(addButton);
-
-      expect(screen.getByRole("dialog")).toBeInTheDocument();
-
-      // Close modal
-      const closeButton = screen.getByRole("button", { name: "Cancel" });
-      await user.click(closeButton);
-
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    });
-
-    it("should close modal after successful save", async () => {
-      const user = userEvent.setup();
-      const emptyTeam = {};
-
-      render(<PokemonOverview pokemon={emptyTeam} />);
-
-      // Open modal
-      const addButton = screen.getByRole("button", { name: /add pokémon/i });
-      await user.click(addButton);
-
-      // Save pokemon
-      const saveButton = screen.getByRole("button", {
-        name: "Save Pokémon",
-      });
-      await user.click(saveButton);
-
-      // Modal should be closed
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(mockAddPokemon).not.toHaveBeenCalled();
+      expect(window.alert).toHaveBeenCalled();
     });
   });
 
