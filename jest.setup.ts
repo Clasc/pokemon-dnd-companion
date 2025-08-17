@@ -16,7 +16,7 @@ const localStorageMock = {
   removeItem: jest.fn(),
   clear: jest.fn(),
 };
-global.localStorage = localStorageMock;
+(global.localStorage as unknown) = localStorageMock;
 global.alert = jest.fn(); // Mock alert to prevent it from showing during tests
 
 // Mock matchMedia

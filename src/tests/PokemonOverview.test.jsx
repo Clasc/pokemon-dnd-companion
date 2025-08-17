@@ -1,18 +1,13 @@
-import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import PokemonOverview from "../components/PokemonOverview";
-import { useAppStore } from "../store";
 import {
-  mockPokemon,
-  mockPokemonWithSecondType,
-  mockPokemonLowHP,
-  mockPokemonTeam,
   calculateTeamStats,
-  createTestStore,
+  mockPokemon,
+  mockPokemonTeam,
+  mockPokemonWithSecondType,
 } from "./utils/testUtils";
-import { PokemonTeam } from "../types/pokemon";
-import { jest, describe, it, beforeEach, expect } from "@jest/globals";
 
 const mockAddPokemon = jest.fn();
 
