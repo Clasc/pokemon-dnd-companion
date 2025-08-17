@@ -60,7 +60,10 @@ export default function AddPokemonModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center">
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center"
+      role="dialog"
+    >
       <div className="glass rounded-2xl p-6 md:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-white">Add New Pokémon</h2>

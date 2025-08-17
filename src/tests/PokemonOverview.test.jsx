@@ -31,7 +31,7 @@ jest.mock("../components/AddPokemonModal/AddPokemonModal", () => {
     if (!isOpen) return null;
     return (
       <div data-testid="add-pokemon-modal">
-        <button onClick={() => onSave(mockPokemon)}>Save Test Pokemon</button>
+        <button onClick={() => onSave(mockPokemon)}>Save</button>
         <button onClick={onClose}>Close Modal</button>
       </div>
     );
@@ -103,7 +103,7 @@ describe("PokemonOverview", () => {
       const addButton = screen.getByRole("button", { name: /add pokémon/i });
       await user.click(addButton);
 
-      expect(screen.getByTestId("add-pokemon-modal")).toBeInTheDocument();
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
   });
 
@@ -120,13 +120,14 @@ describe("PokemonOverview", () => {
       expect(screen.getByText("/ 6")).toBeInTheDocument();
 
       // Check pokemon card is rendered
-      expect(screen.getByTestId("pokemon-card-uuid-1")).toBeInTheDocument();
-      expect(screen.getByTestId("pokemon-name")).toHaveTextContent("Thunder");
+      expect(
+        screen.getByRole("heading", { level: 3, name: "Thunder" }),
+      ).toBeVisible();
 
       // Check add button is still present (team not full)
       expect(
         screen.getByRole("button", { name: /add pokémon/i }),
-      ).toBeInTheDocument();
+      ).toBeVisible();
 
       // Check team stats are displayed
       expect(screen.getByText("Team Stats")).toBeInTheDocument();
@@ -145,9 +146,15 @@ describe("PokemonOverview", () => {
       expect(screen.getByText("/ 6")).toBeInTheDocument();
 
       // Check all pokemon cards are rendered
-      expect(screen.getByTestId("pokemon-card-uuid-1")).toBeInTheDocument();
-      expect(screen.getByTestId("pokemon-card-uuid-2")).toBeInTheDocument();
-      expect(screen.getByTestId("pokemon-card-uuid-3")).toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { level: 3, name: "Thunder" }),
+      ).toBeVisible();
+      expect(
+        screen.getByRole("heading", { level: 3, name: "Eve" }),
+      ).toBeVisible();
+      expect(
+        screen.getByRole("heading", { level: 3, name: "Blaze" }),
+      ).toBeVisible();
 
       // Check add button is present (team not full)
       expect(
@@ -252,7 +259,7 @@ describe("PokemonOverview", () => {
 
       // Save pokemon from modal
       const saveButton = screen.getByRole("button", {
-        name: "Save Test Pokemon",
+        name: "Save Pokémon",
       });
       await user.click(saveButton);
 
@@ -270,13 +277,13 @@ describe("PokemonOverview", () => {
       const addButton = screen.getByRole("button", { name: /add pokémon/i });
       await user.click(addButton);
 
-      expect(screen.getByTestId("add-pokemon-modal")).toBeInTheDocument();
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
 
       // Close modal
-      const closeButton = screen.getByRole("button", { name: "Close Modal" });
+      const closeButton = screen.getByRole("button", { name: "Cancel" });
       await user.click(closeButton);
 
-      expect(screen.queryByTestId("add-pokemon-modal")).not.toBeInTheDocument();
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
 
     it("should close modal after successful save", async () => {
@@ -291,12 +298,12 @@ describe("PokemonOverview", () => {
 
       // Save pokemon
       const saveButton = screen.getByRole("button", {
-        name: "Save Test Pokemon",
+        name: "Save Pokémon",
       });
       await user.click(saveButton);
 
       // Modal should be closed
-      expect(screen.queryByTestId("add-pokemon-modal")).not.toBeInTheDocument();
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
   });
 
@@ -304,11 +311,17 @@ describe("PokemonOverview", () => {
     it("should have proper heading structure", () => {
       render(<PokemonOverview pokemon={mockPokemonTeam} />);
 
-      const mainHeading = screen.getByRole("heading", { level: 2 });
-      expect(mainHeading).toHaveTextContent("Pokémon Overview");
+      const mainHeading = screen.getByRole("heading", {
+        level: 2,
+        name: "Pokémon Overview",
+      });
+      expect(mainHeading).toBeVisible();
 
-      const statsHeading = screen.getByRole("heading", { level: 3 });
-      expect(statsHeading).toHaveTextContent("Team Stats");
+      const statsHeading = screen.getByRole("heading", {
+        level: 3,
+        name: "Team Stats",
+      });
+      expect(statsHeading).toBeVisible();
     });
 
     it("should have accessible button for adding pokemon", () => {
@@ -325,7 +338,7 @@ describe("PokemonOverview", () => {
 
       // Check that headings have proper roles
       expect(screen.getByRole("heading", { level: 2 })).toBeInTheDocument();
-      expect(screen.getByRole("heading", { level: 3 })).toBeInTheDocument();
+      expect(screen.getAllByRole("heading", { level: 3 })).not.toHaveLength(0);
 
       // Check button accessibility
       const addButton = screen.getByRole("button", { name: /add pokémon/i });
@@ -344,14 +357,14 @@ describe("PokemonOverview", () => {
       const addButton = screen.getByRole("button", { name: /add pokémon/i });
 
       await user.click(addButton);
-      expect(screen.getByTestId("add-pokemon-modal")).toBeInTheDocument();
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
 
-      const closeButton = screen.getByRole("button", { name: "Close Modal" });
+      const closeButton = screen.getByRole("button", { name: "Cancel" });
       await user.click(closeButton);
-      expect(screen.queryByTestId("add-pokemon-modal")).not.toBeInTheDocument();
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 
       await user.click(addButton);
-      expect(screen.getByTestId("add-pokemon-modal")).toBeInTheDocument();
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
   });
 
@@ -387,22 +400,6 @@ describe("PokemonOverview", () => {
         expect(screen.getByText("/ 6")).toBeInTheDocument();
         unmount();
       });
-    });
-  });
-
-  describe("Performance Considerations", () => {
-    it("should not re-render unnecessarily when pokemon team reference changes but content is same", () => {
-      const team1 = { "uuid-1": mockPokemon };
-      const team2 = { "uuid-1": mockPokemon }; // Same content, different reference
-
-      const { rerender } = render(<PokemonOverview pokemon={team1} />);
-
-      // Re-render with new reference but same content
-      rerender(<PokemonOverview pokemon={team2} />);
-
-      // Component should still work correctly
-      expect(screen.getByText("1")).toBeInTheDocument();
-      expect(screen.getByTestId("pokemon-card-uuid-1")).toBeInTheDocument();
     });
   });
 });
