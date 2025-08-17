@@ -13,6 +13,7 @@ interface AppState {
   setTrainer: (trainer: Trainer) => void;
   addAttack: (pokemonUuid: string, attackIndex: number, attack: Attack) => void;
   decreaseAttackPP: (pokemonUuid: string, attackIndex: number) => void;
+  modifyPokemonHP: (pokemonUuid: string, hpChange: number) => void;
 }
 
 export const useAppStore = createSelectors(
@@ -83,6 +84,26 @@ export const useAppStore = createSelectors(
                 [pokemonUuid]: {
                   ...pokemon,
                   attacks: newAttacks,
+                },
+              },
+            };
+          }),
+        modifyPokemonHP: (pokemonUuid, hpChange) =>
+          set((state) => {
+            const pokemon = state.pokemonTeam[pokemonUuid];
+            if (!pokemon) return state;
+
+            const newCurrentHP = Math.max(
+              0,
+              Math.min(pokemon.maxHP, pokemon.currentHP + hpChange),
+            );
+
+            return {
+              pokemonTeam: {
+                ...state.pokemonTeam,
+                [pokemonUuid]: {
+                  ...pokemon,
+                  currentHP: newCurrentHP,
                 },
               },
             };

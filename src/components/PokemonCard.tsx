@@ -8,6 +8,7 @@ import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import PokemonEditModal from "./PokemonEditModal";
 import AddAttackModal from "./AddAttackModal";
 import AttackCard from "./AttackCard";
+import HPModifier from "./HPModifier";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -20,6 +21,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAttacksVisible, setIsAttacksVisible] = useState(false);
   const [showAddAttackModal, setShowAddAttackModal] = useState(false);
+  const [showHPModifier, setShowHPModifier] = useState(false);
   const [selectedAttackIndex, setSelectedAttackIndex] = useState<number | null>(
     null,
   );
@@ -277,11 +279,17 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             )}
           </div>
         </div>
-        {/* Attacks Dropdown Toggle */}
-        <div className="mt-4 flex justify-center">
+        {/* Controls */}
+        <div className="mt-4 flex justify-center gap-2">
+          <button
+            onClick={() => setShowHPModifier(true)}
+            className="flex-1 flex justify-center items-center p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+          >
+            <span className="text-sm font-semibold">Modify HP</span>
+          </button>
           <button
             onClick={() => setIsAttacksVisible(!isAttacksVisible)}
-            className="w-full flex justify-center items-center p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+            className="flex-1 flex justify-center items-center p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
             aria-expanded={isAttacksVisible}
           >
             <span className="text-sm font-semibold">Attacks</span>
@@ -335,6 +343,14 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
           </div>
         )}
       </div>
+
+      {/* HP Modifier Overlay */}
+      {showHPModifier && (
+        <HPModifier
+          pokemonUuid={uuid}
+          onClose={() => setShowHPModifier(false)}
+        />
+      )}
 
       {/* Edit Modal */}
       <PokemonEditModal
