@@ -87,81 +87,10 @@ export const TYPE_COLORS: Record<PokemonType, Color> = {
 };
 
 export type Attributes = {
-  strength: 55;
-  dexterity: 90;
-  constitution: 40;
-  intelligence: 50;
-  wisdom: 50;
-  charisma: 60;
-};
-
-const makeAttributes = (attrs: Partial<Attributes> = {}) => ({
-  strength: 10,
-  dexterity: 10,
-  constitution: 10,
-  intelligence: 10,
-  wisdom: 10,
-  charisma: 10,
-  ...attrs,
-});
-
-// Sample Pokemon data for the mockup
-export const SAMPLE_TEAM: PokemonTeam = {
-  "25": {
-    type: "Pikachu",
-    name: "Pikachu",
-    type1: "electric",
-    level: 25,
-    currentHP: 78,
-    maxHP: 95,
-    experience: 0,
-    experienceToNext: 250,
-    attributes: makeAttributes(),
-  },
-  "6": {
-    type: "Charizard",
-    name: "Charizard",
-    type1: "fire",
-    type2: "flying",
-    level: 36,
-    currentHP: 125,
-    maxHP: 140,
-    experience: 1500,
-    experienceToNext: 1800,
-    attributes: makeAttributes(),
-  },
-  "150": {
-    type: "Mewtwo",
-    name: "Mewtwo",
-    type1: "psychic",
-    level: 42,
-    currentHP: 98,
-    maxHP: 155,
-    experience: 2100,
-    experienceToNext: 2500,
-    attributes: makeAttributes(),
-  },
-  "133": {
-    type: "Eevee",
-    name: "Eevee",
-    type1: "normal",
-    level: 18,
-    currentHP: 52,
-    maxHP: 65,
-    experience: 320,
-    experienceToNext: 400,
-    attributes: makeAttributes(),
-  },
-  "3": {
-    type: "Bulbasaur",
-    name: "Bulbasaur",
-    type1: "grass",
-    type2: "poison",
-    level: 22,
-    currentHP: 68,
-    maxHP: 80,
-    experience: 580,
-    experienceToNext: 700,
-    attributes: makeAttributes(),
-  },
+  strength: number;
+  dexterity: number;
+  constitution: number;
+  intelligence: number;
+  wisdom: number;
+  charisma: number;
 };
