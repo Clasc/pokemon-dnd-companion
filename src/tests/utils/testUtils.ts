@@ -15,6 +15,28 @@ export const mockPokemon: Pokemon = {
   maxHP: 95,
   experience: 1250,
   experienceToNext: 500,
+  attacks: [
+    {
+      name: "Thunderbolt",
+      currentPp: 10,
+      maxPp: 15,
+      actionType: "action",
+      moveBonus: 3,
+      damageDice: "d10",
+      specialEffect: "Paralyzes on 20",
+      description: "A powerful electric attack that may paralyze the target.",
+    },
+    {
+      name: "Quick Attack",
+      currentPp: 5,
+      maxPp: 10,
+      actionType: "bonus action",
+      moveBonus: 2,
+      damageDice: "d6",
+      specialEffect: "None",
+      description: "A fast attack that always goes first.",
+    },
+  ],
   attributes: {
     strength: 12,
     dexterity: 16,
@@ -38,6 +60,7 @@ export const mockPokemonWithSecondType: Pokemon = {
   maxHP: 140,
   experience: 2100,
   experienceToNext: 400,
+  attacks: [],
   attributes: {
     strength: 18,
     dexterity: 14,
@@ -61,6 +84,27 @@ export const mockPokemonLowHP: Pokemon = {
   maxHP: 65,
   experience: 800,
   experienceToNext: 200,
+  attacks: [
+    {
+      name: "Quick Attack",
+      currentPp: 5,
+      maxPp: 10,
+      actionType: "action",
+      moveBonus: 2,
+      damageDice: "d6",
+      specialEffect: "None",
+      description: "A fast attack that always goes first.",
+    },
+    {
+      name: "Tail Whip",
+      currentPp: 3,
+      maxPp: 5,
+      actionType: "bonus action",
+      moveBonus: 0,
+      specialEffect: "Lowers defense",
+      description: "Lowers the target's defense.",
+    },
+  ],
   attributes: {
     strength: 10,
     dexterity: 12,
@@ -145,10 +189,9 @@ export const createTestStore = (initialState: Partial<TestAppState> = {}) => {
 };
 
 // Test wrapper component to provide store context
-export const createTestWrapper = (store: any) => {
+export const createTestWrapper = (store: object) => {
+  // eslint-disable-next-line react/display-name
   return ({ children }: { children: React.ReactNode }) => {
-    // Mock the useAppStore hook
-    const originalUseAppStore = require("../../store").useAppStore;
     jest.doMock("../../store", () => ({
       useAppStore: store,
     }));

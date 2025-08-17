@@ -7,7 +7,7 @@ export interface Attack {
   actionType: ActionType;
   moveBonus: number;
   specialEffect?: string;
-  damageDice: "d4" | "d6" | "d10";
+  damageDice?: "d4" | "d6" | "d10";
   description?: string;
 }
 
