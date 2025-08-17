@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Pokemon, PokemonTeam } from "../types/pokemon";
+import { Attack, Pokemon, PokemonTeam } from "../types/pokemon";
 import { Trainer } from "../types/trainer";
 import { createSelectors } from "./utils";
 
@@ -11,6 +11,8 @@ interface AppState {
   updatePokemon: (updatedPokemon: Pokemon, uuid: string) => void;
   removePokemon: (id: string) => void;
   setTrainer: (trainer: Trainer) => void;
+  addAttack: (pokemonUuid: string, attackIndex: number, attack: Attack) => void;
+  decreaseAttackPP: (pokemonUuid: string, attackIndex: number) => void;
 }
 
 export const useAppStore = createSelectors(
@@ -21,7 +23,10 @@ export const useAppStore = createSelectors(
         trainer: null,
         addPokemon: (pokemon, uuid: string = crypto.randomUUID()) =>
           set((state) => ({
-            pokemonTeam: { ...state.pokemonTeam, [uuid]: pokemon },
+            pokemonTeam: {
+              ...state.pokemonTeam,
+              [uuid]: { ...pokemon, attacks: pokemon.attacks || [] },
+            },
           })),
         updatePokemon: (updatedPokemon, uuid: string) =>
           set((state) => ({
@@ -39,6 +44,46 @@ export const useAppStore = createSelectors(
             };
           }),
         setTrainer: (trainer) => set({ trainer }),
+        addAttack: (pokemonUuid, attackIndex, attack) =>
+          set((state) => {
+            const pokemon = state.pokemonTeam[pokemonUuid];
+            if (!pokemon) return state;
+
+            const newAttacks = [...(pokemon.attacks || [])];
+            newAttacks[attackIndex] = attack;
+
+            return {
+              pokemonTeam: {
+                ...state.pokemonTeam,
+                [pokemonUuid]: {
+                  ...pokemon,
+                  attacks: newAttacks,
+                },
+              },
+            };
+          }),
+        decreaseAttackPP: (pokemonUuid, attackIndex) =>
+          set((state) => {
+            const pokemon = state.pokemonTeam[pokemonUuid];
+            if (!pokemon || !pokemon.attacks?.[attackIndex]) return state;
+
+            const newAttacks = [...pokemon.attacks];
+            const attack = { ...newAttacks[attackIndex] };
+
+            if (attack.pp > 0) {
+              attack.pp -= 1;
+            }
+            newAttacks[attackIndex] = attack;
+            return {
+              pokemonTeam: {
+                ...state.pokemonTeam,
+                [pokemonUuid]: {
+                  ...pokemon,
+                  attacks: newAttacks,
+                },
+              },
+            };
+          }),
         isLoading: true,
       }),
       {

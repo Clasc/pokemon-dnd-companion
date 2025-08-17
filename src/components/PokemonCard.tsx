@@ -6,6 +6,8 @@ import { useAppStore } from "../store";
 import { getPokemonIcon } from "@/utils/IconMapper";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import PokemonEditModal from "./PokemonEditModal";
+import AddAttackModal from "./AddAttackModal";
+import AttackCard from "./AttackCard";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -15,6 +17,11 @@ interface PokemonCardProps {
 export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [isAttacksVisible, setIsAttacksVisible] = useState(false);
+  const [showAddAttackModal, setShowAddAttackModal] = useState(false);
+  const [selectedAttackIndex, setSelectedAttackIndex] = useState<number | null>(
+    null,
+  );
 
   const removePokemon = useAppStore.use.removePokemon();
 
@@ -227,6 +234,63 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             </button>
           </div>
         </div>
+        {/* Attacks Dropdown Toggle */}
+        <div className="mt-4 flex justify-center">
+          <button
+            onClick={() => setIsAttacksVisible(!isAttacksVisible)}
+            className="w-full flex justify-center items-center p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+            aria-expanded={isAttacksVisible}
+          >
+            <span className="text-sm font-semibold">Attacks</span>
+            <svg
+              className={`w-5 h-5 ml-1 transition-transform transform ${
+                isAttacksVisible ? "rotate-180" : ""
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        {/* Attacks Section */}
+        {isAttacksVisible && (
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[...Array(4)].map((_, i) => {
+              const attack = pokemon.attacks?.[i];
+              return attack ? (
+                <AttackCard
+                  key={i}
+                  attack={attack}
+                  pokemonUuid={uuid}
+                  attackIndex={i}
+                />
+              ) : (
+                <div
+                  key={i}
+                  onClick={() => {
+                    setSelectedAttackIndex(i);
+                    setShowAddAttackModal(true);
+                  }}
+                  className="bg-white/5 rounded-lg flex items-center justify-center p-4 h-full border-2 border-dashed border-white/10 hover:bg-white/10 transition-colors cursor-pointer min-h-[120px]"
+                  role="button"
+                >
+                  <span className="text-white/50 font-semibold">
+                    + Add Attack
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Edit Modal */}
@@ -244,6 +308,19 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
         onConfirm={handleDelete}
         onCancel={() => setShowDeleteModal(false)}
       />
+
+      {/* Add Attack Modal */}
+      {selectedAttackIndex !== null && (
+        <AddAttackModal
+          isOpen={showAddAttackModal}
+          onClose={() => {
+            setShowAddAttackModal(false);
+            setSelectedAttackIndex(null);
+          }}
+          pokemonUuid={uuid}
+          attackIndex={selectedAttackIndex}
+        />
+      )}
     </>
   );
 }

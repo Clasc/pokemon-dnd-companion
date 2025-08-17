@@ -1,3 +1,15 @@
+export type ActionType = "action" | "bonus action";
+
+export interface Attack {
+  name: string;
+  pp: number;
+  actionType: ActionType;
+  moveBonus: number;
+  specialEffect?: string;
+  damageDice: "d4" | "d6" | "d10";
+  description?: string;
+}
+
 export interface Pokemon {
   type: string; // e.g., "Pikachu", "Charizard"
   name: string;
@@ -16,13 +28,7 @@ export interface Pokemon {
     wisdom: number;
     charisma: number;
   };
-  attacks?: {
-    name: string;
-    type: PokemonType;
-    power: number;
-    accuracy: number;
-    pp: number;
-  }[];
+  attacks: Attack[];
 
   status?: {
     condition: string;
