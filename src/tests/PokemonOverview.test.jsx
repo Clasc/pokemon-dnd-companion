@@ -25,35 +25,6 @@ jest.mock("../store", () => ({
   },
 }));
 
-// Mock the AddPokemonModal component
-jest.mock("../components/AddPokemonModal/AddPokemonModal", () => {
-  return function MockAddPokemonModal({ isOpen, onClose, onSave }) {
-    if (!isOpen) return null;
-    return (
-      <div data-testid="add-pokemon-modal">
-        <button onClick={() => onSave(mockPokemon)}>Save</button>
-        <button onClick={onClose}>Close Modal</button>
-      </div>
-    );
-  };
-});
-
-// Mock the PokemonCard component
-jest.mock("../components/PokemonCard", () => {
-  return function MockPokemonCard({ pokemon, uuid }) {
-    return (
-      <div data-testid={`pokemon-card-${uuid}`}>
-        <span data-testid="pokemon-name">{pokemon.name}</span>
-        <span data-testid="pokemon-type">{pokemon.type}</span>
-        <span data-testid="pokemon-level">Lv.{pokemon.level}</span>
-        <span data-testid="pokemon-hp">
-          {pokemon.currentHP}/{pokemon.maxHP}
-        </span>
-      </div>
-    );
-  };
-});
-
 describe("PokemonOverview", () => {
   beforeEach(() => {
     jest.clearAllMocks();
