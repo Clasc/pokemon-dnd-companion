@@ -12,19 +12,22 @@ import {
   createTestStore,
 } from "./utils/testUtils";
 import { PokemonTeam } from "../types/pokemon";
+import { jest, describe, it, beforeEach, expect } from "@jest/globals";
+
+const mockAddPokemon = jest.fn();
 
 // Mock the store
 jest.mock("../store", () => ({
   useAppStore: {
     use: {
-      addPokemon: jest.fn(),
+      addPokemon: () => mockAddPokemon,
     },
   },
 }));
 
 // Mock the AddPokemonModal component
 jest.mock("../components/AddPokemonModal/AddPokemonModal", () => {
-  return function MockAddPokemonModal({ isOpen, onClose, onSave }: any) {
+  return function MockAddPokemonModal({ isOpen, onClose, onSave }) {
     if (!isOpen) return null;
     return (
       <div data-testid="add-pokemon-modal">
@@ -37,7 +40,7 @@ jest.mock("../components/AddPokemonModal/AddPokemonModal", () => {
 
 // Mock the PokemonCard component
 jest.mock("../components/PokemonCard", () => {
-  return function MockPokemonCard({ pokemon, uuid }: any) {
+  return function MockPokemonCard({ pokemon, uuid }) {
     return (
       <div data-testid={`pokemon-card-${uuid}`}>
         <span data-testid="pokemon-name">{pokemon.name}</span>
@@ -52,16 +55,13 @@ jest.mock("../components/PokemonCard", () => {
 });
 
 describe("PokemonOverview", () => {
-  const mockAddPokemon = jest.fn();
-
   beforeEach(() => {
     jest.clearAllMocks();
-    (useAppStore.use.addPokemon as jest.Mock).mockReturnValue(mockAddPokemon);
   });
 
   describe("Empty State", () => {
     it("should render empty state when no pokemon are present", () => {
-      const emptyTeam: PokemonTeam = {};
+      const emptyTeam = {};
 
       render(<PokemonOverview pokemon={emptyTeam} />);
 
@@ -96,7 +96,7 @@ describe("PokemonOverview", () => {
 
     it("should open add pokemon modal when add button is clicked", async () => {
       const user = userEvent.setup();
-      const emptyTeam: PokemonTeam = {};
+      const emptyTeam = {};
 
       render(<PokemonOverview pokemon={emptyTeam} />);
 
@@ -109,7 +109,7 @@ describe("PokemonOverview", () => {
 
   describe("Single Pokemon", () => {
     it("should render single pokemon correctly", () => {
-      const singlePokemonTeam: PokemonTeam = {
+      const singlePokemonTeam = {
         "uuid-1": mockPokemon,
       };
 
@@ -178,7 +178,7 @@ describe("PokemonOverview", () => {
 
   describe("Full Team (6 Pokemon)", () => {
     it("should hide add button when team is full", () => {
-      const fullTeam: PokemonTeam = {};
+      const fullTeam = {};
       for (let i = 1; i <= 6; i++) {
         fullTeam[`uuid-${i}`] = {
           ...mockPokemon,
@@ -204,7 +204,7 @@ describe("PokemonOverview", () => {
 
   describe("Team Statistics Edge Cases", () => {
     it("should handle pokemon with zero max HP", () => {
-      const teamWithZeroHP: PokemonTeam = {
+      const teamWithZeroHP = {
         "uuid-1": {
           ...mockPokemon,
           currentHP: 0,
@@ -219,7 +219,7 @@ describe("PokemonOverview", () => {
     });
 
     it("should round average health percentage correctly", () => {
-      const teamWithSpecificHP: PokemonTeam = {
+      const teamWithSpecificHP = {
         "uuid-1": {
           ...mockPokemon,
           currentHP: 33,
@@ -242,7 +242,7 @@ describe("PokemonOverview", () => {
   describe("Add Pokemon Modal Integration", () => {
     it("should save pokemon when modal save is triggered", async () => {
       const user = userEvent.setup();
-      const emptyTeam: PokemonTeam = {};
+      const emptyTeam = {};
 
       render(<PokemonOverview pokemon={emptyTeam} />);
 
@@ -262,7 +262,7 @@ describe("PokemonOverview", () => {
 
     it("should close modal when close button is clicked", async () => {
       const user = userEvent.setup();
-      const emptyTeam: PokemonTeam = {};
+      const emptyTeam = {};
 
       render(<PokemonOverview pokemon={emptyTeam} />);
 
@@ -281,7 +281,7 @@ describe("PokemonOverview", () => {
 
     it("should close modal after successful save", async () => {
       const user = userEvent.setup();
-      const emptyTeam: PokemonTeam = {};
+      const emptyTeam = {};
 
       render(<PokemonOverview pokemon={emptyTeam} />);
 
@@ -312,7 +312,7 @@ describe("PokemonOverview", () => {
     });
 
     it("should have accessible button for adding pokemon", () => {
-      const emptyTeam: PokemonTeam = {};
+      const emptyTeam = {};
       render(<PokemonOverview pokemon={emptyTeam} />);
 
       const addButton = screen.getByRole("button", { name: /add pokémon/i });
@@ -336,7 +336,7 @@ describe("PokemonOverview", () => {
   describe("Component State Management", () => {
     it("should maintain modal state independently", async () => {
       const user = userEvent.setup();
-      const emptyTeam: PokemonTeam = {};
+      const emptyTeam = {};
 
       render(<PokemonOverview pokemon={emptyTeam} />);
 
