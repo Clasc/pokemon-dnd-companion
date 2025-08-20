@@ -45,7 +45,8 @@ export const useAppStore = createSelectors(
               pokemonTeam: restTeam,
             };
           }),
-        setTrainer: (trainer) => set({ trainer }),
+        setTrainer: (trainer) =>
+          set({ trainer: { ...trainer, inventory: trainer.inventory || [] } }),
         addAttack: (pokemonUuid, attackIndex, attack) =>
           set((state) => {
             const pokemon = state.pokemonTeam[pokemonUuid];

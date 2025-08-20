@@ -135,6 +135,19 @@ export const mockTrainer: Trainer = {
     wisdom: 16,
     charisma: 18,
   },
+  inventory: [
+    {
+      id: "1",
+      name: "Potion",
+      quantity: 3,
+      description: "Restores 20 HP",
+    },
+    {
+      id: "2",
+      name: "Pokeball",
+      quantity: 5,
+    },
+  ],
 };
 
 // Store interface for testing

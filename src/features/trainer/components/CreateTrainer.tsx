@@ -22,6 +22,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
     },
     currentHP: 0,
     maxHP: 0,
+    inventory: [],
   });
 
   const changeHandler =

@@ -7,6 +7,13 @@ export interface DnDAttributes {
   charisma: number;
 }
 
+export interface InventoryItem {
+  id: string;
+  name: string;
+  quantity: number;
+  description?: string;
+}
+
 export interface Trainer {
   name: string;
   level: number;
@@ -14,6 +21,7 @@ export interface Trainer {
   attributes: DnDAttributes;
   currentHP: number;
   maxHP: number;
+  inventory: InventoryItem[];
 }
 
 export const DEFAULT_ATTRIBUTES: DnDAttributes = {
@@ -32,4 +40,5 @@ export const DEFAULT_TRAINER: Trainer = {
   attributes: DEFAULT_ATTRIBUTES,
   currentHP: 0,
   maxHP: 0,
+  inventory: [],
 };
