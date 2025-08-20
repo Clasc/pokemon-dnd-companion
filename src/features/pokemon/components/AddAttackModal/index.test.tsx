@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import AddAttackModal from "./AddAttackModal";
+import AddAttackModal from ".";
 import { useAppStore } from "@/store";
 
 // Mock the Zustand store

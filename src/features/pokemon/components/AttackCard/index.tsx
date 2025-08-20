@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAppStore } from "@/store";
 import { Attack } from "@/types/pokemon";
-import AddAttackModal from "./AddAttackModal";
+import AddAttackModal from "../AddAttackModal";
 
 interface AttackCardProps {
   attack?: Attack;

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import PokemonCard from "./PokemonCard";
+import PokemonCard from ".";
 import { useAppStore } from "@/store";
 
 // Mock the Zustand store
@@ -22,31 +22,31 @@ jest.mock("@/components/shared/DeleteConfirmationModal", () => {
   };
 });
 
-jest.mock("./PokemonEditModal", () => {
+jest.mock("../PokemonEditModal", () => {
   return function MockPokemonEditModal() {
     return <div data-testid="edit-modal">Edit Modal</div>;
   };
 });
 
-jest.mock("./AddAttackModal", () => {
+jest.mock("../AddAttackModal", () => {
   return function MockAddAttackModal() {
     return <div data-testid="add-attack-modal">Add Attack Modal</div>;
   };
 });
 
-jest.mock("./AttackCard", () => {
+jest.mock("../AttackCard", () => {
   return function MockAttackCard() {
     return <div data-testid="attack-card">Attack Card</div>;
   };
 });
 
-jest.mock("./HPModifier", () => {
+jest.mock("../HPModifier", () => {
   return function MockHPModifier() {
     return <div data-testid="hp-modifier">HP Modifier</div>;
   };
 });
 
-jest.mock("./XPModifier", () => {
+jest.mock("../XPModifier", () => {
   return function MockXPModifier() {
     return <div data-testid="xp-modifier">XP Modifier</div>;
   };
@@ -83,9 +83,15 @@ describe("PokemonCard", () => {
   };
 
   const setupMockStore = () => {
-    (useAppStore.use.removePokemon as jest.Mock).mockReturnValue(mockRemovePokemon);
-    (useAppStore.use.modifyPokemonHP as jest.Mock).mockReturnValue(mockModifyPokemonHP);
-    (useAppStore.use.gainExperience as jest.Mock).mockReturnValue(mockGainExperience);
+    (useAppStore.use.removePokemon as jest.Mock).mockReturnValue(
+      mockRemovePokemon,
+    );
+    (useAppStore.use.modifyPokemonHP as jest.Mock).mockReturnValue(
+      mockModifyPokemonHP,
+    );
+    (useAppStore.use.gainExperience as jest.Mock).mockReturnValue(
+      mockGainExperience,
+    );
     (useAppStore.use.pokemonTeam as jest.Mock).mockReturnValue({
       "test-uuid": mockPokemon,
     });
@@ -110,7 +116,9 @@ describe("PokemonCard", () => {
   it("renders control buttons including Gain XP button", () => {
     render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
 
-    expect(screen.getByRole("button", { name: "Modify HP" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Modify HP" }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Gain XP" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Attacks" })).toBeInTheDocument();
   });
@@ -279,16 +287,16 @@ describe("PokemonCard", () => {
 
     render(<PokemonCard pokemon={lowHPPokemon} uuid="test-uuid" />);
 
-    const hpBar = document.querySelector('.h-full.rounded-full.transition-all');
-    expect(hpBar).toHaveStyle({ width: '20%' });
+    const hpBar = document.querySelector(".h-full.rounded-full.transition-all");
+    expect(hpBar).toHaveStyle({ width: "20%" });
   });
 
   it("calculates XP percentage correctly for styling", () => {
     render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
 
     // XP: 1500, Total: 2000, Percentage: 75%
-    const xpBar = document.querySelector('.xp-bar');
-    expect(xpBar).toHaveStyle({ width: '75%' });
+    const xpBar = document.querySelector(".xp-bar");
+    expect(xpBar).toHaveStyle({ width: "75%" });
   });
 
   it("handles zero max HP gracefully", () => {

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import XPModifier from "./XPModifier";
+import XPModifier from ".";
 import { useAppStore } from "@/store";
 
 // Mock the Zustand store

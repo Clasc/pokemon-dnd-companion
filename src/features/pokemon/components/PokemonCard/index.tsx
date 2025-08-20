@@ -5,11 +5,11 @@ import { useAppStore } from "@/store";
 import { Pokemon, Attributes, TYPE_COLORS } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
 import DeleteConfirmationModal from "@/components/shared/DeleteConfirmationModal";
-import PokemonEditModal from "./PokemonEditModal";
-import AddAttackModal from "./AddAttackModal";
-import AttackCard from "./AttackCard";
-import HPModifier from "./HPModifier";
-import XPModifier from "./XPModifier";
+import PokemonEditModal from "../PokemonEditModal";
+import AddAttackModal from "../AddAttackModal";
+import AttackCard from "../AttackCard";
+import HPModifier from "../HPModifier";
+import XPModifier from "../XPModifier";
 
 interface PokemonCardProps {
   pokemon: Pokemon;

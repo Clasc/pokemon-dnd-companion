@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import HPModifier from "./HPModifier";
+import HPModifier from ".";
 import { useAppStore } from "@/store";
 import { Pokemon } from "@/types/pokemon";
 

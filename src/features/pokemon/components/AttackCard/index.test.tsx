@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import AttackCard from "./AttackCard";
+import AttackCard from ".";
 import { useAppStore } from "@/store";
 import { Attack } from "@/types/pokemon";
 
