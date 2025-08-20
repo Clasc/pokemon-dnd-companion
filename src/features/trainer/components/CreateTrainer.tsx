@@ -23,6 +23,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
     currentHP: 0,
     maxHP: 0,
     inventory: [],
+    pokedollars: 0,
   });
 
   const changeHandler =

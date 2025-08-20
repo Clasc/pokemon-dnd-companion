@@ -37,7 +37,9 @@ describe("XPModifier", () => {
     attacks: [],
   };
 
-  const setupMockStore = (pokemonTeam = { "test-uuid": mockPokemon }) => {
+  const setupMockStore = (
+    pokemonTeam: Record<string, any> = { "test-uuid": mockPokemon },
+  ) => {
     (useAppStore.use.gainExperience as jest.Mock).mockReturnValue(
       mockGainExperience,
     );
@@ -165,7 +167,7 @@ describe("XPModifier", () => {
   });
 
   it("returns null when pokemon is not found", () => {
-    setupMockStore({});
+    setupMockStore();
 
     const { container } = render(
       <XPModifier pokemonUuid="nonexistent-uuid" onClose={mockOnClose} />,

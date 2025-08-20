@@ -18,6 +18,7 @@ export default function TrainerOverview() {
       setEditedTrainer({
         ...trainer,
         inventory: trainer.inventory || [],
+        pokedollars: trainer.pokedollars || 0,
       });
     }
   }, [trainer]);
@@ -93,6 +94,18 @@ export default function TrainerOverview() {
     const updatedTrainer = {
       ...editedTrainer,
       inventory: [...(editedTrainer.inventory || []), itemWithId],
+    };
+    setEditedTrainer(updatedTrainer);
+
+    if (!isEditing) {
+      setTrainer(updatedTrainer);
+    }
+  };
+
+  const handleUpdatePokedollars = (newAmount: number) => {
+    const updatedTrainer = {
+      ...editedTrainer,
+      pokedollars: newAmount,
     };
     setEditedTrainer(updatedTrainer);
 
@@ -230,9 +243,11 @@ export default function TrainerOverview() {
         {/* Inventory Section */}
         <TrainerInventory
           inventory={trainer.inventory || []}
+          pokedollars={trainer.pokedollars || 0}
           onUseItem={handleUseItem}
           onAddItem={handleAddItem}
           onIncreaseItem={handleIncreaseItem}
+          onUpdatePokedollars={handleUpdatePokedollars}
           isEditable={true}
         />
       </div>

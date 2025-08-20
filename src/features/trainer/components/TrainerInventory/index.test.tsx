@@ -8,6 +8,7 @@ describe("TrainerInventory", () => {
   const mockOnUseItem = jest.fn();
   const mockOnAddItem = jest.fn();
   const mockOnIncreaseItem = jest.fn();
+  const mockOnUpdatePokedollars = jest.fn();
 
   const sampleInventory: InventoryItem[] = [
     {
@@ -29,59 +30,41 @@ describe("TrainerInventory", () => {
     },
   ];
 
+  const defaultProps = {
+    inventory: sampleInventory,
+    pokedollars: 100,
+    onUseItem: mockOnUseItem,
+    onAddItem: mockOnAddItem,
+    onIncreaseItem: mockOnIncreaseItem,
+    onUpdatePokedollars: mockOnUpdatePokedollars,
+    isEditable: true,
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("renders inventory section with correct item count", () => {
-    render(
-      <TrainerInventory
-        inventory={sampleInventory}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} />);
 
     expect(screen.getByText("Inventory (3)")).toBeInTheDocument();
   });
 
   it("renders empty inventory message when no items", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     expect(screen.getByText("Inventory (0)")).toBeInTheDocument();
   });
 
   it("initially does not show inventory items", () => {
-    render(
-      <TrainerInventory
-        inventory={sampleInventory}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} />);
 
     expect(screen.queryByText("Potion")).not.toBeInTheDocument();
     expect(screen.queryByText("Pokeball")).not.toBeInTheDocument();
   });
 
   it("shows inventory items when inventory is expanded", () => {
-    render(
-      <TrainerInventory
-        inventory={sampleInventory}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} />);
 
     const inventoryButton = screen.getByText("Inventory (3)");
     fireEvent.click(inventoryButton);
@@ -97,14 +80,7 @@ describe("TrainerInventory", () => {
   });
 
   it("hides inventory items when inventory is collapsed", () => {
-    render(
-      <TrainerInventory
-        inventory={sampleInventory}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} />);
 
     const inventoryButton = screen.getByText("Inventory (3)");
 
@@ -118,14 +94,7 @@ describe("TrainerInventory", () => {
   });
 
   it("shows empty inventory message when expanded with no items", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
@@ -134,14 +103,7 @@ describe("TrainerInventory", () => {
   });
 
   it("calls onUseItem when Use button is clicked", () => {
-    render(
-      <TrainerInventory
-        inventory={sampleInventory}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} />);
 
     const inventoryButton = screen.getByText("Inventory (3)");
     fireEvent.click(inventoryButton);
@@ -154,14 +116,7 @@ describe("TrainerInventory", () => {
   });
 
   it("calls onIncreaseItem when + button is clicked", () => {
-    render(
-      <TrainerInventory
-        inventory={sampleInventory}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} />);
 
     const inventoryButton = screen.getByText("Inventory (3)");
     fireEvent.click(inventoryButton);
@@ -174,15 +129,7 @@ describe("TrainerInventory", () => {
   });
 
   it("shows Add Item button when editable", () => {
-    render(
-      <TrainerInventory
-        inventory={sampleInventory}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-        isEditable={true}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} />);
 
     const inventoryButton = screen.getByText("Inventory (3)");
     fireEvent.click(inventoryButton);
@@ -191,15 +138,7 @@ describe("TrainerInventory", () => {
   });
 
   it("does not show Use buttons when not editable", () => {
-    render(
-      <TrainerInventory
-        inventory={sampleInventory}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-        isEditable={false}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} isEditable={false} />);
 
     const inventoryButton = screen.getByText("Inventory (3)");
     fireEvent.click(inventoryButton);
@@ -209,15 +148,7 @@ describe("TrainerInventory", () => {
   });
 
   it("does not show Add Item button when not editable", () => {
-    render(
-      <TrainerInventory
-        inventory={sampleInventory}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-        isEditable={false}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} isEditable={false} />);
 
     const inventoryButton = screen.getByText("Inventory (3)");
     fireEvent.click(inventoryButton);
@@ -226,14 +157,7 @@ describe("TrainerInventory", () => {
   });
 
   it("opens add item modal when Add Item button is clicked", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
@@ -250,14 +174,7 @@ describe("TrainerInventory", () => {
   });
 
   it("closes add item modal when cancel button is clicked", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
@@ -272,14 +189,7 @@ describe("TrainerInventory", () => {
   });
 
   it("closes add item modal when X button is clicked", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
@@ -294,14 +204,7 @@ describe("TrainerInventory", () => {
   });
 
   it("calls onAddItem when item is added with valid data", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
@@ -334,14 +237,7 @@ describe("TrainerInventory", () => {
   });
 
   it("calls onAddItem without description when description is empty", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
@@ -367,14 +263,7 @@ describe("TrainerInventory", () => {
   });
 
   it("resets form fields after adding an item", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
@@ -416,14 +305,7 @@ describe("TrainerInventory", () => {
   });
 
   it("disables Add Item button when name is empty", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
@@ -437,14 +319,7 @@ describe("TrainerInventory", () => {
   });
 
   it("enables Add Item button when name is provided", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
@@ -461,14 +336,7 @@ describe("TrainerInventory", () => {
   });
 
   it("enforces minimum quantity of 1", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
@@ -483,14 +351,7 @@ describe("TrainerInventory", () => {
   });
 
   it("handles invalid quantity input gracefully", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
@@ -505,14 +366,7 @@ describe("TrainerInventory", () => {
   });
 
   it("trims whitespace from item name", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
@@ -535,14 +389,7 @@ describe("TrainerInventory", () => {
   });
 
   it("does not add item if name is only whitespace", () => {
-    render(
-      <TrainerInventory
-        inventory={[]}
-        onUseItem={mockOnUseItem}
-        onAddItem={mockOnAddItem}
-        onIncreaseItem={mockOnIncreaseItem}
-      />,
-    );
+    render(<TrainerInventory {...defaultProps} inventory={[]} />);
 
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
@@ -559,5 +406,160 @@ describe("TrainerInventory", () => {
 
     expect(mockOnAddItem).not.toHaveBeenCalled();
     expect(screen.getByText("Add New Item")).toBeInTheDocument(); // Modal should stay open
+  });
+
+  describe("Pokedollars", () => {
+    it("displays pokedollars with correct formatting", () => {
+      render(<TrainerInventory {...defaultProps} pokedollars={1234567} />);
+
+      expect(screen.getByText("Pokedollars")).toBeInTheDocument();
+      expect(screen.getByText("1,234,567")).toBeInTheDocument();
+    });
+
+    it("displays 0 pokedollars when amount is 0", () => {
+      render(<TrainerInventory {...defaultProps} pokedollars={0} />);
+
+      expect(screen.getByText("0")).toBeInTheDocument();
+    });
+
+    it("shows pokedollar input and buttons when editable", () => {
+      render(<TrainerInventory {...defaultProps} pokedollars={100} />);
+
+      expect(screen.getByPlaceholderText("Amount")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Subtract" }),
+      ).toBeInTheDocument();
+    });
+
+    it("does not show pokedollar input and buttons when not editable", () => {
+      render(
+        <TrainerInventory
+          {...defaultProps}
+          pokedollars={100}
+          isEditable={false}
+        />,
+      );
+
+      expect(screen.queryByPlaceholderText("Amount")).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "Add" }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "Subtract" }),
+      ).not.toBeInTheDocument();
+    });
+
+    it("calls onUpdatePokedollars when Add button is clicked", () => {
+      render(<TrainerInventory {...defaultProps} pokedollars={100} />);
+
+      const amountInput = screen.getByPlaceholderText("Amount");
+      const addButton = screen.getByRole("button", { name: "Add" });
+
+      fireEvent.change(amountInput, { target: { value: "50" } });
+      fireEvent.click(addButton);
+
+      expect(mockOnUpdatePokedollars).toHaveBeenCalledWith(150);
+    });
+
+    it("calls onUpdatePokedollars when Subtract button is clicked", () => {
+      render(<TrainerInventory {...defaultProps} pokedollars={100} />);
+
+      const amountInput = screen.getByPlaceholderText("Amount");
+      const subtractButton = screen.getByRole("button", { name: "Subtract" });
+
+      fireEvent.change(amountInput, { target: { value: "30" } });
+      fireEvent.click(subtractButton);
+
+      expect(mockOnUpdatePokedollars).toHaveBeenCalledWith(70);
+    });
+
+    it("prevents pokedollars from going below 0", () => {
+      render(<TrainerInventory {...defaultProps} pokedollars={50} />);
+
+      const amountInput = screen.getByPlaceholderText("Amount");
+      const subtractButton = screen.getByRole("button", { name: "Subtract" });
+
+      fireEvent.change(amountInput, { target: { value: "100" } });
+      fireEvent.click(subtractButton);
+
+      expect(mockOnUpdatePokedollars).toHaveBeenCalledWith(0);
+    });
+
+    it("clears amount input after adding pokedollars", () => {
+      render(<TrainerInventory {...defaultProps} pokedollars={100} />);
+
+      const amountInput = screen.getByPlaceholderText(
+        "Amount",
+      ) as HTMLInputElement;
+      const addButton = screen.getByRole("button", { name: "Add" });
+
+      fireEvent.change(amountInput, { target: { value: "50" } });
+      fireEvent.click(addButton);
+
+      expect(amountInput.value).toBe("");
+    });
+
+    it("clears amount input after subtracting pokedollars", () => {
+      render(<TrainerInventory {...defaultProps} pokedollars={100} />);
+
+      const amountInput = screen.getByPlaceholderText(
+        "Amount",
+      ) as HTMLInputElement;
+      const subtractButton = screen.getByRole("button", { name: "Subtract" });
+
+      fireEvent.change(amountInput, { target: { value: "25" } });
+      fireEvent.click(subtractButton);
+
+      expect(amountInput.value).toBe("");
+    });
+
+    it("disables Add and Subtract buttons when amount is empty", () => {
+      render(<TrainerInventory {...defaultProps} pokedollars={100} />);
+
+      const addButton = screen.getByRole("button", { name: "Add" });
+      const subtractButton = screen.getByRole("button", { name: "Subtract" });
+
+      expect(addButton).toBeDisabled();
+      expect(subtractButton).toBeDisabled();
+    });
+
+    it("disables Add and Subtract buttons when amount is 0", () => {
+      render(<TrainerInventory {...defaultProps} pokedollars={100} />);
+
+      const amountInput = screen.getByPlaceholderText("Amount");
+      const addButton = screen.getByRole("button", { name: "Add" });
+      const subtractButton = screen.getByRole("button", { name: "Subtract" });
+
+      fireEvent.change(amountInput, { target: { value: "0" } });
+
+      expect(addButton).toBeDisabled();
+      expect(subtractButton).toBeDisabled();
+    });
+
+    it("enables Add and Subtract buttons when valid amount is entered", () => {
+      render(<TrainerInventory {...defaultProps} pokedollars={100} />);
+
+      const amountInput = screen.getByPlaceholderText("Amount");
+      const addButton = screen.getByRole("button", { name: "Add" });
+      const subtractButton = screen.getByRole("button", { name: "Subtract" });
+
+      fireEvent.change(amountInput, { target: { value: "25" } });
+
+      expect(addButton).not.toBeDisabled();
+      expect(subtractButton).not.toBeDisabled();
+    });
+
+    it("handles invalid amount input gracefully", () => {
+      render(<TrainerInventory {...defaultProps} pokedollars={100} />);
+
+      const amountInput = screen.getByPlaceholderText("Amount");
+      const addButton = screen.getByRole("button", { name: "Add" });
+
+      fireEvent.change(amountInput, { target: { value: "invalid" } });
+      fireEvent.click(addButton);
+
+      expect(mockOnUpdatePokedollars).not.toHaveBeenCalled();
+    });
   });
 });

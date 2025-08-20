@@ -135,6 +135,7 @@ export const mockTrainer: Trainer = {
     wisdom: 16,
     charisma: 18,
   },
+  pokedollars: 500,
   inventory: [
     {
       id: "1",

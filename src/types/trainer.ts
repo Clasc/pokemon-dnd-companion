@@ -22,6 +22,7 @@ export interface Trainer {
   currentHP: number;
   maxHP: number;
   inventory: InventoryItem[];
+  pokedollars: number;
 }
 
 export const DEFAULT_ATTRIBUTES: DnDAttributes = {
@@ -41,4 +42,5 @@ export const DEFAULT_TRAINER: Trainer = {
   currentHP: 0,
   maxHP: 0,
   inventory: [],
+  pokedollars: 0,
 };
