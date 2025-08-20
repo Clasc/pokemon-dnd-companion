@@ -23,6 +23,7 @@ npm run dev
 - Never  mock Zustand store in tests. Use the actual Zustand store to ensure realistic testing.
 - Never use snapshot tests. Instead, write tests that check the actual behavior of the components and functions. If you encounter a snapshot test, refactor it to a more appropriate test that checks the actual behavior, after confirming with the user that the snapshot test is not needed.
 - Ensure that all tests pass before committing any changes.
+
 ### Querying DOM
 When querying the DOM in tests, use the following methods, with the following priorities:
 - Use `getByRole` to find elements by their role.
@@ -81,7 +82,15 @@ Then run the tests to ensure everything is functioning correctly.
 After the tests pass, commit the changes with a clear and concise commit message that describes the modifications made.
 Finally, inform the user that the changes have been successfully committed and provide a summary of the modifications.
 
-## Component Structure
+
+## Project of Structure
+1.  **Feature-based Organization**: Components and logic related to a specific feature (e.g., `pokemon`, `trainer`) are grouped together within the `src/features` directory. This makes it easier to locate all relevant files for a particular feature, improving maintainability and scalability.
+
+2.  **Shared Components**: Reusable UI components that are not specific to any single feature are placed in the `src/components/shared` directory. This promotes reusability, reduces code duplication, and ensures consistency across the application.
+
+This approach helps in creating a modular and organized codebase, making it easier for developers to understand, navigate, and contribute to the project.
+
+### Component Structure
 
 Each component is typically structured within its own directory, containing the component's main file (`index.tsx`) and its corresponding test file (`index.test.tsx`) as siblings.
 
@@ -92,13 +101,10 @@ Component/
 ├───index.tsx
 └───index.test.tsx
 ```
-
-## Philosophy of Structure
-
 The project's structure is based on two main principles:
 
-1.  **Feature-based Organization**: Components and logic related to a specific feature (e.g., `pokemon`, `trainer`) are grouped together within the `src/features` directory. This makes it easier to locate all relevant files for a particular feature, improving maintainability and scalability.
-
-2.  **Shared Components**: Reusable UI components that are not specific to any single feature are placed in the `src/components/shared` directory. This promotes reusability, reduces code duplication, and ensures consistency across the application.
-
-This approach helps in creating a modular and organized codebase, making it easier for developers to understand, navigate, and contribute to the project.
+## Component Conventions
+- **File Naming**: Components are named using PascalCase, and their main file is named `index.tsx`. This allows for cleaner imports.
+- **Test Files**: Each component has a corresponding test file named `index.test.tsx`, located in the same directory as the component. This keeps tests close to the components they test,
+Keep Components small and focused on a single responsibility. If a component grows too large, consider breaking it down into smaller sub-components.
+A component is too big, if comments are needed to explain its purpose or functionality. If you find yourself writing comments to explain what a component does, it's a sign that the component should be refactored into smaller, more focused components.
