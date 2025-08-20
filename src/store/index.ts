@@ -14,6 +14,7 @@ interface AppState {
   addAttack: (pokemonUuid: string, attackIndex: number, attack: Attack) => void;
   decreaseAttackPP: (pokemonUuid: string, attackIndex: number) => void;
   modifyPokemonHP: (pokemonUuid: string, hpChange: number) => void;
+  gainExperience: (pokemonUuid: string, xpGained: number) => void;
 }
 
 export const useAppStore = createSelectors(
@@ -104,6 +105,41 @@ export const useAppStore = createSelectors(
                 [pokemonUuid]: {
                   ...pokemon,
                   currentHP: newCurrentHP,
+                },
+              },
+            };
+          }),
+        gainExperience: (pokemonUuid, xpGained) =>
+          set((state) => {
+            const pokemon = state.pokemonTeam[pokemonUuid];
+            if (!pokemon || xpGained <= 0) return state;
+
+            const newExperience = pokemon.experience + xpGained;
+            let newLevel = pokemon.level;
+            let newExperienceToNext = pokemon.experienceToNext;
+
+            // Simple level up logic: if gained XP exceeds experienceToNext, level up
+            if (xpGained >= pokemon.experienceToNext) {
+              newLevel += 1;
+              const remainingXP = xpGained - pokemon.experienceToNext;
+              // Reset experience to remaining XP after level up
+              // For simplicity, assume each level requires 100 more XP than the previous
+              newExperienceToNext = 100 * newLevel - remainingXP;
+              if (newExperienceToNext <= 0) {
+                newExperienceToNext = 100; // Minimum XP needed for next level
+              }
+            } else {
+              newExperienceToNext = pokemon.experienceToNext - xpGained;
+            }
+
+            return {
+              pokemonTeam: {
+                ...state.pokemonTeam,
+                [pokemonUuid]: {
+                  ...pokemon,
+                  experience: newExperience,
+                  experienceToNext: newExperienceToNext,
+                  level: newLevel,
                 },
               },
             };

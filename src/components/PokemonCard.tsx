@@ -9,6 +9,7 @@ import PokemonEditModal from "./PokemonEditModal";
 import AddAttackModal from "./AddAttackModal";
 import AttackCard from "./AttackCard";
 import HPModifier from "./HPModifier";
+import XPModifier from "./XPModifier";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -22,6 +23,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
   const [isAttacksVisible, setIsAttacksVisible] = useState(false);
   const [showAddAttackModal, setShowAddAttackModal] = useState(false);
   const [showHPModifier, setShowHPModifier] = useState(false);
+  const [showXPModifier, setShowXPModifier] = useState(false);
   const [selectedAttackIndex, setSelectedAttackIndex] = useState<number | null>(
     null,
   );
@@ -288,6 +290,12 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             <span className="text-sm font-semibold">Modify HP</span>
           </button>
           <button
+            onClick={() => setShowXPModifier(true)}
+            className="flex-1 flex justify-center items-center p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+          >
+            <span className="text-sm font-semibold">Gain XP</span>
+          </button>
+          <button
             onClick={() => setIsAttacksVisible(!isAttacksVisible)}
             className="flex-1 flex justify-center items-center p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
             aria-expanded={isAttacksVisible}
@@ -349,6 +357,14 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
         <HPModifier
           pokemonUuid={uuid}
           onClose={() => setShowHPModifier(false)}
+        />
+      )}
+
+      {/* XP Modifier Overlay */}
+      {showXPModifier && (
+        <XPModifier
+          pokemonUuid={uuid}
+          onClose={() => setShowXPModifier(false)}
         />
       )}
 
