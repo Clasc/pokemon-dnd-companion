@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import EditButtons from "@/components/shared/EditButtons";
 import { useAppStore } from "@/store";
 import { Trainer, InventoryItem } from "@/types/trainer";
+import EditButton from "@/components/shared/ActionButtons/EditButton";
 
 export default function TrainerOverview() {
   const [isEditing, setIsEditing] = useState(false);
@@ -175,10 +176,7 @@ export default function TrainerOverview() {
   return (
     <>
       {/* Read-only Summary View */}
-      <div
-        className="glass rounded-2xl p-6 cursor-pointer hover:bg-white/10 transition-all duration-300 space-y-4"
-        onClick={() => setIsEditing(true)}
-      >
+      <div className="glass rounded-2xl p-6 cursor-pointer hover:bg-white/10 transition-all duration-300 space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-white p-2">Trainer Overview</h2>
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
@@ -187,7 +185,7 @@ export default function TrainerOverview() {
             </span>
           </div>
         </div>
-
+        <EditButton onClick={() => setIsEditing(true)} />
         <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
           <h3 className="text-lg font-semibold text-white mb-2">
             {trainer.name || "Unnamed Trainer"}
