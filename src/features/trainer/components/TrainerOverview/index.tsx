@@ -5,7 +5,7 @@ import EditButtons from "@/components/shared/EditButtons";
 import { useAppStore } from "@/store";
 import { Trainer, InventoryItem } from "@/types/trainer";
 import EditButton from "@/components/shared/ActionButtons/EditButton";
-import TrainerInventory from "./TrainerInventory";
+import TrainerInventory from "../TrainerInventory";
 
 export default function TrainerOverview() {
   const [isEditing, setIsEditing] = useState(false);
@@ -164,6 +164,14 @@ export default function TrainerOverview() {
     return shortNames[attr];
   };
 
+  const getAttributeModifier = (score: number) => {
+    return Math.floor((score - 10) / 2);
+  };
+
+  const formatModifier = (modifier: number) => {
+    return modifier >= 0 ? `+${modifier}` : `${modifier}`;
+  };
+
   const getHPPercentage = (hp: number, maxHp: number) => {
     return maxHp > 0 ? (hp / maxHp) * 100 : 0;
   };
@@ -217,7 +225,9 @@ export default function TrainerOverview() {
                   {getAttributeShortName(attr)}
                 </span>
                 <span className="font-bold text-base">
-                  {trainer.attributes[attr]}
+                  {formatModifier(
+                    getAttributeModifier(trainer.attributes[attr]),
+                  )}
                 </span>
               </div>
             ))}
