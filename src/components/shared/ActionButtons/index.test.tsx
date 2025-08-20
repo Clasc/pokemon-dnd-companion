@@ -174,7 +174,6 @@ describe("ActionButtons", () => {
     fireEvent.click(menuButton);
 
     const editButton = screen.getByText("Edit");
-    const deleteButton = screen.getByText("Delete");
 
     // Should not throw errors when clicking buttons
     fireEvent.click(editButton);

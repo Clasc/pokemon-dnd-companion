@@ -182,6 +182,7 @@ export const createTestStore = (initialState: Partial<TestAppState> = {}) => {
             })),
           removePokemon: (id: string) =>
             set((state) => {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const { [id]: _removed, ...restTeam } = state.pokemonTeam;
               return {
                 pokemonTeam: restTeam,
