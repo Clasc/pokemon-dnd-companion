@@ -85,6 +85,14 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
     return shortNames[attr];
   };
 
+  const getAttributeModifier = (score: number) => {
+    return Math.floor((score - 10) / 2);
+  };
+
+  const formatModifier = (modifier: number) => {
+    return modifier >= 0 ? `+${modifier}` : `${modifier}`;
+  };
+
   return (
     <>
       <div className="glass rounded-2xl p-4">
@@ -144,7 +152,9 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                       {getAttributeShortName(attr)}
                     </span>
                     <span className="font-bold">
-                      {pokemon.attributes[attr]}
+                      {formatModifier(
+                        getAttributeModifier(pokemon.attributes[attr]),
+                      )}
                     </span>
                   </div>
                 ))}

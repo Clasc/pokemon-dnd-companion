@@ -153,21 +153,62 @@ describe("PokemonCard", () => {
     expect(screen.queryByTestId("xp-modifier")).not.toBeInTheDocument();
   });
 
-  it("displays attribute chips with correct values", () => {
+  it("displays attribute chips with correct modifiers", () => {
     render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
 
-    expect(screen.getByText("STR")).toBeInTheDocument();
-    expect(screen.getByText("10")).toBeInTheDocument();
-    expect(screen.getByText("DEX")).toBeInTheDocument();
-    expect(screen.getByText("15")).toBeInTheDocument();
-    expect(screen.getByText("CON")).toBeInTheDocument();
-    expect(screen.getByText("12")).toBeInTheDocument();
-    expect(screen.getByText("INT")).toBeInTheDocument();
-    expect(screen.getByText("14")).toBeInTheDocument();
-    expect(screen.getByText("WIS")).toBeInTheDocument();
-    expect(screen.getByText("11")).toBeInTheDocument();
-    expect(screen.getByText("CHA")).toBeInTheDocument();
-    expect(screen.getByText("13")).toBeInTheDocument();
+    // Check that modifiers are displayed correctly by finding the attribute sections
+    expect(screen.getByText("STR").parentElement).toHaveTextContent("+0"); // STR 10 = +0
+    expect(screen.getByText("DEX").parentElement).toHaveTextContent("+2"); // DEX 15 = +2
+    expect(screen.getByText("CON").parentElement).toHaveTextContent("+1"); // CON 12 = +1
+    expect(screen.getByText("INT").parentElement).toHaveTextContent("+2"); // INT 14 = +2
+    expect(screen.getByText("WIS").parentElement).toHaveTextContent("+0"); // WIS 11 = +0
+    expect(screen.getByText("CHA").parentElement).toHaveTextContent("+1"); // CHA 13 = +1
+  });
+
+  it("should calculate modifiers correctly for various attribute scores", () => {
+    const pokemonWithVariedStats = {
+      ...mockPokemon,
+      attributes: {
+        strength: 8, // -1
+        dexterity: 20, // +5
+        constitution: 1, // -5
+        intelligence: 30, // +10
+        wisdom: 18, // +4
+        charisma: 6, // -2
+      },
+    };
+
+    render(<PokemonCard pokemon={pokemonWithVariedStats} uuid="test-uuid" />);
+
+    expect(screen.getByText("STR").parentElement).toHaveTextContent("-1"); // STR 8 = -1
+    expect(screen.getByText("DEX").parentElement).toHaveTextContent("+5"); // DEX 20 = +5
+    expect(screen.getByText("CON").parentElement).toHaveTextContent("-5"); // CON 1 = -5
+    expect(screen.getByText("INT").parentElement).toHaveTextContent("+10"); // INT 30 = +10
+    expect(screen.getByText("WIS").parentElement).toHaveTextContent("+4"); // WIS 18 = +4
+    expect(screen.getByText("CHA").parentElement).toHaveTextContent("-2"); // CHA 6 = -2
+  });
+
+  it("should handle edge cases for modifier calculation", () => {
+    const pokemonWithEdgeCases = {
+      ...mockPokemon,
+      attributes: {
+        strength: 9, // -1
+        dexterity: 11, // +0
+        constitution: 19, // +4
+        intelligence: 21, // +5
+        wisdom: 10, // +0
+        charisma: 15, // +2
+      },
+    };
+
+    render(<PokemonCard pokemon={pokemonWithEdgeCases} uuid="test-uuid" />);
+
+    expect(screen.getByText("STR").parentElement).toHaveTextContent("-1"); // STR 9 = -1
+    expect(screen.getByText("DEX").parentElement).toHaveTextContent("+0"); // DEX 11 = +0
+    expect(screen.getByText("CON").parentElement).toHaveTextContent("+4"); // CON 19 = +4
+    expect(screen.getByText("INT").parentElement).toHaveTextContent("+5"); // INT 21 = +5
+    expect(screen.getByText("WIS").parentElement).toHaveTextContent("+0"); // WIS 10 = +0
+    expect(screen.getByText("CHA").parentElement).toHaveTextContent("+2"); // CHA 15 = +2
   });
 
   it("displays dual type pokemon correctly", () => {
