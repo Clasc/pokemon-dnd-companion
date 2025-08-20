@@ -80,3 +80,25 @@ After the user confirms that everything works as expected, add tests that cover 
 Then run the tests to ensure everything is functioning correctly.
 After the tests pass, commit the changes with a clear and concise commit message that describes the modifications made.
 Finally, inform the user that the changes have been successfully committed and provide a summary of the modifications.
+
+## Component Structure
+
+Each component is typically structured within its own directory, containing the component's main file (`index.tsx`) and its corresponding test file (`index.test.tsx`) as siblings.
+
+Example:
+
+```
+Component/
+├───index.tsx
+└───index.test.tsx
+```
+
+## Philosophy of Structure
+
+The project's structure is based on two main principles:
+
+1.  **Feature-based Organization**: Components and logic related to a specific feature (e.g., `pokemon`, `trainer`) are grouped together within the `src/features` directory. This makes it easier to locate all relevant files for a particular feature, improving maintainability and scalability.
+
+2.  **Shared Components**: Reusable UI components that are not specific to any single feature are placed in the `src/components/shared` directory. This promotes reusability, reduces code duplication, and ensures consistency across the application.
+
+This approach helps in creating a modular and organized codebase, making it easier for developers to understand, navigate, and contribute to the project.
