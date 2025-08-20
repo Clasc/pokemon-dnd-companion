@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Pokemon, PokemonTeam } from "@/types/pokemon";
-import PokemonCard from "../PokemonCard";
+import PokemonCard from "../PokemonCard/";
 import AddPokemonModal from "@/features/pokemon/components/AddPokemonModal/AddPokemonModal";
 import { useAppStore } from "@/store";
 
