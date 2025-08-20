@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, ChangeEventHandler, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Trainer, DnDAttributes } from "@/types/trainer";
 
 interface TrainerFormProps {
