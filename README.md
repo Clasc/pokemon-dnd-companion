@@ -5,19 +5,21 @@ A mobile‑first Single Page Application (SPA) that helps players manage a hybri
 ---
 
 ## Table of Contents
-1. Overview
-2. Core Features
-3. Tech Stack
-4. Application Architecture
-5. State & Data Model
-6. UI / UX & Design System
-7. Performance Characteristics
-8. Project Structure
-9. Getting Started
-10. Development Scripts
-11. Roadmap / Future Scope
-12. Contributing
-13. License / Usage
+1. [Overview](#1-overview)
+2. [Core Features](#2-core-features-current-implementation)
+3. [Tech Stack](#3-tech-stack)
+4. [Application Architecture](#4-application-architecture)
+5. [State & Data Model](#5-state--data-model)
+6. [UI / UX & Design System](#6-ui--ux--design-system)
+7. [Performance Characteristics](#7-performance-characteristics)
+8. [Project Structure](#8-project-structure)
+9. [Naming Conventions](#9-naming-conventions)
+10. [Testing](#10-testing)
+11. [Getting Started](#11-getting-started)
+12. [Development Scripts](#12-development-scripts)
+13. [Roadmap / Future Scope](#13-roadmap--future-scope)
+14. [Contributing](#14-contributing)
+15. [License / Usage](#15-license--usage)
 
 ---
 
@@ -87,6 +89,7 @@ It is optimized for touch devices (phones & tablets) while remaining usable on d
 | Language | TypeScript |
 | UI | React + Tailwind CSS + custom CSS variables |
 | State | Zustand (with persistence middleware) |
+| Testing | Jest + @testing-library/react |
 | Persistence | Browser localStorage |
 | Icons / Type Labels | Emoji-based system |
 | Styling Patterns | Glassmorphism, responsive utilities |
@@ -96,8 +99,8 @@ It is optimized for touch devices (phones & tablets) while remaining usable on d
 ## 4. Application Architecture
 
 - **App Directory**: Next.js 14+ App Router structure
-- **Componentization**: Feature-scoped directories (e.g. `AddPokemonModal/`)
-- **Reusable Primitives**: Shared UI components under `components/Shared`
+- **Feature-based Organization**: Components and logic related to specific features (e.g., `pokemon`, `trainer`) are grouped together within the `src/features` directory
+- **Shared Components**: Reusable UI components that are not specific to any single feature are placed in the `src/components/shared` directory
 - **Hooks**: Custom hooks abstract state selection and transformations
 - **Modals**: Compound component pattern for accessibility and layering
 - **Utilities**: Formatting, calculations, derived stats in `utils/`
@@ -107,6 +110,7 @@ Design patterns emphasize:
 - Separation of state shape from presentation
 - Selector-based Zustand consumption to minimize re-renders
 - Declarative, prop-driven visual components
+- Modular and organized codebase for improved maintainability and scalability
 
 ---
 
@@ -145,89 +149,203 @@ Highlights:
 
 ---
 
-## 8. Project Structure (Simplified)
+## 8. Project Structure
+
+The project follows a feature-based organization approach for better maintainability and scalability:
 
 ```
-src/
-  app/                 # Next.js app directory (entry/UI shells)
-  components/
-    AddPokemonModal/   # Pokémon creation & editing workflow
-    Shared/            # Reusable generic components
-    ...                # Other feature-focused components
-  store/               # Zustand store(s) + persistence setup
-  types/               # TypeScript definitions & enums
-  utils/               # Helpers, calculators, formatters
-doc/
-  project.md           # Full product specification (source of this README)
+pokemon-dnd-companion/
+├── src/
+│   ├── app/                    # Next.js app directory (entry/UI shells)
+│   ├── components/
+│   │   └── shared/             # Reusable UI components (not feature-specific)
+│   ├── features/               # Feature-based organization
+│   │   ├── pokemon/            # Pokemon-related components and logic
+│   │   └── trainer/            # Trainer-related components and logic
+│   ├── store/                  # Zustand store(s) + persistence setup
+│   ├── types/                  # TypeScript definitions & enums
+│   ├── utils/                  # Helpers, calculators, formatters
+│   ├── tests/                  # Test utilities and documentation
+│   └── fixtures/               # Test data and mock objects
+├── doc/                        # Project documentation
+├── docs/                       # Additional documentation
+├── coverage/                   # Test coverage reports
+├── jest.config.ts              # Jest configuration
+├── jest.setup.ts               # Jest setup file
+├── GEMINI.md                   # AI agent instructions
+└── package.json                # Project dependencies and scripts
+```
+
+### Component Structure
+
+Each component follows a consistent directory structure:
+
+```
+Component/
+├── index.tsx                   # Main component file
+└── index.test.tsx             # Component tests (sibling to main file)
+```
+
+This structure keeps tests close to the components they test and allows for cleaner imports.
+
+---
+
+## 9. Naming Conventions
+
+### File and Directory Naming
+- **Components**: Use PascalCase for component directories and files
+- **Main Files**: Component main files are named `index.tsx` for cleaner imports
+- **Test Files**: Named `index.test.tsx` and located in the same directory as the component
+- **Utilities**: Use camelCase for utility files
+- **Types**: Use PascalCase for type definition files
+
+### Component Conventions
+- Keep components small and focused on a single responsibility
+- If a component requires comments to explain its purpose, consider refactoring into smaller sub-components
+- Use descriptive names that clearly indicate the component's purpose
+- Follow React naming conventions for props and state
+
+### Import/Export Patterns
+- Use default exports for components
+- Use named exports for utilities and types
+- Import paths should start with the appropriate root directory (e.g., `src/features/pokemon/...`)
+
+---
+
+## 10. Testing
+
+### Testing Philosophy
+- **Integration over Unit Testing**: Prefer integration tests that test components with their actual dependencies
+- **User-Centric Testing**: Focus on user interactions and behaviors rather than implementation details
+- **Accessibility First**: All tests include accessibility checks using semantic queries
+- **Real State Management**: Test with actual Zustand stores to ensure state management works correctly
+
+### Testing Standards
+- All new features and modifications must be accompanied by tests
+- Tests should cover both functionality and edge cases
+- Use Jest for unit and integration tests
+- **Never mock Zustand stores** - use actual stores for realistic testing
+- **Avoid snapshot tests** - write tests that check actual behavior
+- Ensure all tests pass before committing changes
+
+### DOM Querying Priorities
+1. `getByRole` - Find elements by their role
+2. `getByText` - Find elements by text content
+3. `getByTestId` - Find elements by `data-testid` attribute
+4. Use `queryByText` and `queryByRole` for assertions that may not find elements
+
+### Running Tests
+```bash
+npm test                    # Run all tests once
+npm run test:watch         # Run tests in watch mode
+npm run test:coverage      # Generate test coverage report
 ```
 
 ---
 
-## 9. Getting Started
+## 11. Getting Started
 
+### Prerequisites
+- Node.js (version specified in `.nvmrc`)
+- npm, yarn, pnpm, or bun
+
+### Installation
 Install dependencies (choose one):
-```
+```bash
 npm install
 yarn install
 pnpm install
 bun install
 ```
 
+### Development
 Run development server:
-```
+```bash
 npm run dev
 ```
 
-Open:
-http://localhost:3000
+Open: http://localhost:3000
 
-Edit the landing experience in:
-`app/page.tsx`
+Edit the landing experience in: `app/page.tsx`
 
 ---
 
-## 10. Development Scripts (Standard Next.js Defaults)
+## 12. Development Scripts
 
+```bash
+dev             # Start development server
+build           # Create production build
+start           # Run production build locally
+lint            # Lint source code
+test            # Run test suite
+test:watch      # Run tests in watch mode
+test:coverage   # Generate test coverage report
 ```
-dev     - Start development server
-build   - Create production build
-start   - Run production build locally
-lint    - Lint source (if configured)
-```
-
-(If a particular script is missing in `package.json`, add it as needed before use.)
 
 ---
 
-## 11. Roadmap / Future Scope (Not Yet Implemented)
+## 13. Roadmap / Future Scope
 
-Planned / Envisioned Enhancements:
-- Attack management
-- Inventory tracking
-- Status condition management (detailed effects)
-- Trainer / Pokémon leveling system
-- Pokémon evolution mechanics
-- Cloud sync / user accounts
-- Backend API integration
-- Game Master (DM) tooling
-- Pokémon images / sprite assets
+### Immediate Priorities
+- Enhanced testing coverage for all components
+- Improved accessibility features
+- Performance optimizations
 
-These are intentionally deferred to keep scope lean and focused on core player stat tracking.
+### Planned Enhancements
+- **Attack Management**: Pokémon move sets and battle mechanics
+- **Inventory Tracking**: Items, potions, and equipment management
+- **Enhanced Status Conditions**: Detailed effects and duration management
+- **Leveling System**: Automated level progression and stat calculations
+- **Evolution Mechanics**: Pokémon evolution triggers and management
+- **Cloud Sync**: User accounts and cross-device synchronization
+- **Backend Integration**: API-driven data management
+- **Game Master Tools**: DM-focused features and campaign management
+- **Visual Assets**: Pokémon sprites and enhanced imagery
+- **Battle System**: Turn-based combat mechanics
+- **Multiplayer Support**: Team coordination and shared campaigns
+
+### Technical Improvements
+- Progressive Web App (PWA) capabilities
+- Offline-first architecture
+- Enhanced responsive design
+- Performance monitoring and optimization
+- Automated testing pipeline
+- Accessibility compliance (WCAG 2.1 AA)
+
+These enhancements are intentionally deferred to maintain focus on core player stat tracking functionality.
 
 ---
 
-## 12. Contributing
+## 14. Contributing
 
-Currently scoped to internal / exploratory development. If you intend to contribute:
-1. Review `doc/project.md` for context
-2. Keep types strict and extend thoughtfully
-3. Favor small, composable components
-4. Maintain accessibility for any new interactive element
-5. Avoid introducing a backend unless aligning with roadmap discussions
+### Development Workflow
+1. **Gather Requirements**: Understand feature needs and ask clarifying questions
+2. **Create Implementation Plan**: Make a todo list and get confirmation before proceeding
+3. **Implement Changes**: Follow project conventions and testing standards
+4. **Manual Testing**: Ask for user verification that changes work as expected
+5. **Add Tests**: Write comprehensive tests covering new functionality
+6. **Run Test Suite**: Ensure all tests pass
+7. **Commit Changes**: Use clear, descriptive commit messages
 
-You can propose changes by:
-- Opening an issue describing enhancement / fix
-- Submitting a PR with clear commit messages
+### Guidelines
+- Review project documentation in `doc/` and `GEMINI.md`
+- Keep TypeScript strict and extend thoughtfully
+- Favor small, composable components
+- Maintain accessibility for any new interactive elements
+- Follow the established project structure and naming conventions
+- Ensure all new features include comprehensive tests
+
+### Proposing Changes
+- Open an issue describing enhancement or fix
+- Submit a PR with clear commit messages
+- Include tests for all new functionality
+- Update documentation as needed
+
+---
+
+## 15. License / Usage
+
+Currently scoped to internal / exploratory development. 
 
 ---
 
