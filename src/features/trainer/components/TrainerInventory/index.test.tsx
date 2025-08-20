@@ -7,6 +7,7 @@ import { InventoryItem } from "@/types/trainer";
 describe("TrainerInventory", () => {
   const mockOnUseItem = jest.fn();
   const mockOnAddItem = jest.fn();
+  const mockOnIncreaseItem = jest.fn();
 
   const sampleInventory: InventoryItem[] = [
     {
@@ -38,6 +39,7 @@ describe("TrainerInventory", () => {
         inventory={sampleInventory}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -50,6 +52,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -62,6 +65,7 @@ describe("TrainerInventory", () => {
         inventory={sampleInventory}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -75,6 +79,7 @@ describe("TrainerInventory", () => {
         inventory={sampleInventory}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -97,6 +102,7 @@ describe("TrainerInventory", () => {
         inventory={sampleInventory}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -117,6 +123,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -132,6 +139,7 @@ describe("TrainerInventory", () => {
         inventory={sampleInventory}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -145,12 +153,33 @@ describe("TrainerInventory", () => {
     expect(mockOnUseItem).toHaveBeenCalledWith("1");
   });
 
+  it("calls onIncreaseItem when + button is clicked", () => {
+    render(
+      <TrainerInventory
+        inventory={sampleInventory}
+        onUseItem={mockOnUseItem}
+        onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
+      />,
+    );
+
+    const inventoryButton = screen.getByText("Inventory (3)");
+    fireEvent.click(inventoryButton);
+
+    const plusButtons = screen.getAllByText("+");
+    fireEvent.click(plusButtons[0]);
+
+    expect(mockOnIncreaseItem).toHaveBeenCalledTimes(1);
+    expect(mockOnIncreaseItem).toHaveBeenCalledWith("1");
+  });
+
   it("shows Add Item button when editable", () => {
     render(
       <TrainerInventory
         inventory={sampleInventory}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
         isEditable={true}
       />,
     );
@@ -167,6 +196,7 @@ describe("TrainerInventory", () => {
         inventory={sampleInventory}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
         isEditable={false}
       />,
     );
@@ -175,6 +205,7 @@ describe("TrainerInventory", () => {
     fireEvent.click(inventoryButton);
 
     expect(screen.queryByText("Use")).not.toBeInTheDocument();
+    expect(screen.queryByText("+")).not.toBeInTheDocument();
   });
 
   it("does not show Add Item button when not editable", () => {
@@ -183,6 +214,7 @@ describe("TrainerInventory", () => {
         inventory={sampleInventory}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
         isEditable={false}
       />,
     );
@@ -199,6 +231,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -222,6 +255,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -243,6 +277,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -264,6 +299,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -303,6 +339,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -335,6 +372,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -383,6 +421,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -403,6 +442,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -426,6 +466,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -447,6 +488,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -468,6 +510,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 
@@ -497,6 +540,7 @@ describe("TrainerInventory", () => {
         inventory={[]}
         onUseItem={mockOnUseItem}
         onAddItem={mockOnAddItem}
+        onIncreaseItem={mockOnIncreaseItem}
       />,
     );
 

@@ -7,6 +7,7 @@ interface TrainerInventoryProps {
   inventory: InventoryItem[];
   onUseItem: (itemId: string) => void;
   onAddItem: (item: Omit<InventoryItem, "id">) => void;
+  onIncreaseItem: (itemId: string) => void;
   isEditable?: boolean;
 }
 
@@ -14,6 +15,7 @@ export default function TrainerInventory({
   inventory,
   onUseItem,
   onAddItem,
+  onIncreaseItem,
   isEditable = true,
 }: TrainerInventoryProps) {
   const [showInventory, setShowInventory] = useState(false);
@@ -98,12 +100,20 @@ export default function TrainerInventory({
                     )}
                   </div>
                   {isEditable && (
-                    <button
-                      onClick={() => onUseItem(item.id)}
-                      className="px-3 py-1 bg-blue-500/80 hover:bg-blue-500 text-white text-sm rounded-md transition-colors"
-                    >
-                      Use
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => onIncreaseItem(item.id)}
+                        className="w-8 h-8 rounded-md bg-green-500/80 hover:bg-green-500 text-white font-bold transition-colors flex items-center justify-center"
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() => onUseItem(item.id)}
+                        className="px-3 py-1 bg-blue-500/80 hover:bg-blue-500 text-white text-sm rounded-md transition-colors"
+                      >
+                        Use
+                      </button>
+                    </div>
                   )}
                 </div>
               ))

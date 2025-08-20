@@ -101,6 +101,23 @@ export default function TrainerOverview() {
     }
   };
 
+  const handleIncreaseItem = (itemId: string) => {
+    const currentInventory = editedTrainer.inventory || [];
+    const updatedInventory = currentInventory.map((item) => {
+      if (item.id === itemId) {
+        return { ...item, quantity: item.quantity + 1 };
+      }
+      return item;
+    });
+
+    const updatedTrainer = { ...editedTrainer, inventory: updatedInventory };
+    setEditedTrainer(updatedTrainer);
+
+    if (!isEditing) {
+      setTrainer(updatedTrainer);
+    }
+  };
+
   const attributeNames: (keyof Trainer["attributes"])[] = [
     "strength",
     "dexterity",
@@ -215,6 +232,7 @@ export default function TrainerOverview() {
           inventory={trainer.inventory || []}
           onUseItem={handleUseItem}
           onAddItem={handleAddItem}
+          onIncreaseItem={handleIncreaseItem}
           isEditable={true}
         />
       </div>
