@@ -74,15 +74,6 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
           Trainer
         </h2>
-
-        <div className="flex gap-2 w-full sm:w-auto">
-          <button
-            onClick={handleSave}
-            className="flex-1 sm:flex-none px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors font-medium"
-          >
-            Save
-          </button>
-        </div>
       </div>
 
       <div className="space-y-8">
@@ -205,6 +196,14 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
             </div>
           </div>
         </div>
+      </div>
+      <div className="flex gap-2 w-full sm:w-auto">
+        <button
+          onClick={handleSave}
+          className="flex-1 sm:flex-none px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors font-medium"
+        >
+          Save
+        </button>
       </div>
     </div>
   );
