@@ -1,7 +1,7 @@
 "use client";
 
 import PokemonOverview from "@/features/pokemon/components/PokemonOverview";
-import TrainerForm from "@/features/trainer/components/TrainerForm";
+import CreateTrainer from "@/features/trainer/components/CreateTrainer";
 import TrainerOverview from "@/features/trainer/components/TrainerOverview";
 import { useAppStore } from "@/store";
 
@@ -12,7 +12,7 @@ export default function Home() {
   const setTrainer = useAppStore.use.setTrainer();
 
   if (!trainer) {
-    return <TrainerForm onTrainerUpdate={setTrainer}></TrainerForm>;
+    return <CreateTrainer onTrainerUpdate={setTrainer}></CreateTrainer>;
   }
   return (
     <div className="min-h-screen">
