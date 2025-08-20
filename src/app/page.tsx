@@ -1,9 +1,9 @@
 "use client";
 
-import TrainerOverview from "../components/TrainerOverview";
-import PokemonOverview from "../components/PokemonOverview";
+import PokemonOverview from "@/features/pokemon/components/PokemonOverview";
+import TrainerForm from "@/features/trainer/components/TrainerForm";
+import TrainerOverview from "@/features/trainer/components/TrainerOverview";
 import { useAppStore } from "@/store";
-import TrainerForm from "@/components/TrainerForm";
 
 export default function Home() {
   const pokemon = useAppStore.use.pokemonTeam();

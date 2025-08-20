@@ -1,12 +1,12 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import AttackCard from "../AttackCard";
-import { useAppStore } from "../../store";
-import { Attack } from "../../types/pokemon";
+import AttackCard from "./AttackCard";
+import { useAppStore } from "@/store";
+import { Attack } from "@/types/pokemon";
 
 // Mock the Zustand store
 // We are mocking the entire module
-jest.mock("../../store", () => ({
+jest.mock("@/store", () => ({
   useAppStore: {
     use: {
       decreaseAttackPP: jest.fn(),

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Pokemon, Attributes, TYPE_COLORS } from "../types/pokemon";
-import { useAppStore } from "../store";
+import { useAppStore } from "@/store";
+import { Pokemon, Attributes, TYPE_COLORS } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import DeleteConfirmationModal from "@/components/shared/DeleteConfirmationModal";
 import PokemonEditModal from "./PokemonEditModal";
 import AddAttackModal from "./AddAttackModal";
 import AttackCard from "./AttackCard";

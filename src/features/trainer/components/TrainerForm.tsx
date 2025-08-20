@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Trainer, DnDAttributes } from "../types/trainer";
+import { Trainer, DnDAttributes } from "@/types/trainer";
 
 interface TrainerFormProps {
   onTrainerUpdate?: (character: Trainer) => void;

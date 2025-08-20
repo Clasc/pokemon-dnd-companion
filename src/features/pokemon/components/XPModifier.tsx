@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useAppStore } from "../store";
+import { useAppStore } from "@/store";
 
 interface XPModifierProps {
   pokemonUuid: string;

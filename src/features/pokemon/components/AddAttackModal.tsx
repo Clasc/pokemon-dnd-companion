@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Attack } from "../types/pokemon";
-import { useAppStore } from "../store";
+import { useAppStore } from "@/store";
+import { Attack } from "@/types/pokemon";
 
 interface AddAttackModalProps {
   isOpen: boolean;

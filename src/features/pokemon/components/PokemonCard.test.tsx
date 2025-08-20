@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import PokemonCard from "../PokemonCard";
-import { useAppStore } from "../../store";
+import PokemonCard from "./PokemonCard";
+import { useAppStore } from "@/store";
 
 // Mock the Zustand store
-jest.mock("../../store", () => ({
+jest.mock("@/store", () => ({
   useAppStore: {
     use: {
       removePokemon: jest.fn(),
@@ -16,37 +16,37 @@ jest.mock("../../store", () => ({
 }));
 
 // Mock components that are imported
-jest.mock("../DeleteConfirmationModal", () => {
+jest.mock("@/components/shared/DeleteConfirmationModal", () => {
   return function MockDeleteConfirmationModal() {
     return <div data-testid="delete-modal">Delete Modal</div>;
   };
 });
 
-jest.mock("../PokemonEditModal", () => {
+jest.mock("./PokemonEditModal", () => {
   return function MockPokemonEditModal() {
     return <div data-testid="edit-modal">Edit Modal</div>;
   };
 });
 
-jest.mock("../AddAttackModal", () => {
+jest.mock("./AddAttackModal", () => {
   return function MockAddAttackModal() {
     return <div data-testid="add-attack-modal">Add Attack Modal</div>;
   };
 });
 
-jest.mock("../AttackCard", () => {
+jest.mock("./AttackCard", () => {
   return function MockAttackCard() {
     return <div data-testid="attack-card">Attack Card</div>;
   };
 });
 
-jest.mock("../HPModifier", () => {
+jest.mock("./HPModifier", () => {
   return function MockHPModifier() {
     return <div data-testid="hp-modifier">HP Modifier</div>;
   };
 });
 
-jest.mock("../XPModifier", () => {
+jest.mock("./XPModifier", () => {
   return function MockXPModifier() {
     return <div data-testid="xp-modifier">XP Modifier</div>;
   };

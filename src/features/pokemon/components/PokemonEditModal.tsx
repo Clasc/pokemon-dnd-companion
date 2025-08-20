@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Pokemon, Attributes, PokemonType } from "../types/pokemon";
-import EditButtons from "./EditButtons";
-import { useAppStore } from "../store";
+import EditButtons from "@/components/shared/EditButtons";
+import { useAppStore } from "@/store";
+import { Pokemon, Attributes, PokemonType } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
 
 interface PokemonEditModalProps {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Pokemon, Attributes, PokemonType } from "../../types/pokemon";
+import { Pokemon, Attributes, PokemonType } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
 
 interface AddPokemonFormProps {

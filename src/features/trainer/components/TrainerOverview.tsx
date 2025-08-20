@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Trainer } from "../types/trainer";
-import EditButtons from "./EditButtons";
-import { useAppStore } from "../store";
+import EditButtons from "@/components/shared/EditButtons";
+import { useAppStore } from "@/store";
+import { Trainer } from "@/types/trainer";
 
 export default function TrainerOverview() {
   const [isEditing, setIsEditing] = useState(false);

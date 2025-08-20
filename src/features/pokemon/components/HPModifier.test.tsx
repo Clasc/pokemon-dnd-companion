@@ -1,10 +1,11 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import HPModifier from "../HPModifier";
-import { useAppStore } from "../../store";
+import HPModifier from "./HPModifier";
+import { useAppStore } from "@/store";
+import { Pokemon } from "@/types/pokemon";
 
 // Mock the Zustand store
-jest.mock("../../store", () => ({
+jest.mock("@/store", () => ({
   useAppStore: {
     use: {
       modifyPokemonHP: jest.fn(),
@@ -21,6 +22,7 @@ describe("HPModifier", () => {
     name: "Pikachu",
     type: "Pikachu",
     type1: "electric",
+    type2: "bug",
     level: 25,
     currentHP: 60,
     maxHP: 100,
@@ -35,9 +37,11 @@ describe("HPModifier", () => {
       charisma: 13,
     },
     attacks: [],
-  };
+  } as Pokemon;
 
-  const setupMockStore = (pokemonTeam = { "test-uuid": mockPokemon }) => {
+  const setupMockStore = (
+    pokemonTeam: Record<string, Pokemon> = { "test-uuid": mockPokemon },
+  ) => {
     (useAppStore.use.modifyPokemonHP as jest.Mock).mockReturnValue(
       mockModifyPokemonHP,
     );

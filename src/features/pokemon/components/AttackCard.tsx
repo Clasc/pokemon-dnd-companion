@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Attack } from "../types/pokemon";
-import { useAppStore } from "../store";
+import { useAppStore } from "@/store";
+import { Attack } from "@/types/pokemon";
 import AddAttackModal from "./AddAttackModal";
 
 interface AttackCardProps {

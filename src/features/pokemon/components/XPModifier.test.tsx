@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import XPModifier from "../XPModifier";
-import { useAppStore } from "../../store";
+import XPModifier from "./XPModifier";
+import { useAppStore } from "@/store";
 
 // Mock the Zustand store
-jest.mock("../../store", () => ({
+jest.mock("@/store", () => ({
   useAppStore: {
     use: {
       gainExperience: jest.fn(),

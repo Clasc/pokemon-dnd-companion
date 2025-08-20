@@ -1,9 +1,9 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import AddAttackModal from "../AddAttackModal";
-import { useAppStore } from "../../store";
+import AddAttackModal from "./AddAttackModal";
+import { useAppStore } from "@/store";
 
 // Mock the Zustand store
-jest.mock("../../store", () => ({
+jest.mock("@/store", () => ({
   useAppStore: {
     use: {
       addAttack: jest.fn(),

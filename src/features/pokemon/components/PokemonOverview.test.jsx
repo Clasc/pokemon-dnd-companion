@@ -1,18 +1,18 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import PokemonOverview from "../components/PokemonOverview";
+import PokemonOverview from "./PokemonOverview";
 import {
   calculateTeamStats,
   mockPokemon,
   mockPokemonTeam,
   mockPokemonWithSecondType,
-} from "./utils/testUtils";
+} from "@/tests/utils/testUtils";
 
 const mockAddPokemon = jest.fn();
 
 // Mock the store
-jest.mock("../store", () => ({
+jest.mock("@/store", () => ({
   useAppStore: {
     use: {
       addPokemon: () => mockAddPokemon,

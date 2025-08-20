@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Pokemon } from "../../types/pokemon";
+import { Pokemon } from "@/types/pokemon";
 import AddPokemonForm from "./AddPokemonForm";
 
 interface AddPokemonModalProps {
