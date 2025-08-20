@@ -38,7 +38,7 @@ describe("XPModifier", () => {
   };
 
   const setupMockStore = (
-    pokemonTeam: Record<string, any> = { "test-uuid": mockPokemon },
+    pokemonTeam: Record<string, unknown> = { "test-uuid": mockPokemon },
   ) => {
     (useAppStore.use.gainExperience as jest.Mock).mockReturnValue(
       mockGainExperience,
