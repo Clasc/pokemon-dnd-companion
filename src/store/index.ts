@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { Attack, Pokemon, PokemonTeam } from "../types/pokemon";
 import { Trainer } from "../types/trainer";
 import { createSelectors } from "./utils";
+import { testFixtures } from "../fixtures";
 
 interface AppState {
   pokemonTeam: PokemonTeam;
@@ -17,12 +18,46 @@ interface AppState {
   gainExperience: (pokemonUuid: string, xpGained: number) => void;
 }
 
+// Helper function to check if we should load test data
+export const shouldLoadTestData = (): boolean => {
+  // Only in development
+  if (process.env.NODE_ENV !== "development") {
+    return false;
+  }
+
+  // Check if localStorage is empty
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  try {
+    const existingData = localStorage.getItem("app-store");
+    return !existingData || existingData === "{}";
+  } catch {
+    return false;
+  }
+};
+
+// Get initial state with test data if needed
+const getInitialState = () => {
+  if (shouldLoadTestData()) {
+    return {
+      pokemonTeam: testFixtures.pokemonTeam,
+      trainer: testFixtures.trainer,
+    };
+  }
+
+  return {
+    pokemonTeam: {},
+    trainer: null,
+  };
+};
+
 export const useAppStore = createSelectors(
   create<AppState>()(
     persist(
       (set) => ({
-        pokemonTeam: {},
-        trainer: null,
+        ...getInitialState(),
         addPokemon: (pokemon, uuid: string = crypto.randomUUID()) =>
           set((state) => ({
             pokemonTeam: {
