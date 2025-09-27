@@ -32,18 +32,12 @@ These are mutually exclusive (only one can be active at a time):
 | **Badly Poisoned** | Until healed | Increasing damage each turn | `#6C3483` (Dark purple) |
 | **Asleep** | 1-3 turns | Cannot take actions, chance to wake up | `#5DADE2` (Soft blue) |
 
-### Special Status Condition
-Can coexist with primary status conditions:
+### Secondary Status Conditions
+Can coexist with primary status conditions and each other:
 
 | Status | Duration | Effect Description | Color |
 |--------|----------|-------------------|-------|
 | **Confused** | 1-4 turns | May hurt itself instead of attacking | `#F39C12` (Amber) |
-
-### Temporary Conditions
-Short-term effects that clear automatically:
-
-| Status | Duration | Effect Description | Color |
-|--------|----------|-------------------|-------|
 | **Flinching** | End of turn | Cannot act this turn | `#95A5A6` (Gray) |
 
 ## Testing Strategy
@@ -96,15 +90,16 @@ it("saves primary status to store when Save is clicked", async () => {
 });
 
 // Testing complex status combinations
-it("preserves confusion when changing primary status", async () => {
-  // Setup Pokemon with both primary status and confusion
-  const pokemonWithBothStatus = createTestPokemon();
-  pokemonWithBothStatus.primaryStatus = { condition: "poisoned", duration: 3, turnsActive: 0 };
-  pokemonWithBothStatus.confusion = { condition: "confused", duration: 2, turnsActive: 1 };
+it("preserves secondary effects when changing primary status", async () => {
+  // Setup Pokemon with primary status, confusion, and flinching
+  const pokemonWithMultipleStatus = createTestPokemon();
+  pokemonWithMultipleStatus.primaryStatus = { condition: "poisoned", duration: 3, turnsActive: 0 };
+  pokemonWithMultipleStatus.confusion = { condition: "confused", duration: 2, turnsActive: 1 };
+  pokemonWithMultipleStatus.temporaryEffects = [{ condition: "flinching", turnsActive: 0 }];
   
-  useAppStore.setState({ pokemonTeam: { [testUuid]: pokemonWithBothStatus } });
+  useAppStore.setState({ pokemonTeam: { [testUuid]: pokemonWithMultipleStatus } });
   
-  // Test that changing primary status preserves confusion
+  // Test that changing primary status preserves secondary effects
   // ... test implementation
 });
 ```
@@ -119,7 +114,7 @@ it("preserves confusion when changing primary status", async () => {
 
 ### Status Combinations
 - **Mutual Exclusion**: Primary status conditions properly replace each other
-- **Coexistence**: Confusion can exist alongside any primary status
+- **Coexistence**: Secondary effects (confusion, flinching) can exist alongside any primary status and each other
 - **State Preservation**: Changing one status type preserves others
 - **Complete Clearing**: All status effects can be cleared to return to healthy state
 
@@ -152,8 +147,8 @@ export type StatusCondition =
 export interface Pokemon {
   // ... existing fields
   primaryStatus?: StatusEffect; // Mutually exclusive conditions
-  confusion?: StatusEffect; // Special case - can coexist with primary
-  temporaryEffects?: StatusEffect[]; // Flinching, etc.
+  confusion?: StatusEffect; // Secondary effect - can coexist with primary
+  temporaryEffects?: StatusEffect[]; // Secondary effects like flinching, etc.
 }
 ```
 
@@ -193,9 +188,10 @@ export const STATUS_COLORS: Record<StatusCondition, Color> = {
 │ ○ Badly Poisoned               │
 │ ○ Asleep (1-3 turns)           │
 ├─────────────────────────────────┤
-│ Special Effects                 │
+│ Secondary Effects               │
 ├─────────────────────────────────┤
 │ □ Confused (1-4 turns)         │
+│ □ Flinching (end of turn)      │
 └─────────────────────────────────┘
 ```
 
@@ -210,13 +206,13 @@ export const STATUS_COLORS: Record<StatusCondition, Color> = {
 - **Quick Actions**: Swipe or long-press for rapid status changes
 - **Clear Typography**: Status names clearly readable at small sizes
 
-## Interaction Rules
+### Interaction Rules
 
 ### Status Application
 1. **Primary Status**: Selecting a new primary status replaces the existing one
-2. **Confusion**: Can be toggled independently of primary status
+2. **Secondary Effects**: Can be toggled independently of primary status and each other
 3. **Duration Setting**: Automatically prompt for duration on applicable statuses
-4. **Validation**: Prevent invalid combinations (e.g., burned + frozen)
+4. **Validation**: Prevent invalid combinations within primary statuses (e.g., burned + frozen)
 
 ### Automatic Clearing
 1. **Fainting**: When currentHP reaches 0, clear confusion automatically

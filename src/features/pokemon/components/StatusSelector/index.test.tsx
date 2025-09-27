@@ -75,7 +75,7 @@ describe("StatusSelector", () => {
 
       expect(screen.getByText("Status Effects")).toBeInTheDocument();
       expect(screen.getByText("Primary Status")).toBeInTheDocument();
-      expect(screen.getByText("Special Effects")).toBeInTheDocument();
+      expect(screen.getByText("Secondary Effects")).toBeInTheDocument();
     });
 
     it("does not render when pokemon does not exist", () => {
@@ -771,6 +771,211 @@ describe("StatusSelector", () => {
       expect(updatedPokemon.primaryStatus).toBeUndefined();
       expect(updatedPokemon.confusion).toBeUndefined();
       expect(updatedPokemon.temporaryEffects).toBeUndefined();
+    });
+
+    it("saves flinching as temporary effect when checked", async () => {
+      const user = userEvent.setup();
+
+      render(
+        <StatusSelector
+          pokemonUuid={testUuid}
+          isOpen={true}
+          onClose={mockOnClose}
+        />,
+      );
+
+      const flinchingCheckbox = screen.getByRole("checkbox", {
+        name: /Flinching/i,
+      });
+      await user.click(flinchingCheckbox);
+
+      const saveButton = screen.getByRole("button", { name: "Save" });
+      await user.click(saveButton);
+
+      const updatedPokemon = useAppStore.getState().pokemonTeam[testUuid];
+      expect(updatedPokemon.temporaryEffects).toHaveLength(1);
+      expect(updatedPokemon.temporaryEffects![0].condition).toBe("flinching");
+      expect(updatedPokemon.temporaryEffects![0].turnsActive).toBe(0);
+    });
+
+    it("removes flinching when unchecked", async () => {
+      const user = userEvent.setup();
+
+      // Set initial Pokemon with flinching
+      const pokemonWithFlinching = createTestPokemon();
+      pokemonWithFlinching.temporaryEffects = [
+        { condition: "flinching", turnsActive: 0 },
+      ];
+
+      useAppStore.setState({
+        pokemonTeam: {
+          [testUuid]: pokemonWithFlinching,
+        },
+      });
+
+      render(
+        <StatusSelector
+          pokemonUuid={testUuid}
+          isOpen={true}
+          onClose={mockOnClose}
+        />,
+      );
+
+      const flinchingCheckbox = screen.getByRole("checkbox", {
+        name: /Flinching/i,
+      });
+      expect(flinchingCheckbox).toBeChecked();
+
+      await user.click(flinchingCheckbox); // Uncheck
+
+      const saveButton = screen.getByRole("button", { name: "Save" });
+      await user.click(saveButton);
+
+      const updatedPokemon = useAppStore.getState().pokemonTeam[testUuid];
+      expect(updatedPokemon.temporaryEffects).toBeUndefined();
+    });
+
+    it("allows flinching to coexist with primary status and confusion", async () => {
+      const user = userEvent.setup();
+
+      render(
+        <StatusSelector
+          pokemonUuid={testUuid}
+          isOpen={true}
+          onClose={mockOnClose}
+        />,
+      );
+
+      // Select primary status
+      const burnedRadio = screen.getByDisplayValue("burned");
+      await user.click(burnedRadio);
+
+      // Select confusion
+      const confusionCheckbox = screen.getByRole("checkbox", {
+        name: /Confused/i,
+      });
+      await user.click(confusionCheckbox);
+
+      // Select flinching
+      const flinchingCheckbox = screen.getByRole("checkbox", {
+        name: /Flinching/i,
+      });
+      await user.click(flinchingCheckbox);
+
+      const saveButton = screen.getByRole("button", { name: "Save" });
+      await user.click(saveButton);
+
+      const updatedPokemon = useAppStore.getState().pokemonTeam[testUuid];
+      expect(updatedPokemon.primaryStatus?.condition).toBe("burned");
+      expect(updatedPokemon.confusion?.condition).toBe("confused");
+      expect(updatedPokemon.temporaryEffects).toHaveLength(1);
+      expect(updatedPokemon.temporaryEffects![0].condition).toBe("flinching");
+    });
+
+    it("preserves flinching when changing primary status", async () => {
+      const user = userEvent.setup();
+
+      // Set initial Pokemon with primary status and flinching
+      const pokemonWithBothStatus = createTestPokemon();
+      pokemonWithBothStatus.primaryStatus = {
+        condition: "poisoned",
+        duration: 3,
+        turnsActive: 0,
+      };
+      pokemonWithBothStatus.temporaryEffects = [
+        { condition: "flinching", turnsActive: 0 },
+      ];
+
+      useAppStore.setState({
+        pokemonTeam: {
+          [testUuid]: pokemonWithBothStatus,
+        },
+      });
+
+      render(
+        <StatusSelector
+          pokemonUuid={testUuid}
+          isOpen={true}
+          onClose={mockOnClose}
+        />,
+      );
+
+      // Change primary status
+      const paralyzedRadio = screen.getByDisplayValue("paralyzed");
+      await user.click(paralyzedRadio);
+
+      const saveButton = screen.getByRole("button", { name: "Save" });
+      await user.click(saveButton);
+
+      const updatedPokemon = useAppStore.getState().pokemonTeam[testUuid];
+      expect(updatedPokemon.primaryStatus?.condition).toBe("paralyzed");
+      expect(updatedPokemon.temporaryEffects).toHaveLength(1);
+      expect(updatedPokemon.temporaryEffects![0].condition).toBe("flinching");
+    });
+
+    it("preserves flinching when changing confusion state", async () => {
+      const user = userEvent.setup();
+
+      // Set initial Pokemon with flinching
+      const pokemonWithFlinching = createTestPokemon();
+      pokemonWithFlinching.temporaryEffects = [
+        { condition: "flinching", turnsActive: 0 },
+      ];
+
+      useAppStore.setState({
+        pokemonTeam: {
+          [testUuid]: pokemonWithFlinching,
+        },
+      });
+
+      render(
+        <StatusSelector
+          pokemonUuid={testUuid}
+          isOpen={true}
+          onClose={mockOnClose}
+        />,
+      );
+
+      // Add confusion
+      const confusionCheckbox = screen.getByRole("checkbox", {
+        name: /Confused/i,
+      });
+      await user.click(confusionCheckbox);
+
+      const saveButton = screen.getByRole("button", { name: "Save" });
+      await user.click(saveButton);
+
+      const updatedPokemon = useAppStore.getState().pokemonTeam[testUuid];
+      expect(updatedPokemon.confusion?.condition).toBe("confused");
+      expect(updatedPokemon.temporaryEffects).toHaveLength(1);
+      expect(updatedPokemon.temporaryEffects![0].condition).toBe("flinching");
+    });
+
+    it("initializes flinching checkbox state correctly", () => {
+      // Test with Pokemon that has flinching
+      const pokemonWithFlinching = createTestPokemon();
+      pokemonWithFlinching.temporaryEffects = [
+        { condition: "flinching", turnsActive: 0 },
+      ];
+
+      useAppStore.setState({
+        pokemonTeam: {
+          [testUuid]: pokemonWithFlinching,
+        },
+      });
+
+      render(
+        <StatusSelector
+          pokemonUuid={testUuid}
+          isOpen={true}
+          onClose={mockOnClose}
+        />,
+      );
+
+      const flinchingCheckbox = screen.getByRole("checkbox", {
+        name: /Flinching/i,
+      });
+      expect(flinchingCheckbox).toBeChecked();
     });
 
     it("handles empty duration input gracefully", async () => {

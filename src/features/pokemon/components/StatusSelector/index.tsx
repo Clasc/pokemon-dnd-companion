@@ -50,6 +50,8 @@ export default function StatusSelector({
   const pokemon = useAppStore.use.pokemonTeam()[pokemonUuid];
   const setPrimaryStatus = useAppStore.use.setPrimaryStatus();
   const setConfusion = useAppStore.use.setConfusion();
+  const addTemporaryEffect = useAppStore.use.addTemporaryEffect();
+  const removeTemporaryEffect = useAppStore.use.removeTemporaryEffect();
 
   const [selectedPrimaryStatus, setSelectedPrimaryStatus] =
     useState<StatusCondition>("none");
@@ -60,6 +62,7 @@ export default function StatusSelector({
   const [confusionDuration, setConfusionDuration] = useState<
     number | undefined
   >(undefined);
+  const [isFlinching, setIsFlinching] = useState(false);
 
   // Initialize state from current pokemon status
   useEffect(() => {
@@ -82,6 +85,12 @@ export default function StatusSelector({
       setIsConfused(false);
       setConfusionDuration(undefined);
     }
+
+    // Set flinching status
+    const hasFlinching = pokemon.temporaryEffects?.some(
+      (effect) => effect.condition === "flinching",
+    );
+    setIsFlinching(hasFlinching || false);
   }, [pokemon, isOpen]);
 
   const handlePrimaryStatusChange = (condition: StatusCondition) => {
@@ -127,6 +136,26 @@ export default function StatusSelector({
       setConfusion(pokemonUuid, null);
     }
 
+    // Save flinching
+    const currentlyHasFlinching = pokemon.temporaryEffects?.some(
+      (effect) => effect.condition === "flinching",
+    );
+
+    if (isFlinching && !currentlyHasFlinching) {
+      const flinchingEffect: StatusEffect = {
+        condition: "flinching",
+        turnsActive: 0,
+      };
+      addTemporaryEffect(pokemonUuid, flinchingEffect);
+    } else if (!isFlinching && currentlyHasFlinching) {
+      const flinchingIndex = pokemon.temporaryEffects?.findIndex(
+        (effect) => effect.condition === "flinching",
+      );
+      if (flinchingIndex !== undefined && flinchingIndex >= 0) {
+        removeTemporaryEffect(pokemonUuid, flinchingIndex);
+      }
+    }
+
     onClose();
   };
 
@@ -147,6 +176,12 @@ export default function StatusSelector({
       setIsConfused(false);
       setConfusionDuration(undefined);
     }
+
+    // Reset flinching state
+    const hasFlinching = pokemon?.temporaryEffects?.some(
+      (effect) => effect.condition === "flinching",
+    );
+    setIsFlinching(hasFlinching || false);
 
     onClose();
   };
@@ -235,10 +270,10 @@ export default function StatusSelector({
             </div>
           </div>
 
-          {/* Confusion - Special Status */}
+          {/* Secondary Status Effects */}
           <div className="border-t border-white/10 pt-4">
             <h4 className="text-lg font-semibold text-white mb-3">
-              Special Effects
+              Secondary Effects
             </h4>
             <label className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
               <input
@@ -274,6 +309,26 @@ export default function StatusSelector({
                   <span className="text-gray-300 text-sm">turns</span>
                 </div>
               )}
+            </label>
+
+            {/* Flinching */}
+            <label className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isFlinching}
+                onChange={(e) => setIsFlinching(e.target.checked)}
+                className="w-4 h-4 text-blue-500"
+              />
+              <div className="flex items-center gap-2 flex-1">
+                <div
+                  className="w-4 h-4 rounded-full"
+                  style={{ backgroundColor: STATUS_COLORS.flinching }}
+                />
+                <span className="text-white text-sm font-medium">
+                  Flinching
+                </span>
+              </div>
+              <span className="text-gray-300 text-xs">End of turn</span>
             </label>
           </div>
         </div>
