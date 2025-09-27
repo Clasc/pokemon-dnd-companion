@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Attack, Pokemon, PokemonTeam } from "../types/pokemon";
+import { Attack, Pokemon, PokemonTeam, StatusEffect } from "../types/pokemon";
 import { Trainer } from "../types/trainer";
 import { createSelectors } from "./utils";
 import { testFixtures } from "../fixtures";
@@ -16,6 +16,11 @@ interface AppState {
   decreaseAttackPP: (pokemonUuid: string, attackIndex: number) => void;
   modifyPokemonHP: (pokemonUuid: string, hpChange: number) => void;
   gainExperience: (pokemonUuid: string, xpGained: number) => void;
+  setPrimaryStatus: (pokemonUuid: string, status: StatusEffect | null) => void;
+  setConfusion: (pokemonUuid: string, confusion: StatusEffect | null) => void;
+  addTemporaryEffect: (pokemonUuid: string, effect: StatusEffect) => void;
+  removeTemporaryEffect: (pokemonUuid: string, effectIndex: number) => void;
+  clearAllStatus: (pokemonUuid: string) => void;
 }
 
 // Helper function to check if we should load test data
@@ -135,13 +140,20 @@ export const useAppStore = createSelectors(
               Math.min(pokemon.maxHP, pokemon.currentHP + hpChange),
             );
 
+            // Clear confusion when Pokemon faints (HP reaches 0)
+            const updatedPokemon = {
+              ...pokemon,
+              currentHP: newCurrentHP,
+            };
+
+            if (newCurrentHP === 0 && pokemon.confusion) {
+              updatedPokemon.confusion = undefined;
+            }
+
             return {
               pokemonTeam: {
                 ...state.pokemonTeam,
-                [pokemonUuid]: {
-                  ...pokemon,
-                  currentHP: newCurrentHP,
-                },
+                [pokemonUuid]: updatedPokemon,
               },
             };
           }),
@@ -176,6 +188,88 @@ export const useAppStore = createSelectors(
                   experience: newExperience,
                   experienceToNext: newExperienceToNext,
                   level: newLevel,
+                },
+              },
+            };
+          }),
+        setPrimaryStatus: (pokemonUuid, status) =>
+          set((state) => {
+            const pokemon = state.pokemonTeam[pokemonUuid];
+            if (!pokemon) return state;
+
+            return {
+              pokemonTeam: {
+                ...state.pokemonTeam,
+                [pokemonUuid]: {
+                  ...pokemon,
+                  primaryStatus: status || undefined,
+                },
+              },
+            };
+          }),
+        setConfusion: (pokemonUuid, confusion) =>
+          set((state) => {
+            const pokemon = state.pokemonTeam[pokemonUuid];
+            if (!pokemon) return state;
+
+            return {
+              pokemonTeam: {
+                ...state.pokemonTeam,
+                [pokemonUuid]: {
+                  ...pokemon,
+                  confusion: confusion || undefined,
+                },
+              },
+            };
+          }),
+        addTemporaryEffect: (pokemonUuid, effect) =>
+          set((state) => {
+            const pokemon = state.pokemonTeam[pokemonUuid];
+            if (!pokemon) return state;
+
+            const currentEffects = pokemon.temporaryEffects || [];
+            return {
+              pokemonTeam: {
+                ...state.pokemonTeam,
+                [pokemonUuid]: {
+                  ...pokemon,
+                  temporaryEffects: [...currentEffects, effect],
+                },
+              },
+            };
+          }),
+        removeTemporaryEffect: (pokemonUuid, effectIndex) =>
+          set((state) => {
+            const pokemon = state.pokemonTeam[pokemonUuid];
+            if (!pokemon || !pokemon.temporaryEffects) return state;
+
+            const newEffects = [...pokemon.temporaryEffects];
+            newEffects.splice(effectIndex, 1);
+
+            return {
+              pokemonTeam: {
+                ...state.pokemonTeam,
+                [pokemonUuid]: {
+                  ...pokemon,
+                  temporaryEffects:
+                    newEffects.length > 0 ? newEffects : undefined,
+                },
+              },
+            };
+          }),
+        clearAllStatus: (pokemonUuid) =>
+          set((state) => {
+            const pokemon = state.pokemonTeam[pokemonUuid];
+            if (!pokemon) return state;
+
+            return {
+              pokemonTeam: {
+                ...state.pokemonTeam,
+                [pokemonUuid]: {
+                  ...pokemon,
+                  primaryStatus: undefined,
+                  confusion: undefined,
+                  temporaryEffects: undefined,
                 },
               },
             };

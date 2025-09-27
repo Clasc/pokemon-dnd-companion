@@ -11,6 +11,23 @@ export interface Attack {
   description?: string;
 }
 
+export interface StatusEffect {
+  condition: StatusCondition;
+  duration?: number; // Duration in turns, if applicable
+  turnsActive?: number; // For tracking escalating effects
+}
+
+export type StatusCondition =
+  | "burned"
+  | "frozen"
+  | "paralyzed"
+  | "poisoned"
+  | "badly-poisoned"
+  | "asleep"
+  | "confused"
+  | "flinching"
+  | "none";
+
 export interface Pokemon {
   type: string; // e.g., "Pikachu", "Charizard"
   name: string;
@@ -31,10 +48,9 @@ export interface Pokemon {
   };
   attacks: Attack[];
 
-  status?: {
-    condition: string;
-    duration?: number; // Duration in turns, if applicable
-  };
+  primaryStatus?: StatusEffect; // Mutually exclusive conditions
+  confusion?: StatusEffect; // Special case - can coexist with primary
+  temporaryEffects?: StatusEffect[]; // Flinching, etc.
 }
 
 export type PokemonType =
@@ -84,6 +100,18 @@ export const TYPE_COLORS: Record<PokemonType, Color> = {
   dark: "#705848",
   steel: "#B8B8D0",
   fairy: "#EE99AC",
+};
+
+export const STATUS_COLORS: Record<StatusCondition, Color> = {
+  burned: "#FF6B35",
+  frozen: "#4ECDC4",
+  paralyzed: "#FFE66D",
+  poisoned: "#8E44AD",
+  "badly-poisoned": "#6C3483",
+  asleep: "#5DADE2",
+  confused: "#F39C12",
+  flinching: "#95A5A6",
+  none: "#00000000",
 };
 
 export type Attributes = {

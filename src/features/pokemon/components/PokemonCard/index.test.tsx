@@ -11,6 +11,8 @@ jest.mock("@/store", () => ({
       pokemonTeam: jest.fn(),
       modifyPokemonHP: jest.fn(),
       gainExperience: jest.fn(),
+      setPrimaryStatus: jest.fn(),
+      setConfusion: jest.fn(),
     },
   },
 }));
@@ -227,7 +229,7 @@ describe("PokemonCard", () => {
   it("displays status condition when pokemon has status", () => {
     const statusPokemon = {
       ...mockPokemon,
-      status: {
+      primaryStatus: {
         condition: "poisoned",
         duration: 3,
       },
@@ -235,20 +237,25 @@ describe("PokemonCard", () => {
 
     render(<PokemonCard pokemon={statusPokemon} uuid="test-uuid" />);
 
-    expect(screen.getByText("POISONED (3)")).toBeInTheDocument();
+    expect(screen.getByText("Poisoned")).toBeInTheDocument();
+    expect(screen.getByText("3")).toBeInTheDocument();
   });
 
   it("does not display status when pokemon is healthy", () => {
+    // Healthy Pokemon should have no status fields set
     const healthyPokemon = {
       ...mockPokemon,
-      status: {
-        condition: "healthy",
-      },
+      primaryStatus: undefined,
+      confusion: undefined,
+      temporaryEffects: undefined,
     };
 
     render(<PokemonCard pokemon={healthyPokemon} uuid="test-uuid" />);
 
-    expect(screen.queryByText(/HEALTHY/)).not.toBeInTheDocument();
+    // Should not display any status indicators
+    expect(screen.queryByText("Poisoned")).not.toBeInTheDocument();
+    expect(screen.queryByText("Burned")).not.toBeInTheDocument();
+    expect(screen.queryByText("Confused")).not.toBeInTheDocument();
   });
 
   it("toggles attacks section when attacks button is clicked", () => {

@@ -11,6 +11,8 @@ import AttackCard from "../AttackCard";
 import HPModifier from "../HPModifier";
 import XPModifier from "../XPModifier";
 import ActionButtons from "@/components/shared/ActionButtons";
+import StatusIndicator from "../StatusIndicator";
+import StatusSelector from "../StatusSelector";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -24,6 +26,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
   const [showAddAttackModal, setShowAddAttackModal] = useState(false);
   const [showHPModifier, setShowHPModifier] = useState(false);
   const [showXPModifier, setShowXPModifier] = useState(false);
+  const [showStatusSelector, setShowStatusSelector] = useState(false);
   const [selectedAttackIndex, setSelectedAttackIndex] = useState<number | null>(
     null,
   );
@@ -132,13 +135,10 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                   {pokemon.type2.toUpperCase()}
                 </span>
               )}
-              {pokemon.status && pokemon.status.condition !== "healthy" && (
-                <span className="text-xs px-2 py-1 rounded-md bg-orange-500/80 text-white font-medium">
-                  {pokemon.status.condition.toUpperCase()}
-                  {pokemon.status.duration && ` (${pokemon.status.duration})`}
-                </span>
-              )}
             </div>
+
+            {/* Status Effects */}
+            <StatusIndicator pokemon={pokemon} />
 
             {/* Attributes Chips */}
             <div className="mb-2">
@@ -208,22 +208,28 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
           />
         </div>
         {/* Controls */}
-        <div className="mt-4 flex justify-center gap-2">
+        <div className="mt-4 grid grid-cols-2 gap-2">
           <button
             onClick={() => setShowHPModifier(true)}
-            className="flex-1 flex justify-center items-center p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+            className="flex justify-center items-center p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
           >
             <span className="text-sm font-semibold">Modify HP</span>
           </button>
           <button
             onClick={() => setShowXPModifier(true)}
-            className="flex-1 flex justify-center items-center p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+            className="flex justify-center items-center p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
           >
             <span className="text-sm font-semibold">Gain XP</span>
           </button>
           <button
+            onClick={() => setShowStatusSelector(true)}
+            className="flex justify-center items-center p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+          >
+            <span className="text-sm font-semibold">Status</span>
+          </button>
+          <button
             onClick={() => setIsAttacksVisible(!isAttacksVisible)}
-            className="flex-1 flex justify-center items-center p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+            className="flex justify-center items-center p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
             aria-expanded={isAttacksVisible}
           >
             <span className="text-sm font-semibold">Attacks</span>
@@ -322,6 +328,13 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
           attackIndex={selectedAttackIndex}
         />
       )}
+
+      {/* Status Selector Modal */}
+      <StatusSelector
+        pokemonUuid={uuid}
+        isOpen={showStatusSelector}
+        onClose={() => setShowStatusSelector(false)}
+      />
     </>
   );
 }

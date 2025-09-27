@@ -25,7 +25,9 @@ describe("Test Fixtures", () => {
       expect(testTrainer.inventory[0].name).toBe("Pokeball");
       expect(testTrainer.inventory[0].quantity).toBe(10);
       expect(testTrainer.inventory[2].name).toBe("Potion");
-      expect(testTrainer.inventory[2].description).toBe("Restores 20 HP to a Pokemon");
+      expect(testTrainer.inventory[2].description).toBe(
+        "Restores 20 HP to a Pokemon",
+      );
     });
   });
 
@@ -59,7 +61,7 @@ describe("Test Fixtures", () => {
       expect(charizard.type2).toBe("flying");
       expect(charizard.level).toBe(18);
       expect(charizard.attacks).toHaveLength(4);
-      expect(charizard.status?.condition).toBe("healthy");
+      expect(charizard.primaryStatus).toBeUndefined();
     });
 
     it("should have valid Bulbasaur data with status condition", () => {
@@ -72,8 +74,8 @@ describe("Test Fixtures", () => {
       expect(bulbasaur.currentHP).toBe(15);
       expect(bulbasaur.maxHP).toBe(32);
       expect(bulbasaur.attacks).toHaveLength(3);
-      expect(bulbasaur.status?.condition).toBe("poisoned");
-      expect(bulbasaur.status?.duration).toBe(3);
+      expect(bulbasaur.primaryStatus?.condition).toBe("poisoned");
+      expect(bulbasaur.primaryStatus?.duration).toBe(3);
     });
 
     it("should have valid attack data for all pokemon", () => {

@@ -45,9 +45,6 @@ export const mockPokemon: Pokemon = {
     wisdom: 13,
     charisma: 15,
   },
-  status: {
-    condition: "healthy",
-  },
 };
 
 export const mockPokemonWithSecondType: Pokemon = {
@@ -69,9 +66,10 @@ export const mockPokemonWithSecondType: Pokemon = {
     wisdom: 13,
     charisma: 15,
   },
-  status: {
+  primaryStatus: {
     condition: "burned",
     duration: 3,
+    turnsActive: 0,
   },
 };
 

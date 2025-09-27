@@ -108,9 +108,6 @@ export const testPokemon: PokemonTeam = {
         specialEffect: "Target must make Wisdom save or be frightened",
       },
     ],
-    status: {
-      condition: "healthy",
-    },
   },
   "bulbasaur-003": {
     type: "Bulbasaur",
@@ -159,9 +156,10 @@ export const testPokemon: PokemonTeam = {
         specialEffect: "Target must make Wisdom save or fall asleep",
       },
     ],
-    status: {
+    primaryStatus: {
       condition: "poisoned",
       duration: 3,
+      turnsActive: 0,
     },
   },
 };

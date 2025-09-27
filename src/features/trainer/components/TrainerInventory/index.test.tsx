@@ -413,7 +413,7 @@ describe("TrainerInventory", () => {
       render(<TrainerInventory {...defaultProps} pokedollars={1234567} />);
 
       expect(screen.getByText("Pokedollars")).toBeInTheDocument();
-      expect(screen.getByText("1,234,567")).toBeInTheDocument();
+      expect(screen.getByText((1234567).toLocaleString())).toBeInTheDocument();
     });
 
     it("displays 0 pokedollars when amount is 0", () => {
