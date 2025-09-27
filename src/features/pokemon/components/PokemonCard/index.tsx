@@ -8,8 +8,6 @@ import DeleteConfirmationModal from "@/components/shared/DeleteConfirmationModal
 import PokemonEditModal from "../PokemonEditModal";
 import AddAttackModal from "../AddAttackModal";
 import AttackCard from "../AttackCard";
-import HPModifier from "../HPModifier";
-import XPModifier from "../XPModifier";
 import ActionButtons from "@/components/shared/ActionButtons";
 import StatusIndicator from "../StatusIndicator";
 import StatusSelector from "../StatusSelector";
@@ -24,14 +22,14 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [isAttacksVisible, setIsAttacksVisible] = useState(false);
   const [showAddAttackModal, setShowAddAttackModal] = useState(false);
-  const [showHPModifier, setShowHPModifier] = useState(false);
-  const [showXPModifier, setShowXPModifier] = useState(false);
   const [showStatusSelector, setShowStatusSelector] = useState(false);
   const [selectedAttackIndex, setSelectedAttackIndex] = useState<number | null>(
     null,
   );
 
   const removePokemon = useAppStore.use.removePokemon();
+  const modifyPokemonHP = useAppStore.use.modifyPokemonHP();
+  const gainExperience = useAppStore.use.gainExperience();
 
   const handleDelete = () => {
     removePokemon(uuid);
@@ -46,6 +44,16 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setShowEditModal(true);
+  };
+
+  // Direct HP modification functions
+  const modifyHP = (amount: number) => {
+    modifyPokemonHP(uuid, amount);
+  };
+
+  // Quick XP gain function
+  const gainQuickXP = (amount: number) => {
+    gainExperience(uuid, amount);
   };
 
   const hpPercentage =
@@ -102,7 +110,9 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
         <div className="flex items-start gap-4">
           {/* Pokemon Sprite/Icon */}
           <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-xl md:text-2xl border border-white/10">
-            {getPokemonIcon(pokemon.type1, pokemon.type2)}
+            {pokemon.type1
+              ? getPokemonIcon(pokemon.type1, pokemon.type2)
+              : "❓"}
           </div>
 
           {/* Pokemon Info */}
@@ -121,12 +131,14 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
 
             {/* Type Badges and Status */}
             <div className="flex items-center gap-2 mb-2">
-              <span
-                className="text-xs px-2 py-1 rounded-md text-white font-medium"
-                style={{ backgroundColor: getTypeColor(pokemon.type1) }}
-              >
-                {pokemon.type1.toUpperCase()}
-              </span>
+              {pokemon.type1 && (
+                <span
+                  className="text-xs px-2 py-1 rounded-md text-white font-medium"
+                  style={{ backgroundColor: getTypeColor(pokemon.type1) }}
+                >
+                  {pokemon.type1.toUpperCase()}
+                </span>
+              )}
               {pokemon.type2 && (
                 <span
                   className="text-xs px-2 py-1 rounded-md text-white font-medium"
@@ -135,10 +147,15 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                   {pokemon.type2.toUpperCase()}
                 </span>
               )}
-            </div>
 
-            {/* Status Effects */}
-            <StatusIndicator pokemon={pokemon} />
+              {/* Clickable Status */}
+              <div
+                onClick={() => setShowStatusSelector(true)}
+                className="cursor-pointer hover:bg-white/10 rounded px-1 transition-colors"
+              >
+                <StatusIndicator pokemon={pokemon} />
+              </div>
+            </div>
 
             {/* Attributes Chips */}
             <div className="mb-2">
@@ -161,10 +178,42 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
               </div>
             </div>
 
-            {/* HP Bar */}
+            {/* HP Bar with Inline Controls */}
             <div className="mb-2">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-gray-300 font-medium">HP</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-300 font-medium">HP</span>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => modifyHP(-1)}
+                      className="w-4 h-4 text-xs bg-red-500/20 hover:bg-red-500/40 rounded text-white flex items-center justify-center leading-none"
+                      title="Decrease HP"
+                    >
+                      -
+                    </button>
+                    <button
+                      onClick={() => modifyHP(-5)}
+                      className="w-5 h-4 text-xs bg-red-500/20 hover:bg-red-500/40 rounded text-white flex items-center justify-center leading-none"
+                      title="Decrease HP by 5"
+                    >
+                      -5
+                    </button>
+                    <button
+                      onClick={() => modifyHP(1)}
+                      className="w-4 h-4 text-xs bg-green-500/20 hover:bg-green-500/40 rounded text-white flex items-center justify-center leading-none"
+                      title="Increase HP"
+                    >
+                      +
+                    </button>
+                    <button
+                      onClick={() => modifyHP(5)}
+                      className="w-5 h-4 text-xs bg-green-500/20 hover:bg-green-500/40 rounded text-white flex items-center justify-center leading-none"
+                      title="Increase HP by 5"
+                    >
+                      +5
+                    </button>
+                  </div>
+                </div>
                 <span className="text-xs text-gray-300 font-medium">
                   {pokemon.currentHP}/{pokemon.maxHP}
                 </span>
@@ -182,10 +231,35 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
               </div>
             </div>
 
-            {/* XP Bar */}
+            {/* XP Bar with Quick Gain */}
             <div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-gray-300 font-medium">XP</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-300 font-medium">XP</span>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => gainQuickXP(10)}
+                      className="w-6 h-4 text-xs bg-blue-500/20 hover:bg-blue-500/40 rounded text-white flex items-center justify-center leading-none"
+                      title="Gain 10 XP"
+                    >
+                      +10
+                    </button>
+                    <button
+                      onClick={() => gainQuickXP(50)}
+                      className="w-6 h-4 text-xs bg-blue-500/20 hover:bg-blue-500/40 rounded text-white flex items-center justify-center leading-none"
+                      title="Gain 50 XP"
+                    >
+                      +50
+                    </button>
+                    <button
+                      onClick={() => gainQuickXP(100)}
+                      className="w-7 h-4 text-xs bg-blue-500/20 hover:bg-blue-500/40 rounded text-white flex items-center justify-center leading-none"
+                      title="Gain 100 XP"
+                    >
+                      +100
+                    </button>
+                  </div>
+                </div>
                 <span className="text-xs text-gray-300 font-medium">
                   {pokemon.experience}/
                   {pokemon.experience + pokemon.experienceToNext}
@@ -200,6 +274,62 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                 />
               </div>
             </div>
+
+            {/* Attacks as Chips */}
+            {pokemon.attacks && pokemon.attacks.length > 0 && (
+              <div className="mt-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs text-gray-300 font-medium">
+                    Attacks
+                  </span>
+                  <button
+                    onClick={() => setIsAttacksVisible(!isAttacksVisible)}
+                    className="text-xs text-gray-400 hover:text-white"
+                  >
+                    {isAttacksVisible ? "Hide" : "Manage"}
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {pokemon.attacks.map((attack, i) => (
+                    <div
+                      key={i}
+                      className="bg-white/10 rounded-full px-2 py-1 text-xs font-medium text-white flex items-center gap-1"
+                    >
+                      <span>{attack.name}</span>
+                      <span className="text-gray-300">
+                        {attack.currentPp}/{attack.maxPp}
+                      </span>
+                    </div>
+                  ))}
+                  {pokemon.attacks.length < 4 && (
+                    <button
+                      onClick={() => {
+                        setSelectedAttackIndex(pokemon.attacks.length);
+                        setShowAddAttackModal(true);
+                      }}
+                      className="bg-white/5 hover:bg-white/10 rounded-full px-2 py-1 text-xs font-medium text-white/50 hover:text-white transition-colors border border-dashed border-white/20"
+                    >
+                      + Attack
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Add attack button if no attacks */}
+            {(!pokemon.attacks || pokemon.attacks.length === 0) && (
+              <div className="mt-3">
+                <button
+                  onClick={() => {
+                    setSelectedAttackIndex(0);
+                    setShowAddAttackModal(true);
+                  }}
+                  className="bg-white/5 hover:bg-white/10 rounded-lg px-3 py-2 text-xs font-medium text-white/50 hover:text-white transition-colors border border-dashed border-white/20"
+                >
+                  + Add First Attack
+                </button>
+              </div>
+            )}
           </div>
 
           <ActionButtons
@@ -207,54 +337,10 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             onEdit={handleEditClick}
           />
         </div>
-        {/* Controls */}
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          <button
-            onClick={() => setShowHPModifier(true)}
-            className="flex justify-center items-center p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
-          >
-            <span className="text-sm font-semibold">Modify HP</span>
-          </button>
-          <button
-            onClick={() => setShowXPModifier(true)}
-            className="flex justify-center items-center p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
-          >
-            <span className="text-sm font-semibold">Gain XP</span>
-          </button>
-          <button
-            onClick={() => setShowStatusSelector(true)}
-            className="flex justify-center items-center p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
-          >
-            <span className="text-sm font-semibold">Status</span>
-          </button>
-          <button
-            onClick={() => setIsAttacksVisible(!isAttacksVisible)}
-            className="flex justify-center items-center p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
-            aria-expanded={isAttacksVisible}
-          >
-            <span className="text-sm font-semibold">Attacks</span>
-            <svg
-              className={`w-5 h-5 ml-1 transition-transform transform ${
-                isAttacksVisible ? "rotate-180" : ""
-              }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 9l-7 7-7-7"
-              ></path>
-            </svg>
-          </button>
-        </div>
 
-        {/* Attacks Section */}
+        {/* Expanded Attacks Management */}
         {isAttacksVisible && (
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-white/10 pt-4">
             {[...Array(4)].map((_, i) => {
               const attack = pokemon.attacks?.[i];
               return attack ? (
@@ -283,22 +369,6 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
           </div>
         )}
       </div>
-
-      {/* HP Modifier Overlay */}
-      {showHPModifier && (
-        <HPModifier
-          pokemonUuid={uuid}
-          onClose={() => setShowHPModifier(false)}
-        />
-      )}
-
-      {/* XP Modifier Overlay */}
-      {showXPModifier && (
-        <XPModifier
-          pokemonUuid={uuid}
-          onClose={() => setShowXPModifier(false)}
-        />
-      )}
 
       {/* Edit Modal */}
       <PokemonEditModal

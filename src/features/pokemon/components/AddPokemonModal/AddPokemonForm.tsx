@@ -97,7 +97,7 @@ export default function AddPokemonForm({
       <div className="flex items-start gap-4">
         {/* Pokemon Sprite/Icon */}
         <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-2xl border border-white/10">
-          {getPokemonIcon(pokemon.type1, pokemon.type2)}
+          {pokemon.type1 ? getPokemonIcon(pokemon.type1, pokemon.type2) : "❓"}
         </div>
 
         {/* Pokemon Basic Info */}

@@ -29,15 +29,15 @@ jest.mock("../AttackCard", () => {
   };
 });
 
-jest.mock("../HPModifier", () => {
-  return function MockHPModifier() {
-    return <div data-testid="hp-modifier">HP Modifier</div>;
+jest.mock("../StatusIndicator", () => {
+  return function MockStatusIndicator() {
+    return <div data-testid="status-indicator">Status Indicator</div>;
   };
 });
 
-jest.mock("../XPModifier", () => {
-  return function MockXPModifier() {
-    return <div data-testid="xp-modifier">XP Modifier</div>;
+jest.mock("../StatusSelector", () => {
+  return function MockStatusSelector() {
+    return <div data-testid="status-selector">Status Selector</div>;
   };
 });
 
@@ -104,44 +104,84 @@ describe("PokemonCard", () => {
     expect(screen.getByText("1500/2000")).toBeInTheDocument();
   });
 
-  it("renders control buttons including Gain XP button", () => {
+  it("renders inline HP control buttons", () => {
     render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
 
-    expect(
-      screen.getByRole("button", { name: "Modify HP" }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Gain XP" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Attacks" })).toBeInTheDocument();
+    expect(screen.getByTitle("Decrease HP")).toBeInTheDocument();
+    expect(screen.getByTitle("Decrease HP by 5")).toBeInTheDocument();
+    expect(screen.getByTitle("Increase HP")).toBeInTheDocument();
+    expect(screen.getByTitle("Increase HP by 5")).toBeInTheDocument();
   });
 
-  it("shows HP modifier when Modify HP button is clicked", () => {
+  it("renders inline XP control buttons", () => {
     render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
 
-    const modifyHPButton = screen.getByRole("button", { name: "Modify HP" });
-    fireEvent.click(modifyHPButton);
-
-    expect(screen.getByTestId("hp-modifier")).toBeInTheDocument();
+    expect(screen.getByTitle("Gain 10 XP")).toBeInTheDocument();
+    expect(screen.getByTitle("Gain 50 XP")).toBeInTheDocument();
+    expect(screen.getByTitle("Gain 100 XP")).toBeInTheDocument();
   });
 
-  it("shows XP modifier when Gain XP button is clicked", () => {
+  it("modifies HP when inline buttons are clicked", () => {
     render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
 
-    const gainXPButton = screen.getByRole("button", { name: "Gain XP" });
-    fireEvent.click(gainXPButton);
+    const increaseHPButton = screen.getByTitle("Increase HP");
+    fireEvent.click(increaseHPButton);
 
-    expect(screen.getByTestId("xp-modifier")).toBeInTheDocument();
+    const state = useAppStore.getState();
+    expect(state.pokemonTeam[testUuid]?.currentHP).toBe(61);
   });
 
-  it("does not show HP modifier initially", () => {
-    render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
+  it("prevents HP from going below 0", () => {
+    const lowHPPokemon = { ...mockPokemon, currentHP: 1 };
+    useAppStore.setState({
+      pokemonTeam: {
+        [testUuid]: lowHPPokemon,
+      },
+    });
 
-    expect(screen.queryByTestId("hp-modifier")).not.toBeInTheDocument();
+    render(<PokemonCard pokemon={lowHPPokemon} uuid="test-uuid" />);
+
+    const decreaseHP5Button = screen.getByTitle("Decrease HP by 5");
+    fireEvent.click(decreaseHP5Button);
+
+    const state = useAppStore.getState();
+    expect(state.pokemonTeam[testUuid]?.currentHP).toBe(0);
   });
 
-  it("does not show XP modifier initially", () => {
+  it("prevents HP from going above max HP", () => {
+    const highHPPokemon = { ...mockPokemon, currentHP: 98 };
+    useAppStore.setState({
+      pokemonTeam: {
+        [testUuid]: highHPPokemon,
+      },
+    });
+
+    render(<PokemonCard pokemon={highHPPokemon} uuid="test-uuid" />);
+
+    const increaseHP5Button = screen.getByTitle("Increase HP by 5");
+    fireEvent.click(increaseHP5Button);
+
+    const state = useAppStore.getState();
+    expect(state.pokemonTeam[testUuid]?.currentHP).toBe(100);
+  });
+
+  it("gains XP when inline buttons are clicked", () => {
     render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
 
-    expect(screen.queryByTestId("xp-modifier")).not.toBeInTheDocument();
+    const gainXP50Button = screen.getByTitle("Gain 50 XP");
+    fireEvent.click(gainXP50Button);
+
+    const state = useAppStore.getState();
+    expect(state.pokemonTeam[testUuid]?.experience).toBe(1550);
+  });
+
+  it("opens status selector when status is clicked", () => {
+    render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
+
+    const statusIndicator = screen.getByTestId("status-indicator");
+    fireEvent.click(statusIndicator);
+
+    expect(screen.getByTestId("status-selector")).toBeInTheDocument();
   });
 
   it("displays attribute chips with correct modifiers", () => {
@@ -227,42 +267,129 @@ describe("PokemonCard", () => {
 
     render(<PokemonCard pokemon={statusPokemon} uuid="test-uuid" />);
 
-    expect(screen.getByText("Poisoned")).toBeInTheDocument();
-    expect(screen.getByText("3")).toBeInTheDocument();
+    expect(screen.getByTestId("status-indicator")).toBeInTheDocument();
   });
 
-  it("does not display status when pokemon is healthy", () => {
-    // Healthy Pokemon should have no status fields set
-    const healthyPokemon = {
-      ...mockPokemon,
-      primaryStatus: undefined,
-      confusion: undefined,
-      temporaryEffects: undefined,
-    };
-
-    render(<PokemonCard pokemon={healthyPokemon} uuid="test-uuid" />);
-
-    // Should not display any status indicators
-    expect(screen.queryByText("Poisoned")).not.toBeInTheDocument();
-    expect(screen.queryByText("Burned")).not.toBeInTheDocument();
-    expect(screen.queryByText("Confused")).not.toBeInTheDocument();
-  });
-
-  it("toggles attacks section when attacks button is clicked", () => {
+  it("shows add first attack button when pokemon has no attacks", () => {
     render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
 
-    const attacksButton = screen.getByRole("button", { name: "Attacks" });
+    expect(screen.getByText("+ Add First Attack")).toBeInTheDocument();
+  });
 
-    // Initially not visible
-    expect(screen.queryByText("+ Add Attack")).not.toBeInTheDocument();
+  it("shows attack chips when pokemon has attacks", () => {
+    const pokemonWithAttacks = {
+      ...mockPokemon,
+      attacks: [
+        {
+          name: "Thunderbolt",
+          currentPp: 5,
+          maxPp: 10,
+          actionType: "action" as const,
+          moveBonus: 3,
+          description: "Electric attack",
+        },
+        {
+          name: "Quick Attack",
+          currentPp: 8,
+          maxPp: 15,
+          actionType: "action" as const,
+          moveBonus: 2,
+          description: "Quick move",
+        },
+      ],
+    };
+
+    render(<PokemonCard pokemon={pokemonWithAttacks} uuid="test-uuid" />);
+
+    expect(screen.getByText("Thunderbolt")).toBeInTheDocument();
+    expect(screen.getByText("5/10")).toBeInTheDocument();
+    expect(screen.getByText("Quick Attack")).toBeInTheDocument();
+    expect(screen.getByText("8/15")).toBeInTheDocument();
+    expect(screen.getByText("+ Attack")).toBeInTheDocument();
+  });
+
+  it("shows manage attacks when pokemon has attacks", () => {
+    const pokemonWithAttacks = {
+      ...mockPokemon,
+      attacks: [
+        {
+          name: "Thunderbolt",
+          currentPp: 5,
+          maxPp: 10,
+          actionType: "action" as const,
+          moveBonus: 3,
+          description: "Electric attack",
+        },
+      ],
+    };
+
+    render(<PokemonCard pokemon={pokemonWithAttacks} uuid="test-uuid" />);
+
+    expect(screen.getByText("Attacks")).toBeInTheDocument();
+    expect(screen.getByText("Manage")).toBeInTheDocument();
+  });
+
+  it("toggles attack management section when manage is clicked", () => {
+    const pokemonWithAttacks = {
+      ...mockPokemon,
+      attacks: [
+        {
+          name: "Thunderbolt",
+          currentPp: 5,
+          maxPp: 10,
+          actionType: "action" as const,
+          moveBonus: 3,
+          description: "Electric attack",
+        },
+      ],
+    };
+
+    render(<PokemonCard pokemon={pokemonWithAttacks} uuid="test-uuid" />);
+
+    const manageButton = screen.getByText("Manage");
+
+    // Initially expanded section should not be visible
+    expect(screen.queryByTestId("attack-card")).not.toBeInTheDocument();
 
     // Click to show
-    fireEvent.click(attacksButton);
-    expect(screen.getAllByText("+ Add Attack")).toHaveLength(4); // 4 attack slots
+    fireEvent.click(manageButton);
+    expect(screen.getByTestId("attack-card")).toBeInTheDocument();
 
     // Click to hide
-    fireEvent.click(attacksButton);
-    expect(screen.queryByText("+ Add Attack")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText("Hide"));
+    expect(screen.queryByTestId("attack-card")).not.toBeInTheDocument();
+  });
+
+  it("opens add attack modal when add attack chip is clicked", () => {
+    const pokemonWithAttacks = {
+      ...mockPokemon,
+      attacks: [
+        {
+          name: "Thunderbolt",
+          currentPp: 5,
+          maxPp: 10,
+          actionType: "action" as const,
+          moveBonus: 3,
+          description: "Electric attack",
+        },
+      ],
+    };
+
+    render(<PokemonCard pokemon={pokemonWithAttacks} uuid="test-uuid" />);
+
+    const addAttackButton = screen.getByText("+ Attack");
+    fireEvent.click(addAttackButton);
+
+    expect(screen.getByTestId("add-attack-modal")).toBeInTheDocument();
+  });
+
+  it("opens add attack modal when add first attack is clicked", () => {
+    render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
+
+    const addFirstAttackButton = screen.getByText("+ Add First Attack");
+    fireEvent.click(addFirstAttackButton);
+
+    expect(screen.getByTestId("add-attack-modal")).toBeInTheDocument();
   });
 
   it("opens action menu when three dots button is clicked", () => {
@@ -360,39 +487,24 @@ describe("PokemonCard", () => {
     expect(screen.getByText("1500/1500")).toBeInTheDocument();
   });
 
-  it("displays attacks when pokemon has attacks", () => {
-    const pokemonWithAttacks = {
+  it("handles pokemon with undefined type1 gracefully", () => {
+    const pokemonWithUndefinedType = {
       ...mockPokemon,
-      attacks: [
-        {
-          name: "Thunderbolt",
-          currentPp: 5,
-          maxPp: 10,
-          actionType: "action" as const,
-          moveBonus: 3,
-          description: "Electric attack",
-        },
-      ],
+      type1: undefined,
+      type2: undefined,
     };
 
-    render(<PokemonCard pokemon={pokemonWithAttacks} uuid="test-uuid" />);
+    render(<PokemonCard pokemon={pokemonWithUndefinedType} uuid="test-uuid" />);
 
-    const attacksButton = screen.getByRole("button", { name: "Attacks" });
-    fireEvent.click(attacksButton);
+    // Should render without crashing
+    expect(screen.getByText("Pikachu")).toBeInTheDocument();
+    expect(screen.getByText("(Pikachu)")).toBeInTheDocument();
+    expect(screen.getByText("Lv.25")).toBeInTheDocument();
 
-    expect(screen.getByTestId("attack-card")).toBeInTheDocument();
-    expect(screen.getAllByText("+ Add Attack")).toHaveLength(3); // 3 remaining slots
-  });
+    // Should show fallback icon when type1 is undefined
+    expect(screen.getByText("❓")).toBeInTheDocument();
 
-  it("shows add attack modal when empty attack slot is clicked", () => {
-    render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
-
-    const attacksButton = screen.getByRole("button", { name: "Attacks" });
-    fireEvent.click(attacksButton);
-
-    const addAttackSlot = screen.getAllByText("+ Add Attack")[0];
-    fireEvent.click(addAttackSlot);
-
-    expect(screen.getByTestId("add-attack-modal")).toBeInTheDocument();
+    // Should not show any type badges
+    expect(screen.queryByText("ELECTRIC")).not.toBeInTheDocument();
   });
 });

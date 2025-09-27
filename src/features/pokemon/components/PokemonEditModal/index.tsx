@@ -161,7 +161,9 @@ export default function PokemonEditModal({
           <div className="flex items-start gap-4">
             {/* Pokemon Sprite/Icon */}
             <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-2xl border border-white/10">
-              {getPokemonIcon(editedPokemon.type1, editedPokemon.type2)}
+              {editedPokemon.type1
+                ? getPokemonIcon(editedPokemon.type1, editedPokemon.type2)
+                : "❓"}
             </div>
 
             {/* Pokemon Basic Info */}

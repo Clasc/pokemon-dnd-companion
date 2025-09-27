@@ -31,7 +31,7 @@ export type StatusCondition =
 export interface Pokemon {
   type: string; // e.g., "Pikachu", "Charizard"
   name: string;
-  type1: PokemonType;
+  type1?: PokemonType;
   type2?: PokemonType;
   level: number;
   currentHP: number;
