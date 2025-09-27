@@ -2,20 +2,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import PokemonCard from ".";
 import { useAppStore } from "@/store";
-
-// Mock the Zustand store
-jest.mock("@/store", () => ({
-  useAppStore: {
-    use: {
-      removePokemon: jest.fn(),
-      pokemonTeam: jest.fn(),
-      modifyPokemonHP: jest.fn(),
-      gainExperience: jest.fn(),
-      setPrimaryStatus: jest.fn(),
-      setConfusion: jest.fn(),
-    },
-  },
-}));
+import { Pokemon } from "@/types/pokemon";
 
 // Mock components that are imported
 jest.mock("@/components/shared/DeleteConfirmationModal", () => {
@@ -58,50 +45,52 @@ jest.mock("@/utils/IconMapper", () => ({
   getPokemonIcon: jest.fn(() => "🔥"),
 }));
 
+const createTestPokemon = (): Pokemon => ({
+  type: "Pikachu",
+  name: "Pikachu",
+  type1: "electric",
+  type2: undefined,
+  level: 25,
+  currentHP: 60,
+  maxHP: 100,
+  experience: 1500,
+  experienceToNext: 500,
+  attributes: {
+    strength: 10,
+    dexterity: 15,
+    constitution: 12,
+    intelligence: 14,
+    wisdom: 11,
+    charisma: 13,
+  },
+  attacks: [],
+});
+
 describe("PokemonCard", () => {
-  const mockRemovePokemon = jest.fn();
-  const mockModifyPokemonHP = jest.fn();
-  const mockGainExperience = jest.fn();
-
-  const mockPokemon = {
-    name: "Pikachu",
-    type: "Pikachu",
-    type1: "electric" as const,
-    type2: undefined,
-    level: 25,
-    currentHP: 60,
-    maxHP: 100,
-    experience: 1500,
-    experienceToNext: 500,
-    attributes: {
-      strength: 10,
-      dexterity: 15,
-      constitution: 12,
-      intelligence: 14,
-      wisdom: 11,
-      charisma: 13,
-    },
-    attacks: [],
-  };
-
-  const setupMockStore = () => {
-    (useAppStore.use.removePokemon as jest.Mock).mockReturnValue(
-      mockRemovePokemon,
-    );
-    (useAppStore.use.modifyPokemonHP as jest.Mock).mockReturnValue(
-      mockModifyPokemonHP,
-    );
-    (useAppStore.use.gainExperience as jest.Mock).mockReturnValue(
-      mockGainExperience,
-    );
-    (useAppStore.use.pokemonTeam as jest.Mock).mockReturnValue({
-      "test-uuid": mockPokemon,
-    });
-  };
+  const testUuid = "test-uuid";
+  let mockPokemon: Pokemon;
 
   beforeEach(() => {
+    // Clear the store state
+    useAppStore.setState({
+      pokemonTeam: {},
+      trainer: null,
+    });
+
+    // Create test Pokemon
+    mockPokemon = createTestPokemon();
+
+    // Add test Pokemon to store
+    useAppStore.setState({
+      pokemonTeam: {
+        [testUuid]: mockPokemon,
+      },
+      trainer: null,
+    });
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
-    setupMockStore();
   });
 
   it("renders pokemon information correctly", () => {
@@ -230,8 +219,9 @@ describe("PokemonCard", () => {
     const statusPokemon = {
       ...mockPokemon,
       primaryStatus: {
-        condition: "poisoned",
+        condition: "poisoned" as const,
         duration: 3,
+        turnsActive: 0,
       },
     };
 

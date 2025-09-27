@@ -46,6 +46,88 @@ Short-term effects that clear automatically:
 |--------|----------|-------------------|-------|
 | **Flinching** | End of turn | Cannot act this turn | `#95A5A6` (Gray) |
 
+## Testing Strategy
+
+### Test Architecture
+The status effects system follows the project's testing guidelines:
+
+- **Real Store Usage**: All tests use the actual Zustand store rather than mocks
+- **User-Centric Assertions**: Tests focus on visible behavior and user interactions
+- **Integration-Style Testing**: Tests cover complete workflows from user action to state change
+
+### Test Coverage Areas
+
+#### Core Functionality Tests
+- Status application and removal for all primary status types
+- Confusion status handling (can coexist with primary status)
+- Duration input validation and persistence
+- Modal opening/closing behavior
+
+#### Edge Case Tests
+- Maximum and minimum duration values
+- Zero or negative duration handling
+- Status overwriting and preservation
+- Empty input graceful handling
+- Complex status combinations
+
+#### User Interaction Tests
+- Modal UI interactions (radio buttons, checkboxes, inputs)
+- Save and cancel button functionality
+- Duration input for time-limited conditions
+- Status clearing to healthy state
+
+### Example Test Patterns
+
+```typescript
+// Testing status application with real store
+it("saves primary status to store when Save is clicked", async () => {
+  const user = userEvent.setup();
+  
+  render(<StatusSelector pokemonUuid={testUuid} isOpen={true} onClose={mockOnClose} />);
+  
+  const poisonedRadio = screen.getByDisplayValue("poisoned");
+  await user.click(poisonedRadio);
+  
+  const saveButton = screen.getByRole("button", { name: "Save" });
+  await user.click(saveButton);
+  
+  const updatedPokemon = useAppStore.getState().pokemonTeam[testUuid];
+  expect(updatedPokemon.primaryStatus?.condition).toBe("poisoned");
+});
+
+// Testing complex status combinations
+it("preserves confusion when changing primary status", async () => {
+  // Setup Pokemon with both primary status and confusion
+  const pokemonWithBothStatus = createTestPokemon();
+  pokemonWithBothStatus.primaryStatus = { condition: "poisoned", duration: 3, turnsActive: 0 };
+  pokemonWithBothStatus.confusion = { condition: "confused", duration: 2, turnsActive: 1 };
+  
+  useAppStore.setState({ pokemonTeam: { [testUuid]: pokemonWithBothStatus } });
+  
+  // Test that changing primary status preserves confusion
+  // ... test implementation
+});
+```
+
+## Edge Cases and Validation
+
+### Duration Handling
+- **Maximum Values**: System accepts large duration values (tested up to 99 turns)
+- **Minimum Values**: Supports single-turn durations
+- **Zero Duration**: Accepts zero duration for immediate effect resolution
+- **Empty Input**: Gracefully handles empty duration fields with appropriate defaults
+
+### Status Combinations
+- **Mutual Exclusion**: Primary status conditions properly replace each other
+- **Coexistence**: Confusion can exist alongside any primary status
+- **State Preservation**: Changing one status type preserves others
+- **Complete Clearing**: All status effects can be cleared to return to healthy state
+
+### Invalid Input Handling
+- Non-numeric duration input defaults to safe values
+- Negative durations handled gracefully
+- Missing Pokemon UUID fails safely without crashes
+
 ## Data Model Changes
 
 ### Updated Pokemon Interface

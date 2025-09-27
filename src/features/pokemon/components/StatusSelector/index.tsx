@@ -17,13 +17,10 @@ const PRIMARY_STATUS_CONDITIONS: StatusCondition[] = [
   "paralyzed",
   "poisoned",
   "badly-poisoned",
-  "asleep"
+  "asleep",
 ];
 
-const DURATION_REQUIRING_CONDITIONS: StatusCondition[] = [
-  "asleep",
-  "confused"
-];
+const DURATION_REQUIRING_CONDITIONS: StatusCondition[] = ["asleep", "confused"];
 
 const getStatusDisplayName = (condition: StatusCondition): string => {
   switch (condition) {
@@ -45,15 +42,24 @@ const getDefaultDuration = (condition: StatusCondition): number | undefined => {
   }
 };
 
-export default function StatusSelector({ pokemonUuid, isOpen, onClose }: StatusSelectorProps) {
+export default function StatusSelector({
+  pokemonUuid,
+  isOpen,
+  onClose,
+}: StatusSelectorProps) {
   const pokemon = useAppStore.use.pokemonTeam()[pokemonUuid];
   const setPrimaryStatus = useAppStore.use.setPrimaryStatus();
   const setConfusion = useAppStore.use.setConfusion();
 
-  const [selectedPrimaryStatus, setSelectedPrimaryStatus] = useState<StatusCondition>("none");
-  const [primaryDuration, setPrimaryDuration] = useState<number | undefined>(undefined);
+  const [selectedPrimaryStatus, setSelectedPrimaryStatus] =
+    useState<StatusCondition>("none");
+  const [primaryDuration, setPrimaryDuration] = useState<number | undefined>(
+    undefined,
+  );
   const [isConfused, setIsConfused] = useState(false);
-  const [confusionDuration, setConfusionDuration] = useState<number | undefined>(undefined);
+  const [confusionDuration, setConfusionDuration] = useState<
+    number | undefined
+  >(undefined);
 
   // Initialize state from current pokemon status
   useEffect(() => {
@@ -104,7 +110,7 @@ export default function StatusSelector({ pokemonUuid, isOpen, onClose }: StatusS
       const primaryStatusEffect: StatusEffect = {
         condition: selectedPrimaryStatus,
         duration: primaryDuration,
-        turnsActive: 0
+        turnsActive: 0,
       };
       setPrimaryStatus(pokemonUuid, primaryStatusEffect);
     }
@@ -114,7 +120,7 @@ export default function StatusSelector({ pokemonUuid, isOpen, onClose }: StatusS
       const confusionEffect: StatusEffect = {
         condition: "confused",
         duration: confusionDuration,
-        turnsActive: 0
+        turnsActive: 0,
       };
       setConfusion(pokemonUuid, confusionEffect);
     } else {
@@ -156,8 +162,18 @@ export default function StatusSelector({ pokemonUuid, isOpen, onClose }: StatusS
             onClick={handleCancel}
             className="text-gray-400 hover:text-white transition-colors"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -165,7 +181,9 @@ export default function StatusSelector({ pokemonUuid, isOpen, onClose }: StatusS
         <div className="space-y-6">
           {/* Primary Status Effects */}
           <div>
-            <h4 className="text-lg font-semibold text-white mb-3">Primary Status</h4>
+            <h4 className="text-lg font-semibold text-white mb-3">
+              Primary Status
+            </h4>
             <div className="space-y-2">
               {PRIMARY_STATUS_CONDITIONS.map((condition) => (
                 <label
@@ -191,20 +209,27 @@ export default function StatusSelector({ pokemonUuid, isOpen, onClose }: StatusS
                       {getStatusDisplayName(condition)}
                     </span>
                   </div>
-                  {selectedPrimaryStatus === condition && DURATION_REQUIRING_CONDITIONS.includes(condition) && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-300 text-sm">Duration:</span>
-                      <input
-                        type="number"
-                        min="1"
-                        max={condition === "asleep" ? 3 : 4}
-                        value={primaryDuration || ""}
-                        onChange={(e) => setPrimaryDuration(parseInt(e.target.value) || undefined)}
-                        className="w-12 px-2 py-1 bg-white/10 border border-white/20 rounded text-white text-sm text-center"
-                      />
-                      <span className="text-gray-300 text-sm">turns</span>
-                    </div>
-                  )}
+                  {selectedPrimaryStatus === condition &&
+                    DURATION_REQUIRING_CONDITIONS.includes(condition) && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-300 text-sm">Duration:</span>
+                        <input
+                          type="number"
+                          min="1"
+                          max={condition === "asleep" ? 3 : 4}
+                          value={primaryDuration || ""}
+                          onChange={(e) =>
+                            setPrimaryDuration(
+                              e.target.value === ""
+                                ? undefined
+                                : parseInt(e.target.value),
+                            )
+                          }
+                          className="w-12 px-2 py-1 bg-white/10 border border-white/20 rounded text-white text-sm text-center"
+                        />
+                        <span className="text-gray-300 text-sm">turns</span>
+                      </div>
+                    )}
                 </label>
               ))}
             </div>
@@ -212,7 +237,9 @@ export default function StatusSelector({ pokemonUuid, isOpen, onClose }: StatusS
 
           {/* Confusion - Special Status */}
           <div className="border-t border-white/10 pt-4">
-            <h4 className="text-lg font-semibold text-white mb-3">Special Effects</h4>
+            <h4 className="text-lg font-semibold text-white mb-3">
+              Special Effects
+            </h4>
             <label className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
               <input
                 type="checkbox"
@@ -235,7 +262,13 @@ export default function StatusSelector({ pokemonUuid, isOpen, onClose }: StatusS
                     min="1"
                     max="4"
                     value={confusionDuration || ""}
-                    onChange={(e) => setConfusionDuration(parseInt(e.target.value) || undefined)}
+                    onChange={(e) =>
+                      setConfusionDuration(
+                        e.target.value === ""
+                          ? undefined
+                          : parseInt(e.target.value),
+                      )
+                    }
                     className="w-12 px-2 py-1 bg-white/10 border border-white/20 rounded text-white text-sm text-center"
                   />
                   <span className="text-gray-300 text-sm">turns</span>

@@ -409,11 +409,24 @@ describe("TrainerInventory", () => {
   });
 
   describe("Pokedollars", () => {
+    beforeEach(() => {
+      // Mock toLocaleString to ensure consistent formatting across locales
+      jest
+        .spyOn(Number.prototype, "toLocaleString")
+        .mockImplementation(function (this: number) {
+          return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        });
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
     it("displays pokedollars with correct formatting", () => {
       render(<TrainerInventory {...defaultProps} pokedollars={1234567} />);
 
       expect(screen.getByText("Pokedollars")).toBeInTheDocument();
-      expect(screen.getByText((1234567).toLocaleString())).toBeInTheDocument();
+      expect(screen.getByText("1,234,567")).toBeInTheDocument();
     });
 
     it("displays 0 pokedollars when amount is 0", () => {
