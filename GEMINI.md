@@ -1,110 +1,193 @@
 # Gemini Agent Instructions
 
-This document provides instructions for the Gemini agent to interact with the `pokemon-dnd-companion` project.
+Operational guide for the AI assistant working on `pokemon-dnd-companion`.
 
-## Project Overview
+---
+## 1. Project Overview
+Next.js (App Router) + TypeScript client‑side companion app for a hybrid Pokémon + D&D tabletop session. Current scope is player (not DM) oriented: managing a Trainer and a party of Pokémon locally (no backend).
 
-This is a Next.js application designed to be a companion for a Pokemon Dungeons and Dragons campaign. It helps players and game masters manage Pokemon, trainers, and other game-related data.
+---
+## 2. Current Tech Stack (Pinned Versions)
+| Aspect | Tech / Version |
+|--------|----------------|
+| Framework | Next.js 15.4.6 (app directory, Turbopack dev) |
+| Language | TypeScript 5.9.x |
+| React | React 19.1.0 |
+| State | Zustand 5 (real store in tests) |
+| Styling | Tailwind CSS 4 + custom CSS vars |
+| Testing | Jest 30 + @testing-library/react + jest-dom |
+| Build Dev | `next dev --turbopack` |
+| Persistence | `localStorage` (custom hydration) |
+| Path Alias | `@/` -> `src/` (see `jest.config.ts`) |
 
-## Development
+Do not introduce alternative state managers, test frameworks, or styling systems without explicit approval.
 
-To run the development server, use the following command:
-
-```bash
-npm run dev
+---
+## 3. Scripts
+```
+npm run dev          # Start dev server (Turbopack)
+npm run build        # Production build
+npm start            # Serve built app
+npm run lint         # ESLint (flat config)
+npm test             # Jest test suite
+npm run test:watch   # Watch mode
+npm run test:coverage# Coverage report
 ```
 
-## Testing
-### Testing Standards
-- All new features and modifications must be accompanied by tests.
-- Tests should cover both the functionality and edge cases.
-- Use Jest for unit and integration tests.
-- Do not mock components in tests unless absolutely necessary. Instead, use the actual components to ensure realistic testing.
-- Never  mock Zustand store in tests. Use the actual Zustand store to ensure realistic testing.
-- Never use snapshot tests. Instead, write tests that check the actual behavior of the components and functions. If you encounter a snapshot test, refactor it to a more appropriate test that checks the actual behavior, after confirming with the user that the snapshot test is not needed.
-- Ensure that all tests pass before committing any changes.
-
-### Querying DOM
-When querying the DOM in tests, use the following methods, with the following priorities:
-- Use `getByRole` to find elements by their role.
-- Use `getByText` to find elements by their text content.
-- Use `getByTestId` to find elements by their `data-testid` attribute.
-- Use `queryByText` and `queryByRole` for assertions that may not find an element, allowing for more flexible tests.
-If a test cannot be queried using getByRole, consider adding a role to the element in question to make it more accessible and easier to test. If there is no role that fits the element, use `getByText` or `getByTestId` as a fallback and add a data-test-id attribute to the element if necessary.
-
-### Running Tests
-To run the test suite, use the following command:
-
-```bash
-npm run test
+---
+## 4. Repository & Structure Conventions
+Feature‑centric layout + shared components:
+```
+src/
+	app/                 # Next.js app router entry/layout
+	components/shared/   # Cross-feature reusable UI
+	features/
+		pokemon/
+		trainer/
+	store/               # Zustand store + helpers
+	fixtures/            # Reusable test data (DO use instead of ad-hoc objects)
+	tests/               # Global test docs + utilities
+	types/               # TS domain models
+	utils/               # Pure helpers / mappers
+doc/                   # Design specs / feature docs (authoritative planning)
+docs/                  # Ancillary or user-facing conceptual docs
 ```
 
-To run the tests in watch mode, use:
+Distinction:
+- `doc/` = living design + requirements (update first when adding/modifying features)
+- `docs/` = supplemental / gameplay / narrative / domain notes
 
-```bash
-npm run test:watch
+### Component Pattern
 ```
-
-To generate a test coverage report, use:
-```bash
-npm run test:coverage
+ComponentName/
+	index.tsx
+	index.test.tsx
 ```
+Keep components small; if you need explanatory comments for internal sections, consider splitting into sub-components.
 
-## Linting
+### Imports
+Use path alias `@/` instead of relative chains (`../../..`).
 
-To lint the codebase, use the following command:
+---
+## 5. Testing Standards & Philosophy
+Principles:
+- Test behavior, not implementation details.
+- Prefer integration-style tests using real components + real Zustand store.
+- Never mock the Zustand store or replace it with a custom test version.
+- Avoid snapshot tests. If encountered, propose converting to explicit assertions (state, text, roles, attributes, side-effects) — get confirmation before refactor.
+- Keep assertions user-centric: visible text, roles, aria states, computed values.
 
-```bash
-npm run lint
-```
+### DOM Query Priority
+1. `getByRole`
+2. `getByText`
+3. `getByTestId` (only when no semantic alternative exists)
+4. `queryBy*` variants for absence assertions
 
-## Key Technologies
+If `getByRole` isn't available, consider adding an appropriate semantic element or ARIA role (without harming accessibility) rather than defaulting immediately to `data-testid`.
 
-- **Next.js**: React framework for building the user interface.
-- **React**: JavaScript library for building user interfaces.
-- **TypeScript**: Typed superset of JavaScript.
-- **Tailwind CSS**: Utility-first CSS framework for styling.
-- **Jest**: JavaScript testing framework.
-- **Zustand**: State management library.
+### Test Utilities
+- Reuse factory / fixture data from `src/fixtures`.
+- Place shared helpers in `src/tests/utils/`.
+- Ensure new fixtures are deterministic (no random unless seeded) to keep tests stable.
 
-### Methodology
-### Gathering Requirements
-When a user requests a new feature or modification, first gather detailed requirements. Ask clarifying questions to ensure you understand the user's needs fully.
-If the request is vague or lacks detail, ask for more information to clarify the requirements.
-The request should have a documentation that is inside the doc folder. If the user provided it to you, gather feedback from the user and then apply the changes to that document.
+### Setup Environment (jest.setup.ts)
+Includes:
+- `@testing-library/jest-dom` matchers
+- Polyfills / mocks: `crypto.randomUUID`, `localStorage`, `matchMedia`, `alert`
+Do not duplicate or override these silently in individual tests.
 
-If you need to add new features or modify existing ones, make a Plan in a todo list format.
-Clearly state it to the user and ask for confirmation before proceeding with the implementation.
+### Coverage
+Collects from `src/**/*.{js,jsx,ts,tsx}` excluding `.d.ts`. Strive to cover critical paths (store mutations, modal flows, interactive buttons). Avoid aiming for arbitrary %; focus on risk / complexity areas first.
 
-As soon as your implementation is complete, inform the user about the changes made and provide a brief summary of the modifications. Ask the user for manual check.
-After the user confirms that everything works as expected, add tests that cover the new functionality or modifications made.
-Then run the tests to ensure everything is functioning correctly.
-After the tests pass, commit the changes with a clear and concise commit message that describes the modifications made.
-Finally, inform the user that the changes have been successfully committed and provide a summary of the modifications.
+---
+## 6. Development Workflow (For the Agent)
+1. Requirements: Clarify ambiguous user requests. If underspecified, list assumptions explicitly before proceeding.
+2. Planning: Produce a TODO (single in‑progress item rule) before coding multi‑step changes; get user sign‑off for feature-level work.
+3. Documentation First: Update / create spec in `doc/` for new or changed features prior to implementation.
+4. Implementation: Follow structure & naming. Keep PR-sized edits cohesive (one feature or fix).
+5. Manual Verification: Summarize changes & prompt user to manually validate UI/behavior.
+6. Test Authoring: Add / adjust tests only after user confirms manual behavior is correct.
+7. Quality Gates: Run lint + tests (and coverage if relevant) before finalizing.
+8. Commit: Use clear, present-tense messages (e.g., "Add HP modifier component validation"). Reference doc updates when applicable.
 
+---
+## 7. Linting & Quality
+- Run `npm run lint` before committing substantive changes.
+- Prefer fixing root causes over disabling rules. If a disable is justified, annotate with a concise rationale.
+- Keep TypeScript types narrow and explicit; avoid `any` unless unavoidable (document why).
 
-## Project of Structure
-1.  **Feature-based Organization**: Components and logic related to a specific feature (e.g., `pokemon`, `trainer`) are grouped together within the `src/features` directory. This makes it easier to locate all relevant files for a particular feature, improving maintainability and scalability.
+---
+## 8. Adding / Modifying Features
+When adding a feature (e.g., Attack Management, Inventory, etc.):
+1. Create / update a markdown spec under `doc/` (problem, scope, data shape, UI entry points, edge cases).
+2. Define data model changes (extend types in `src/types`).
+3. Update store shape & pure helpers (ensure backward-safe hydration if existing localStorage keys are reused).
+4. Implement UI components with tests pending.
+5. Manual review & user confirmation.
+6. Add tests covering:
+	 - Rendering (roles / text)
+	 - Critical interactions (add/edit/delete flows)
+	 - Store mutations & derived UI state
+	 - Edge cases (empty lists, min/max bounds)
 
-2.  **Shared Components**: Reusable UI components that are not specific to any single feature are placed in the `src/components/shared` directory. This promotes reusability, reduces code duplication, and ensures consistency across the application.
+---
+## 9. Accessibility Guidance
+- Always ensure interactive elements are keyboard reachable (native buttons/inputs preferred).
+- Provide `aria-label` or visually hidden text only when semantics are otherwise unclear.
+- Prefer real semantic elements (button, form, list, heading hierarchy) over generic `<div>` wrappers.
 
-This approach helps in creating a modular and organized codebase, making it easier for developers to understand, navigate, and contribute to the project.
+---
+## 10. Performance Considerations
+- Leverage Zustand selectors to minimize re-renders (avoid spreading full store into components).
+- Keep derived calculations pure & memoized if costly (most are currently lightweight).
+- Avoid unnecessary React state when value can come directly from the store selector.
 
-### Component Structure
+---
+## 11. Guardrails / Things NOT To Do Without Approval
+- No introduction of server-side persistence or external APIs.
+- No adding alternative styling systems (e.g., styled-components) alongside Tailwind.
+- No snapshot tests.
+- No global monkey-patching beyond `jest.setup.ts`.
+- No large utility "kitchen sink" modules—prefer focused helpers.
 
-Each component is typically structured within its own directory, containing the component's main file (`index.tsx`) and its corresponding test file (`index.test.tsx`) as siblings.
+---
+## 12. Review Checklist (Pre-Commit)
+- [ ] Spec in `doc/` updated/created
+- [ ] README or other docs updated if user-facing behavior changed
+- [ ] Lint passes
+- [ ] Tests added/updated (post manual confirmation)
+- [ ] No unused exports / dead code
+- [ ] Accessibility semantics preserved
+- [ ] Commit message clear & scoped
 
-Example:
+---
+## 13. Open Gaps / Future (Reference Only)
+Roadmap items (attacks, inventory, evolution, battle system, multiplayer, PWA, cloud sync) exist but are intentionally deferred; do not stub premature abstractions.
 
-```
-Component/
-├───index.tsx
-└───index.test.tsx
-```
-The project's structure is based on two main principles:
+---
+## 14. Quick Reference
+| Task | Action |
+|------|--------|
+| Start Dev | `npm run dev` |
+| Run Tests | `npm test` |
+| Watch Tests | `npm run test:watch` |
+| Coverage | `npm run test:coverage` |
+| Lint | `npm run lint` |
 
-## Component Conventions
-- **File Naming**: Components are named using PascalCase, and their main file is named `index.tsx`. This allows for cleaner imports.
-- **Test Files**: Each component has a corresponding test file named `index.test.tsx`, located in the same directory as the component. This keeps tests close to the components they test,
-Keep Components small and focused on a single responsibility. If a component grows too large, consider breaking it down into smaller sub-components.
-A component is too big, if comments are needed to explain its purpose or functionality. If you find yourself writing comments to explain what a component does, it's a sign that the component should be refactored into smaller, more focused components.
+---
+## 15. Component Acceptance Mini-Checklist
+- Renders with meaningful roles / text
+- Handles empty / boundary props gracefully
+- Interacts with store predictably (idempotent updates where relevant)
+- Test covers render + at least one interaction path + one edge case
+
+---
+## 16. Document Currency
+This file should be updated whenever:
+- A new domain concept is added
+- Testing strategy changes
+- Tooling / script versions change materially
+If README diverges from this guide, reconcile both (README = user/dev overview, GEMINI.md = agent operational guide).
+
+---
+By following this guide the agent maintains consistency, reliability, and forward scalability without premature complexity.
