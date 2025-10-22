@@ -42,6 +42,24 @@
     --container-desktop: 1024px;
     --container-large: 1200px;
 }
+/* Draggable Progress Bar Focus States */
+.focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
 
 /* Tablet Breakpoint: 768px+ */
 @media (min-width: 768px) {

@@ -11,6 +11,7 @@ import AttackCard from "../AttackCard";
 import ActionButtons from "@/components/shared/ActionButtons";
 import StatusIndicator from "../StatusIndicator";
 import StatusSelector from "../StatusSelector";
+import DraggableProgressBar from "./DraggableProgressBar";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -51,9 +52,25 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
     modifyPokemonHP(uuid, amount);
   };
 
+  // Handle HP drag change
+  const handleHPDragChange = (value: number) => {
+    const diff = value - pokemon.currentHP;
+    if (diff !== 0) {
+      modifyPokemonHP(uuid, diff);
+    }
+  };
+
   // Quick XP gain function
   const gainQuickXP = (amount: number) => {
     gainExperience(uuid, amount);
+  };
+
+  // Handle XP drag change
+  const handleXPDragChange = (value: number) => {
+    const diff = value - pokemon.experience;
+    if (diff !== 0) {
+      gainExperience(uuid, diff);
+    }
   };
 
   const hpPercentage =
@@ -218,17 +235,14 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                   {pokemon.currentHP}/{pokemon.maxHP}
                 </span>
               </div>
-              <div className="w-full bg-gray-600/50 rounded-full h-2 overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-500 relative"
-                  style={{
-                    width: `${Math.min(100, hpPercentage)}%`,
-                    backgroundColor: getHPColor(),
-                  }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
-                </div>
-              </div>
+              <DraggableProgressBar
+                type="hp"
+                current={pokemon.currentHP}
+                max={pokemon.maxHP}
+                onChange={handleHPDragChange}
+                label="HP"
+                step={1}
+              />
             </div>
 
             {/* XP Bar with Quick Gain */}
@@ -265,14 +279,15 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                   {pokemon.experience + pokemon.experienceToNext}
                 </span>
               </div>
-              <div className="w-full bg-gray-600/50 rounded-full h-2 overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-500 xp-bar"
-                  style={{
-                    width: `${Math.min(100, xpPercentage)}%`,
-                  }}
-                />
-              </div>
+              <DraggableProgressBar
+                type="xp"
+                current={pokemon.experience}
+                max={pokemon.experience + pokemon.experienceToNext}
+                onChange={handleXPDragChange}
+                label="Experience Points"
+                step={10}
+                showLevelUpIndicator={pokemon.experienceToNext <= 10}
+              />
             </div>
 
             {/* Attacks as Chips */}

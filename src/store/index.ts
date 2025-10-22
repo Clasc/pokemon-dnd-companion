@@ -21,6 +21,7 @@ interface AppState {
   addTemporaryEffect: (pokemonUuid: string, effect: StatusEffect) => void;
   removeTemporaryEffect: (pokemonUuid: string, effectIndex: number) => void;
   clearAllStatus: (pokemonUuid: string) => void;
+  reset: () => void;
 }
 
 // Helper function to check if we should load test data
@@ -274,6 +275,11 @@ export const useAppStore = createSelectors(
               },
             };
           }),
+        reset: () =>
+          set(() => ({
+            pokemonTeam: {},
+            trainer: null,
+          })),
         isLoading: true,
       }),
       {

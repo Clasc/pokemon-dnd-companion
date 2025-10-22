@@ -1,4 +1,10 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
 import PokemonCard from ".";
 import { useAppStore } from "@/store";
@@ -85,8 +91,20 @@ describe("PokemonCard", () => {
       pokemonTeam: {
         [testUuid]: mockPokemon,
       },
-      trainer: null,
     });
+
+    // Mock getBoundingClientRect for drag tests
+    Element.prototype.getBoundingClientRect = jest.fn(() => ({
+      width: 200,
+      height: 20,
+      top: 0,
+      left: 0,
+      bottom: 20,
+      right: 200,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
+    }));
   });
 
   afterEach(() => {
@@ -460,7 +478,9 @@ describe("PokemonCard", () => {
     render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
 
     // XP: 1500, Total: 2000, Percentage: 75%
-    const xpBar = document.querySelector(".xp-bar");
+    // Find the XP progress bar by looking for the second DraggableProgressBar's progress bar fill
+    const progressBars = document.querySelectorAll('[role="progressbar"]');
+    const xpBar = progressBars[1]; // Second progress bar is XP
     expect(xpBar).toHaveStyle({ width: "75%" });
   });
 
