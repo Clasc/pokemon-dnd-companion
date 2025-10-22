@@ -8,7 +8,7 @@ import { testFixtures } from "../fixtures";
 interface AppState {
   pokemonTeam: PokemonTeam;
   trainer: Trainer | null;
-  addPokemon: (pokemon: Pokemon) => void;
+  addPokemon: (pokemon: Pokemon, uuid?: string) => void;
   updatePokemon: (updatedPokemon: Pokemon, uuid: string) => void;
   removePokemon: (id: string) => void;
   setTrainer: (trainer: Trainer) => void;

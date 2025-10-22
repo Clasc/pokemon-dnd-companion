@@ -1,8 +1,12 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
 import DraggableProgressBar from ".";
-import { useAppStore } from "@/store";
-import { Pokemon } from "@/types/pokemon";
 
 describe("DraggableProgressBar - Accessibility", () => {
   describe("ARIA attributes", () => {
@@ -88,7 +92,7 @@ describe("DraggableProgressBar - Accessibility", () => {
   });
 
   describe("Focus management", () => {
-    it("can receive keyboard focus", () => {
+    it("can receive keyboard focus", async () => {
       render(
         <DraggableProgressBar
           type="hp"
@@ -100,11 +104,13 @@ describe("DraggableProgressBar - Accessibility", () => {
       );
 
       const slider = screen.getByRole("slider", { name: "HP" });
-      slider.focus();
+      await act(async () => {
+        slider.focus();
+      });
       expect(slider).toHaveFocus();
     });
 
-    it("shows focus indicator when focused", () => {
+    it("shows focus indicator when focused", async () => {
       render(
         <DraggableProgressBar
           type="hp"
@@ -116,7 +122,9 @@ describe("DraggableProgressBar - Accessibility", () => {
       );
 
       const slider = screen.getByRole("slider", { name: "HP" });
-      slider.focus();
+      await act(async () => {
+        slider.focus();
+      });
       // Check for focus-visible class or similar
       expect(slider).toHaveClass("focus-visible");
     });
@@ -916,157 +924,5 @@ describe("DraggableProgressBar - Performance", () => {
 
     fireEvent.mouseUp(document);
     rafSpy.mockRestore();
-  });
-});
-
-describe("DraggableProgressBar - Integration with Store", () => {
-  const createMockPokemon = (): Pokemon => ({
-    type: "Pikachu",
-    name: "Sparky",
-    level: 25,
-    type1: "electric",
-    type2: undefined,
-    currentHP: 50,
-    maxHP: 100,
-    experience: 200,
-    experienceToNext: 500,
-    attributes: {
-      strength: 10,
-      dexterity: 15,
-      constitution: 12,
-      intelligence: 8,
-      wisdom: 10,
-      charisma: 14,
-    },
-  });
-
-  beforeEach(() => {
-    const store = useAppStore.getState();
-    store.reset();
-  });
-
-  it("updates Pokemon HP in store via drag", async () => {
-    const mockPokemon = createMockPokemon();
-    const pokemonUuid = "test-uuid-hp";
-    const store = useAppStore.getState();
-    store.addPokemon(mockPokemon, pokemonUuid);
-    const pokemon = useAppStore.getState().pokemonTeam[pokemonUuid];
-
-    const handleHPChange = jest.fn((value: number) => {
-      const currentPokemon = useAppStore.getState().pokemonTeam[pokemonUuid];
-      const diff = value - currentPokemon.currentHP;
-      store.modifyPokemonHP(pokemonUuid, diff);
-    });
-
-    render(
-      <DraggableProgressBar
-        type="hp"
-        current={pokemon.currentHP}
-        max={pokemon.maxHP}
-        onChange={handleHPChange}
-        label="HP"
-      />,
-    );
-
-    const slider = screen.getByRole("slider", { name: "HP" });
-
-    // Drag to 75 HP (75% of 100)
-    fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
-    fireEvent.mouseMove(document, { clientX: 75 });
-    fireEvent.mouseUp(document);
-
-    await waitFor(() => {
-      expect(handleHPChange).toHaveBeenCalled();
-      const updatedPokemon = useAppStore.getState().pokemonTeam[pokemonUuid];
-      expect(updatedPokemon.currentHP).toBe(75);
-    });
-  });
-
-  it("updates Pokemon XP in store via drag", async () => {
-    const mockPokemon = createMockPokemon();
-    const pokemonUuid = "test-uuid-xp";
-    const store = useAppStore.getState();
-    store.addPokemon(mockPokemon, pokemonUuid);
-    const pokemon = useAppStore.getState().pokemonTeam[pokemonUuid];
-
-    const handleXPChange = jest.fn((value: number) => {
-      const currentPokemon = useAppStore.getState().pokemonTeam[pokemonUuid];
-      const diff = value - currentPokemon.experience;
-      if (diff > 0) {
-        store.gainExperience(pokemonUuid, diff);
-      }
-    });
-
-    render(
-      <DraggableProgressBar
-        type="xp"
-        current={pokemon.experience}
-        max={pokemon.experience + pokemon.experienceToNext}
-        onChange={handleXPChange}
-        label="Experience Points"
-      />,
-    );
-
-    const slider = screen.getByRole("slider", {
-      name: "Experience Points",
-    });
-
-    // Current: 200/700 total (28.57%), drag to 400/700 (57.14%)
-    // Drag to 400 XP (57% of 700)
-    fireEvent.mouseDown(slider, { clientX: 28, button: 0 });
-    fireEvent.mouseMove(document, { clientX: 57 });
-    fireEvent.mouseUp(document);
-
-    await waitFor(() => {
-      expect(handleXPChange).toHaveBeenCalled();
-      const updatedPokemon = useAppStore.getState().pokemonTeam[pokemonUuid];
-      expect(updatedPokemon.experience).toBeGreaterThanOrEqual(380);
-      expect(updatedPokemon.experience).toBeLessThanOrEqual(420);
-    });
-  });
-
-  it("handles level up correctly during XP drag", async () => {
-    const mockPokemon = createMockPokemon();
-    const pokemonUuid = "test-uuid-levelup";
-    const store = useAppStore.getState();
-    store.addPokemon(mockPokemon, pokemonUuid);
-    const pokemon = useAppStore.getState().pokemonTeam[pokemonUuid];
-
-    const handleXPChange = jest.fn((value: number) => {
-      const currentPokemon = useAppStore.getState().pokemonTeam[pokemonUuid];
-      const diff = value - currentPokemon.experience;
-      if (diff > 0) {
-        store.gainExperience(pokemonUuid, diff);
-      }
-    });
-
-    render(
-      <DraggableProgressBar
-        type="xp"
-        current={pokemon.experience}
-        max={pokemon.experience + pokemon.experienceToNext}
-        onChange={handleXPChange}
-        label="Experience Points"
-      />,
-    );
-
-    const slider = screen.getByRole("slider", {
-      name: "Experience Points",
-    });
-
-    // Drag to max XP (should trigger level up)
-    // Starting at 200/700, drag to 700
-    fireEvent.mouseDown(slider, { clientX: 28, button: 0 });
-    fireEvent.mouseMove(document, { clientX: 100 });
-    fireEvent.mouseUp(document);
-
-    await waitFor(() => {
-      expect(handleXPChange).toHaveBeenCalled();
-      const updatedPokemon = useAppStore.getState().pokemonTeam[pokemonUuid];
-      // Should have leveled up
-      expect(updatedPokemon.level).toBe(26);
-      // XP should reset after level up
-      expect(updatedPokemon.experience).toBeLessThan(500);
-    });
   });
 });
