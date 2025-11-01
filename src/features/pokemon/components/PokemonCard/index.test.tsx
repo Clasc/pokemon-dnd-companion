@@ -1,14 +1,10 @@
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  act,
-} from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import PokemonCard from ".";
 import { useAppStore } from "@/store";
 import { Pokemon } from "@/types/pokemon";
+import { makePokemon } from "@/tests/utils/pokemonFactories";
+import { resetStore, seedPokemon } from "@/tests/utils/storeHelpers";
 
 // Mock components that are imported
 jest.mock("@/components/shared/DeleteConfirmationModal", () => {
@@ -51,60 +47,35 @@ jest.mock("@/utils/IconMapper", () => ({
   getPokemonIcon: jest.fn(() => "🔥"),
 }));
 
-const createTestPokemon = (): Pokemon => ({
-  type: "Pikachu",
-  name: "Pikachu",
-  type1: "electric",
-  type2: undefined,
-  level: 25,
-  currentHP: 60,
-  maxHP: 100,
-  experience: 1500,
-  experienceToNext: 500,
-  attributes: {
-    strength: 10,
-    dexterity: 15,
-    constitution: 12,
-    intelligence: 14,
-    wisdom: 11,
-    charisma: 13,
-  },
-  attacks: [],
-});
+// Removed inline factory in favor of shared deterministic test factory (makePokemon).
 
 describe("PokemonCard", () => {
   const testUuid = "test-uuid";
   let mockPokemon: Pokemon;
 
   beforeEach(() => {
-    // Clear the store state
-    useAppStore.setState({
-      pokemonTeam: {},
-      trainer: null,
-    });
-
-    // Create test Pokemon
-    mockPokemon = createTestPokemon();
-
-    // Add test Pokemon to store
-    useAppStore.setState({
-      pokemonTeam: {
-        [testUuid]: mockPokemon,
+    // Reset real store & seed deterministic pokemon using shared helpers
+    resetStore();
+    mockPokemon = makePokemon({
+      type: "Pikachu",
+      name: "Pikachu",
+      type1: "electric",
+      level: 25,
+      currentHP: 60,
+      maxHP: 100,
+      experience: 1500,
+      experienceToNext: 500,
+      attributes: {
+        strength: 10,
+        dexterity: 15,
+        constitution: 12,
+        intelligence: 14,
+        wisdom: 11,
+        charisma: 13,
       },
+      attacks: [],
     });
-
-    // Mock getBoundingClientRect for drag tests
-    Element.prototype.getBoundingClientRect = jest.fn(() => ({
-      width: 200,
-      height: 20,
-      top: 0,
-      left: 0,
-      bottom: 20,
-      right: 200,
-      x: 0,
-      y: 0,
-      toJSON: () => {},
-    }));
+    seedPokemon(testUuid, mockPokemon);
   });
 
   afterEach(() => {
