@@ -1,11 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import StatusIndicator from "./index";
 import { Pokemon } from "@/types/pokemon";
+import { makePokemon } from "@/tests/utils/pokemonFactories";
 
-const basePokemon: Pokemon = {
-  type: "Pikachu",
+const basePokemon: Pokemon = makePokemon({
   name: "Sparky",
-  type1: "electric",
   level: 12,
   currentHP: 42,
   maxHP: 42,
@@ -19,8 +18,7 @@ const basePokemon: Pokemon = {
     wisdom: 13,
     charisma: 15,
   },
-  attacks: [],
-};
+});
 
 describe("StatusIndicator", () => {
   it("renders nothing when pokemon has no status effects", () => {

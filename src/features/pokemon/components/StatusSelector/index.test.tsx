@@ -1,49 +1,38 @@
+/** Refactor complete: all status setup paths now use seedPokemon (no manual store mutations for confusion + flinching). */
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import StatusSelector from "./index";
 import { useAppStore } from "@/store";
 import { Pokemon } from "@/types/pokemon";
+import { resetStore, seedPokemon } from "@/tests/utils/storeHelpers";
+import { makePokemon } from "@/tests/utils/pokemonFactories";
 
-const createTestPokemon = (): Pokemon => ({
-  type: "Pikachu",
-  name: "Sparky",
-  type1: "electric",
-  level: 12,
-  currentHP: 42,
-  maxHP: 42,
-  experience: 850,
-  experienceToNext: 350,
-  attributes: {
-    strength: 8,
-    dexterity: 16,
-    constitution: 12,
-    intelligence: 14,
-    wisdom: 13,
-    charisma: 15,
-  },
-  attacks: [],
-});
+const createTestPokemon = (): Pokemon =>
+  makePokemon({
+    name: "Sparky",
+    level: 12,
+    currentHP: 42,
+    maxHP: 42,
+    experience: 850,
+    experienceToNext: 350,
+    attributes: {
+      strength: 8,
+      dexterity: 16,
+      constitution: 12,
+      intelligence: 14,
+      wisdom: 13,
+      charisma: 15,
+    },
+  });
 
 describe("StatusSelector", () => {
   const testUuid = "test-pokemon-uuid";
   let mockOnClose: jest.Mock;
 
   beforeEach(() => {
-    // Clear the store state
-    useAppStore.setState({
-      pokemonTeam: {},
-      trainer: null,
-    });
-
-    // Add test Pokemon to store
+    resetStore();
     const testPokemon = createTestPokemon();
-    useAppStore.setState({
-      pokemonTeam: {
-        [testUuid]: testPokemon,
-      },
-      trainer: null,
-    });
-
+    seedPokemon(testUuid, testPokemon);
     mockOnClose = jest.fn();
   });
 
@@ -124,16 +113,11 @@ describe("StatusSelector", () => {
     });
 
     it("shows current primary status when pokemon has one", () => {
-      const pokemonWithStatus = createTestPokemon();
-      pokemonWithStatus.primaryStatus = {
-        condition: "poisoned",
-        duration: 3,
-        turnsActive: 0,
-      };
-
-      useAppStore.setState({
-        pokemonTeam: {
-          [testUuid]: pokemonWithStatus,
+      seedPokemon(testUuid, {
+        primaryStatus: {
+          condition: "poisoned",
+          duration: 3,
+          turnsActive: 0,
         },
       });
 
@@ -223,16 +207,11 @@ describe("StatusSelector", () => {
     });
 
     it("shows current confusion status when pokemon is confused", () => {
-      const pokemonWithConfusion = createTestPokemon();
-      pokemonWithConfusion.confusion = {
-        condition: "confused",
-        duration: 2,
-        turnsActive: 0,
-      };
-
-      useAppStore.setState({
-        pokemonTeam: {
-          [testUuid]: pokemonWithConfusion,
+      seedPokemon(testUuid, {
+        confusion: {
+          condition: "confused",
+          duration: 2,
+          turnsActive: 0,
         },
       });
 
@@ -402,16 +381,11 @@ describe("StatusSelector", () => {
       const user = userEvent.setup();
 
       // First set a status
-      const pokemonWithStatus = createTestPokemon();
-      pokemonWithStatus.primaryStatus = {
-        condition: "poisoned",
-        duration: 3,
-        turnsActive: 0,
-      };
-
-      useAppStore.setState({
-        pokemonTeam: {
-          [testUuid]: pokemonWithStatus,
+      seedPokemon(testUuid, {
+        primaryStatus: {
+          condition: "poisoned",
+          duration: 3,
+          turnsActive: 0,
         },
       });
 
@@ -437,16 +411,11 @@ describe("StatusSelector", () => {
       const user = userEvent.setup();
 
       // First set confusion
-      const pokemonWithConfusion = createTestPokemon();
-      pokemonWithConfusion.confusion = {
-        condition: "confused",
-        duration: 2,
-        turnsActive: 0,
-      };
-
-      useAppStore.setState({
-        pokemonTeam: {
-          [testUuid]: pokemonWithConfusion,
+      seedPokemon(testUuid, {
+        confusion: {
+          condition: "confused",
+          duration: 2,
+          turnsActive: 0,
         },
       });
 
@@ -609,16 +578,11 @@ describe("StatusSelector", () => {
       const user = userEvent.setup();
 
       // Set initial status
-      const pokemonWithStatus = createTestPokemon();
-      pokemonWithStatus.primaryStatus = {
-        condition: "poisoned",
-        duration: 5,
-        turnsActive: 2,
-      };
-
-      useAppStore.setState({
-        pokemonTeam: {
-          [testUuid]: pokemonWithStatus,
+      seedPokemon(testUuid, {
+        primaryStatus: {
+          condition: "poisoned",
+          duration: 5,
+          turnsActive: 2,
         },
       });
 
@@ -645,21 +609,16 @@ describe("StatusSelector", () => {
       const user = userEvent.setup();
 
       // Set initial status with both primary and confusion
-      const pokemonWithBothStatus = createTestPokemon();
-      pokemonWithBothStatus.primaryStatus = {
-        condition: "poisoned",
-        duration: 3,
-        turnsActive: 0,
-      };
-      pokemonWithBothStatus.confusion = {
-        condition: "confused",
-        duration: 2,
-        turnsActive: 1,
-      };
-
-      useAppStore.setState({
-        pokemonTeam: {
-          [testUuid]: pokemonWithBothStatus,
+      seedPokemon(testUuid, {
+        primaryStatus: {
+          condition: "poisoned",
+          duration: 3,
+          turnsActive: 0,
+        },
+        confusion: {
+          condition: "confused",
+          duration: 2,
+          turnsActive: 1,
         },
       });
 
@@ -687,21 +646,16 @@ describe("StatusSelector", () => {
       const user = userEvent.setup();
 
       // Set initial status with both primary and confusion
-      const pokemonWithBothStatus = createTestPokemon();
-      pokemonWithBothStatus.primaryStatus = {
-        condition: "paralyzed",
-        duration: 0,
-        turnsActive: 0,
-      };
-      pokemonWithBothStatus.confusion = {
-        condition: "confused",
-        duration: 2,
-        turnsActive: 1,
-      };
-
-      useAppStore.setState({
-        pokemonTeam: {
-          [testUuid]: pokemonWithBothStatus,
+      seedPokemon(testUuid, {
+        primaryStatus: {
+          condition: "paralyzed",
+          duration: 0,
+          turnsActive: 0,
+        },
+        confusion: {
+          condition: "confused",
+          duration: 2,
+          turnsActive: 1,
         },
       });
 
@@ -730,21 +684,16 @@ describe("StatusSelector", () => {
       const user = userEvent.setup();
 
       // Set initial status with both primary and confusion
-      const pokemonWithAllStatus = createTestPokemon();
-      pokemonWithAllStatus.primaryStatus = {
-        condition: "poisoned",
-        duration: 3,
-        turnsActive: 0,
-      };
-      pokemonWithAllStatus.confusion = {
-        condition: "confused",
-        duration: 2,
-        turnsActive: 1,
-      };
-
-      useAppStore.setState({
-        pokemonTeam: {
-          [testUuid]: pokemonWithAllStatus,
+      seedPokemon(testUuid, {
+        primaryStatus: {
+          condition: "poisoned",
+          duration: 3,
+          turnsActive: 0,
+        },
+        confusion: {
+          condition: "confused",
+          duration: 2,
+          turnsActive: 1,
         },
       });
 
@@ -802,15 +751,8 @@ describe("StatusSelector", () => {
       const user = userEvent.setup();
 
       // Set initial Pokemon with flinching
-      const pokemonWithFlinching = createTestPokemon();
-      pokemonWithFlinching.temporaryEffects = [
-        { condition: "flinching", turnsActive: 0 },
-      ];
-
-      useAppStore.setState({
-        pokemonTeam: {
-          [testUuid]: pokemonWithFlinching,
-        },
+      seedPokemon(testUuid, {
+        temporaryEffects: [{ condition: "flinching", turnsActive: 0 }],
       });
 
       render(
@@ -876,20 +818,13 @@ describe("StatusSelector", () => {
       const user = userEvent.setup();
 
       // Set initial Pokemon with primary status and flinching
-      const pokemonWithBothStatus = createTestPokemon();
-      pokemonWithBothStatus.primaryStatus = {
-        condition: "poisoned",
-        duration: 3,
-        turnsActive: 0,
-      };
-      pokemonWithBothStatus.temporaryEffects = [
-        { condition: "flinching", turnsActive: 0 },
-      ];
-
-      useAppStore.setState({
-        pokemonTeam: {
-          [testUuid]: pokemonWithBothStatus,
+      seedPokemon(testUuid, {
+        primaryStatus: {
+          condition: "poisoned",
+          duration: 3,
+          turnsActive: 0,
         },
+        temporaryEffects: [{ condition: "flinching", turnsActive: 0 }],
       });
 
       render(
@@ -917,15 +852,8 @@ describe("StatusSelector", () => {
       const user = userEvent.setup();
 
       // Set initial Pokemon with flinching
-      const pokemonWithFlinching = createTestPokemon();
-      pokemonWithFlinching.temporaryEffects = [
-        { condition: "flinching", turnsActive: 0 },
-      ];
-
-      useAppStore.setState({
-        pokemonTeam: {
-          [testUuid]: pokemonWithFlinching,
-        },
+      seedPokemon(testUuid, {
+        temporaryEffects: [{ condition: "flinching", turnsActive: 0 }],
       });
 
       render(
@@ -953,15 +881,8 @@ describe("StatusSelector", () => {
 
     it("initializes flinching checkbox state correctly", () => {
       // Test with Pokemon that has flinching
-      const pokemonWithFlinching = createTestPokemon();
-      pokemonWithFlinching.temporaryEffects = [
-        { condition: "flinching", turnsActive: 0 },
-      ];
-
-      useAppStore.setState({
-        pokemonTeam: {
-          [testUuid]: pokemonWithFlinching,
-        },
+      seedPokemon(testUuid, {
+        temporaryEffects: [{ condition: "flinching", turnsActive: 0 }],
       });
 
       render(
