@@ -4,15 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Pokemon } from "@/types/pokemon";
 import { useAppStore } from "@/store";
-import AddPokemonForm from "@/features/pokemon/components/AddPokemonModal/AddPokemonForm";
+import PokemonForm from "@/features/pokemon/components/PokemonForm";
 
 /**
+ * /pokemon/new
+ *
  * Route-based Pokémon creation page.
- * Replaces the former AddPokemonModal.
- * Provides:
- * - Direct URL access (/pokemon/new)
- * - Browser back navigation
- * - Full-page form space
+ * Replaces the legacy AddPokemonModal and now uses the shared <PokemonForm />.
+ * Validation currently surfaces errors via alert() (to be refactored later per plan).
  */
 
 const initialPokemon: Pokemon = {
@@ -65,9 +64,8 @@ export default function NewPokemonPage() {
     addPokemon(
       {
         ...pokemon,
-        // Clamp just in case inputs were modified mid-validation
-
         currentHP: Math.min(Math.max(0, pokemon.currentHP), pokemon.maxHP),
+        attacks: pokemon.attacks || [],
       },
       uuid,
     );
@@ -93,7 +91,15 @@ export default function NewPokemonPage() {
       </header>
 
       <section className="glass rounded-2xl p-6 border border-white/10 space-y-6">
-        <AddPokemonForm pokemon={pokemon} setPokemon={setPokemon} />
+        <PokemonForm
+          pokemon={pokemon}
+          onChange={setPokemon}
+          autoAdjustCurrentHPOnMaxChange
+          testIds={{
+            species: "species-input",
+            nickname: "nickname-input",
+          }}
+        />
 
         <div className="flex justify-end gap-4 pt-4 border-t border-white/10">
           <button

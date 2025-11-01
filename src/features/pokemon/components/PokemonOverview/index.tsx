@@ -6,6 +6,11 @@ import PokemonCard from "../PokemonCard/";
 
 interface PokemonOverviewProps {
   pokemon: PokemonTeam;
+  /**
+   * When true, suppresses rendering full PokemonCard components and instead
+   * renders lightweight placeholders (used in tests to avoid router dependency).
+   */
+  disableCards?: boolean;
 }
 
 /**
@@ -19,7 +24,10 @@ interface PokemonOverviewProps {
  *
  * This replaces the previous modal-based add flow with a route-based approach.
  */
-export default function PokemonOverview({ pokemon }: PokemonOverviewProps) {
+export default function PokemonOverview({
+  pokemon,
+  disableCards = false,
+}: PokemonOverviewProps) {
   const pokemonLength = Object.keys(pokemon).length;
 
   const totalLevels = Object.values(pokemon).reduce(
@@ -75,9 +83,19 @@ export default function PokemonOverview({ pokemon }: PokemonOverviewProps) {
               </p>
             </div>
           ) : (
-            Object.entries(pokemon).map(([uuid, poke]) => (
-              <PokemonCard key={uuid} pokemon={poke} uuid={uuid} />
-            ))
+            Object.entries(pokemon).map(([uuid, poke]) =>
+              disableCards ? (
+                <div
+                  key={uuid}
+                  data-testid="pokemon-card-placeholder"
+                  className="rounded-xl bg-white/5 p-4 text-sm text-white/70"
+                >
+                  {poke.name} ({poke.type})
+                </div>
+              ) : (
+                <PokemonCard key={uuid} pokemon={poke} uuid={uuid} />
+              ),
+            )
           )}
         </div>
 

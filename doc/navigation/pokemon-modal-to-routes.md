@@ -132,3 +132,14 @@ Replace modal-based interaction flows for managing Pokémon with dedicated route
 ---
 
 This document intentionally avoids implementation specifics (file paths, component names, state hooks). It defines the user-facing behavior and rationale to guide the refactor execution. 
+
+## 19. Implementation Status (Incremental Migration Tracking)
+| Flow / Page | Status | Notes |
+|-------------|--------|-------|
+| Add Pokémon (/pokemon/new) | Implemented | Route live; uses shared PokemonForm. |
+| Edit Pokémon (/pokemon/[uuid]/edit) | Implemented | Replaces legacy modal; includes inline delete (danger zone). |
+| Manage Status (/pokemon/[uuid]/status) | Pending | To be implemented next; will externalize status controls from modal. |
+| Add Attack (/pokemon/[uuid]/attacks/new/[slot]) | Pending | Will replace AddAttackModal slot flow. |
+| Delete Confirmation (integrated) | Partial | Fully implemented inside Edit page; old standalone modal still exists until remaining flows migrated. |
+
+(Once all “Pending” items are implemented and verified, the legacy modal components and their tests can be removed.) 
