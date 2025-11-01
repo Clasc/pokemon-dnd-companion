@@ -23,8 +23,6 @@
  *   });
  */
 
-type Mutable<T> = { -readonly [K in keyof T]: T[K] };
-
 export interface MockRectOptions {
   width?: number;
   height?: number;
