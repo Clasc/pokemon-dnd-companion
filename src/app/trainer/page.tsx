@@ -27,25 +27,9 @@ export default function TrainerPage() {
       </header>
 
       {!trainer ? (
-        <section
-          aria-labelledby="create-trainer-section"
-          className="glass rounded-2xl p-6 border border-white/10"
-        >
-          <h2 id="create-trainer-section" className="sr-only">
-            Create Trainer
-          </h2>
-          <CreateTrainer onTrainerUpdate={setTrainer} />
-        </section>
+        <CreateTrainer onTrainerUpdate={setTrainer} />
       ) : (
-        <section
-          aria-labelledby="trainer-overview-section"
-          className="space-y-4"
-        >
-          <h2 id="trainer-overview-section" className="sr-only">
-            Trainer Overview
-          </h2>
-          <TrainerOverview />
-        </section>
+        <TrainerOverview unstyled />
       )}
     </main>
   );

@@ -18,6 +18,12 @@ interface PokemonOverviewProps {
    */
 
   disableCards?: boolean;
+
+  /**
+   * When true, renders without the outer glass/rounded card container
+   * so the overview can be inlined in a page that already provides a surface.
+   */
+  unstyled?: boolean;
 }
 
 /**
@@ -32,6 +38,7 @@ interface PokemonOverviewProps {
 export default function PokemonOverview({
   pokemon,
   disableCards = false,
+  unstyled = false,
 }: PokemonOverviewProps) {
   const pokemonLength = Object.keys(pokemon).length;
 
@@ -60,7 +67,14 @@ export default function PokemonOverview({
 
   return (
     <>
-      <div className="glass rounded-xl p-4 md:p-5 space-y-5">
+      <div
+        className={
+          unstyled ? "space-y-5" : "glass rounded-xl p-4 md:p-5 space-y-5"
+        }
+        data-testid={
+          unstyled ? "pokemon-overview-unstyled" : "pokemon-overview-card"
+        }
+      >
         <header className="flex items-center justify-between">
           <h2 className="text-xl md:text-2xl font-bold text-white">
             Pokémon Overview
