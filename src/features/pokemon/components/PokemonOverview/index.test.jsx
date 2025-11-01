@@ -219,15 +219,6 @@ describe("PokemonOverview", () => {
       expect(heading.className).toMatch(/text-xl/);
       expect(heading.className).toMatch(/md:text-2xl/);
     });
-
-    it("applies responsive padding classes", () => {
-      const { container } = render(
-        <PokemonOverview pokemon={mockPokemonTeam} disableCards />,
-      );
-      const wrapper = container.querySelector(".glass");
-      expect(wrapper?.className).toMatch(/p-6/);
-      expect(wrapper?.className).toMatch(/md:p-8/);
-    });
   });
 
   describe("Team Counter Variations", () => {

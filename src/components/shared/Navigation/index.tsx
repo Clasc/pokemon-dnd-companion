@@ -146,7 +146,7 @@ export default function Navigation() {
       {/* Desktop Sidebar */}
       <nav
         aria-label="Main"
-        className="hidden md:flex fixed left-0 top-0 h-screen w-56 flex-col gap-2 px-3 py-6
+        className="hidden md:flex fixed left-0 top-0 h-screen w-52 flex-col gap-2 px-3 py-6
           bg-gradient-to-b from-black/30 to-black/20 backdrop-blur-xl border-r border-white/10
           text-sm z-40"
       >
@@ -210,7 +210,7 @@ export default function Navigation() {
       </nav>
 
       {/* To avoid content under sidebar on desktop */}
-      <div className="hidden md:block w-56 shrink-0" aria-hidden="true" />
+      <div className="hidden md:block w-52 shrink-0" aria-hidden="true" />
 
       {/* Mobile Bottom Bar */}
       <nav
