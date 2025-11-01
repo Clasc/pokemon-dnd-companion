@@ -415,20 +415,18 @@ describe("DraggableProgressBar - Touch Interactions", () => {
         />,
       );
 
-      const slider = screen.getByRole("slider", { name: "Experience Points" });
-      const rect = slider.getBoundingClientRect();
-
-      const startX = rect.left + rect.width * 0.2; // 20% = 100/500
-      const endX = rect.left + rect.width * 0.6; // 60% = 300/500
+      const slider = screen.getByRole("slider");
+      const startX = 100; // 20% = 100/500
+      const endX = 300; // 60% = 300/500
 
       fireEvent.touchStart(slider, {
-        touches: [{ clientX: startX, clientY: rect.top }],
+        touches: [{ clientX: startX }],
       });
       fireEvent.touchMove(slider, {
-        touches: [{ clientX: endX, clientY: rect.top }],
+        touches: [{ clientX: endX }],
       });
       fireEvent.touchEnd(slider, {
-        changedTouches: [{ clientX: endX, clientY: rect.top }],
+        changedTouches: [{ clientX: endX }],
       });
 
       await waitFor(() => {
@@ -868,6 +866,7 @@ describe("DraggableProgressBar - Disabled State", () => {
 describe("DraggableProgressBar - Performance", () => {
   it("debounces rapid drag movements", async () => {
     jest.useFakeTimers();
+
     const onChange = jest.fn();
 
     render(
@@ -883,22 +882,45 @@ describe("DraggableProgressBar - Performance", () => {
 
     const slider = screen.getByRole("slider", { name: "HP" });
 
+    // Deterministic bar geometry for percentage calculations
+    slider.getBoundingClientRect = () => ({
+      width: 100,
+      left: 0,
+      right: 100,
+      top: 0,
+      bottom: 10,
+      height: 10,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
+    });
+
+    // Make requestAnimationFrame synchronous so dragValue updates under fake timers
+    const originalRaf = window.requestAnimationFrame;
+    window.requestAnimationFrame = (cb: FrameRequestCallback) => {
+      cb(performance.now());
+      return 0;
+    };
+
     fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
 
-    // Rapid movements
     for (let i = 51; i <= 75; i++) {
       fireEvent.mouseMove(document, { clientX: i });
     }
 
     fireEvent.mouseUp(document);
 
-    // Fast-forward time past debounce
-    jest.advanceTimersByTime(150);
+    // Advance timers to trigger debounced onChange
+    act(() => {
+      jest.advanceTimersByTime(150);
+    });
 
-    // Should only call onChange once after debounce
     expect(onChange).toHaveBeenCalledTimes(1);
+
     expect(onChange).toHaveBeenCalledWith(75);
 
+    // Restore original rAF
+    window.requestAnimationFrame = originalRaf;
     jest.useRealTimers();
   });
 
