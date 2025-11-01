@@ -2,40 +2,58 @@ import {
   render,
   screen,
   fireEvent,
-  waitFor,
   act,
+  waitFor,
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import DraggableProgressBar from ".";
+import {
+  mockElementRect,
+  withSynchronousRaf,
+  flushDebounce,
+} from "@/tests/utils/mockGeometry";
 
-const mockSliderRect = (slider: HTMLElement, width: number) => {
-  slider.getBoundingClientRect = () => ({
-    width,
-    left: 0,
-    right: width,
-    top: 0,
-    bottom: 10,
-    height: 10,
-    x: 0,
-    y: 0,
-    toJSON: () => {},
-  });
-};
+/**
+ * Helper to render the progress bar and return useful handles.
+ */
+function renderBar(
+  props: Partial<React.ComponentProps<typeof DraggableProgressBar>> & {
+    type?: "hp" | "xp";
+    current?: number;
+    max?: number;
+    label?: string;
+  } = {},
+) {
+  const {
+    type = "hp",
+    current = 50,
+    max = 100,
+    label = type === "hp" ? "HP" : "Experience Points",
+    onChange = jest.fn(),
+    ...rest
+  } = props;
+  const utils = render(
+    <DraggableProgressBar
+      type={type}
+      current={current}
+      max={max}
+      onChange={onChange}
+      label={label}
+      {...rest}
+    />,
+  );
+  return {
+    slider: screen.getByRole("slider", { name: label }),
+    onChange,
+    rerender: utils.rerender,
+  };
+}
 
 describe("DraggableProgressBar - Accessibility", () => {
   describe("ARIA attributes", () => {
     it("renders with proper ARIA attributes for HP bar", () => {
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={jest.fn()}
-          label="HP"
-        />,
-      );
+      const { slider } = renderBar({ type: "hp", current: 50, max: 100 });
 
-      const slider = screen.getByRole("slider", { name: "HP" });
       expect(slider).toHaveAttribute("aria-valuenow", "50");
       expect(slider).toHaveAttribute("aria-valuemin", "0");
       expect(slider).toHaveAttribute("aria-valuemax", "100");
@@ -43,36 +61,28 @@ describe("DraggableProgressBar - Accessibility", () => {
     });
 
     it("renders with proper ARIA attributes for XP bar", () => {
-      render(
-        <DraggableProgressBar
-          type="xp"
-          current={250}
-          max={500}
-          onChange={jest.fn()}
-          label="Experience Points"
-        />,
-      );
+      const { slider } = renderBar({
+        type: "xp",
+        current: 250,
+        max: 500,
+        label: "Experience Points",
+      });
 
-      const slider = screen.getByRole("slider", { name: "Experience Points" });
       expect(slider).toHaveAttribute("aria-valuenow", "250");
       expect(slider).toHaveAttribute("aria-valuemin", "0");
       expect(slider).toHaveAttribute("aria-valuemax", "500");
       expect(slider).toHaveAttribute("aria-valuetext", "250 out of 500 XP");
     });
 
-    it("updates aria-valuetext when value changes", async () => {
+    it("updates aria-valuetext when value changes via rerender", () => {
       const onChange = jest.fn();
-      const { rerender } = render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
+      const { slider, rerender } = renderBar({
+        type: "hp",
+        current: 50,
+        max: 100,
+        onChange,
+        label: "HP",
+      });
       expect(slider).toHaveAttribute("aria-valuetext", "50 out of 100 HP");
 
       rerender(
@@ -84,79 +94,38 @@ describe("DraggableProgressBar - Accessibility", () => {
           label="HP"
         />,
       );
-
       expect(slider).toHaveAttribute("aria-valuetext", "75 out of 100 HP");
     });
 
     it("handles disabled state with proper ARIA", () => {
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={jest.fn()}
-          label="HP"
-          disabled={true}
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
+      const { slider } = renderBar({
+        type: "hp",
+        current: 50,
+        max: 100,
+        disabled: true,
+      });
       expect(slider).toHaveAttribute("aria-disabled", "true");
     });
   });
 
   describe("Focus management", () => {
-    it("can receive keyboard focus", async () => {
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={jest.fn()}
-          label="HP"
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
-      await act(async () => {
-        slider.focus();
-      });
+    it("can receive keyboard focus", () => {
+      const { slider } = renderBar();
+      slider.focus();
       expect(slider).toHaveFocus();
     });
 
-    it("shows focus indicator when focused", async () => {
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={jest.fn()}
-          label="HP"
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
-      await act(async () => {
-        slider.focus();
-      });
-      // Check for focus-visible class or similar
+    it("shows focus indicator when focused", () => {
+      const { slider } = renderBar();
+      // Fire the focus event so React onFocus handler sets isFocused state
+      fireEvent.focus(slider);
       expect(slider).toHaveClass("focus-visible");
     });
   });
 
   describe("Screen reader announcements", () => {
-    it("announces value changes with live region", async () => {
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={jest.fn()}
-          label="HP"
-        />,
-      );
-
-      // Check for live region
+    it("announces value changes with live region", () => {
+      renderBar();
       const liveRegion = screen.getByRole("status");
       expect(liveRegion).toHaveAttribute("aria-live", "polite");
       expect(liveRegion).toHaveAttribute("aria-atomic", "true");
@@ -165,46 +134,25 @@ describe("DraggableProgressBar - Accessibility", () => {
 });
 
 describe("DraggableProgressBar - Mouse Interactions", () => {
-  let originalRaf: typeof window.requestAnimationFrame;
-
-  beforeEach(() => {
-    originalRaf = window.requestAnimationFrame;
-    // Make rAF synchronous so dragValue state updates before mouseUp assertions
-    window.requestAnimationFrame = (cb: FrameRequestCallback) => {
-      cb(performance.now());
-      return 0;
-    };
-  });
+  let restoreRect: (() => void) | null = null;
 
   afterEach(() => {
-    window.requestAnimationFrame = originalRaf;
+    if (restoreRect) {
+      restoreRect();
+      restoreRect = null;
+    }
   });
+
   describe("Basic drag operations", () => {
     it("updates value on mouse drag to the right", async () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-        />,
-      );
+      const { slider, onChange } = renderBar();
+      restoreRect = mockElementRect(slider, { width: 100 });
 
-      const slider = screen.getByRole("slider", { name: "HP" });
-      const rect = slider.getBoundingClientRect();
-
-      // Provide deterministic width for JSDOM (100px)
-      mockSliderRect(slider, 100);
-
-      // Simulate drag from 50% to 75% of the bar width
-      const startX = 50;
-      const endX = 75;
-
-      fireEvent.mouseDown(slider, { clientX: startX, button: 0 });
-      fireEvent.mouseMove(document, { clientX: endX });
-      fireEvent.mouseUp(document);
+      withSynchronousRaf(() => {
+        fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
+        fireEvent.mouseMove(document, { clientX: 75 });
+        fireEvent.mouseUp(document);
+      });
 
       await waitFor(() => {
         expect(onChange).toHaveBeenCalledWith(75);
@@ -212,26 +160,16 @@ describe("DraggableProgressBar - Mouse Interactions", () => {
     });
 
     it("updates value on mouse drag to the left", async () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-        />,
-      );
+      const { slider, onChange } = renderBar();
+      restoreRect = mockElementRect(slider, { width: 100 });
 
-      const slider = screen.getByRole("slider", { name: "HP" });
-      mockSliderRect(slider, 100);
-
-      const startX = 50;
-      const endX = 25;
-
-      fireEvent.mouseDown(slider, { clientX: startX, button: 0 });
-      fireEvent.mouseMove(document, { clientX: endX });
-      fireEvent.mouseUp(document);
+      withSynchronousRaf(() => {
+        withSynchronousRaf(() => {
+          fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
+        });
+        fireEvent.mouseMove(document, { clientX: 25 });
+        fireEvent.mouseUp(document);
+      });
 
       await waitFor(() => {
         expect(onChange).toHaveBeenCalledWith(25);
@@ -239,53 +177,31 @@ describe("DraggableProgressBar - Mouse Interactions", () => {
     });
 
     it("shows drag preview during drag", async () => {
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={jest.fn()}
-          label="HP"
-        />,
-      );
+      const { slider } = renderBar();
+      restoreRect = mockElementRect(slider, { width: 100 });
 
-      const slider = screen.getByRole("slider", { name: "HP" });
-
-      mockSliderRect(slider, 100);
       fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
 
-      // Check for preview element
-      await waitFor(() => {
-        const preview = screen.getByRole("tooltip");
-        expect(preview).toBeInTheDocument();
-      });
+      const preview = await screen.findByRole("tooltip");
+      expect(preview).toBeInTheDocument();
 
       fireEvent.mouseUp(document);
 
-      // Preview should be removed after drag
       await waitFor(() => {
         expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
       });
     });
 
-    it("cancels drag on escape key", async () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-        />,
-      );
+    it("cancels drag on escape key (no onChange)", () => {
+      const { slider, onChange } = renderBar();
+      restoreRect = mockElementRect(slider, { width: 100 });
 
-      const slider = screen.getByRole("slider", { name: "HP" });
-
-      fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
-      fireEvent.mouseMove(document, { clientX: 75 });
-      fireEvent.keyDown(document, { key: "Escape" });
-      fireEvent.mouseUp(document);
+      withSynchronousRaf(() => {
+        fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
+        fireEvent.mouseMove(document, { clientX: 75 });
+        fireEvent.keyDown(document, { key: "Escape" });
+        fireEvent.mouseUp(document);
+      });
 
       expect(onChange).not.toHaveBeenCalled();
     });
@@ -293,26 +209,14 @@ describe("DraggableProgressBar - Mouse Interactions", () => {
 
   describe("Boundary conditions", () => {
     it("clamps value to maximum when dragging beyond right edge", async () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-        />,
-      );
+      const { slider, onChange } = renderBar({ current: 50, max: 100 });
+      restoreRect = mockElementRect(slider, { width: 100 });
 
-      const slider = screen.getByRole("slider", { name: "HP" });
-      mockSliderRect(slider, 100);
-
-      fireEvent.mouseDown(slider, {
-        clientX: 50,
-        button: 0,
+      withSynchronousRaf(() => {
+        fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
+        fireEvent.mouseMove(document, { clientX: 250 }); // Far beyond
+        fireEvent.mouseUp(document);
       });
-      fireEvent.mouseMove(document, { clientX: 250 }); // Way past the edge
-      fireEvent.mouseUp(document);
 
       await waitFor(() => {
         expect(onChange).toHaveBeenCalledWith(100);
@@ -320,109 +224,58 @@ describe("DraggableProgressBar - Mouse Interactions", () => {
     });
 
     it("clamps value to minimum when dragging beyond left edge", async () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-        />,
-      );
+      const { slider, onChange } = renderBar({ current: 50 });
+      restoreRect = mockElementRect(slider, { width: 100 });
 
-      const slider = screen.getByRole("slider", { name: "HP" });
-      mockSliderRect(slider, 100);
-
-      fireEvent.mouseDown(slider, {
-        clientX: 50,
-        button: 0,
+      withSynchronousRaf(() => {
+        fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
+        fireEvent.mouseMove(document, { clientX: -100 }); // Far left
+        fireEvent.mouseUp(document);
       });
-      fireEvent.mouseMove(document, { clientX: -100 }); // Way past the edge
-      fireEvent.mouseUp(document);
 
       await waitFor(() => {
         expect(onChange).toHaveBeenCalledWith(0);
       });
     });
 
-    it("handles drag when already at maximum", () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={100}
-          max={100}
-          onChange={onChange}
-          label="HP"
-        />,
-      );
+    it("does not call onChange when already at maximum", () => {
+      const { slider, onChange } = renderBar({ current: 100, max: 100 });
+      restoreRect = mockElementRect(slider, { width: 100 });
 
-      const slider = screen.getByRole("slider", { name: "HP" });
-      mockSliderRect(slider, 100);
+      withSynchronousRaf(() => {
+        fireEvent.mouseDown(slider, { clientX: 100, button: 0 });
+        fireEvent.mouseMove(document, { clientX: 150 });
+        fireEvent.mouseUp(document);
+      });
 
-      fireEvent.mouseDown(slider, { clientX: 100, button: 0 });
-      fireEvent.mouseMove(document, { clientX: 150 });
-      fireEvent.mouseUp(document);
-
-      // Should not call onChange since value can't increase
       expect(onChange).not.toHaveBeenCalled();
     });
 
-    it("handles drag when already at minimum", () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={0}
-          max={100}
-          onChange={onChange}
-          label="HP"
-        />,
-      );
+    it("does not call onChange when already at minimum", () => {
+      const { slider, onChange } = renderBar({ current: 0, max: 100 });
+      restoreRect = mockElementRect(slider, { width: 100 });
 
-      const slider = screen.getByRole("slider", { name: "HP" });
-      mockSliderRect(slider, 100);
+      withSynchronousRaf(() => {
+        fireEvent.mouseDown(slider, { clientX: 0, button: 0 });
+        fireEvent.mouseMove(document, { clientX: -50 });
+        fireEvent.mouseUp(document);
+      });
 
-      fireEvent.mouseDown(slider, { clientX: 0, button: 0 });
-      fireEvent.mouseMove(document, { clientX: -50 });
-      fireEvent.mouseUp(document);
-
-      // Should not call onChange since value can't decrease
       expect(onChange).not.toHaveBeenCalled();
     });
   });
 
   describe("Visual feedback", () => {
-    it("changes cursor to grab on hover", () => {
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={jest.fn()}
-          label="HP"
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
+    it("changes cursor to grab on initial render", () => {
+      const { slider } = renderBar();
       expect(slider).toHaveStyle({ cursor: "grab" });
     });
 
     it("changes cursor to grabbing during drag", async () => {
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={jest.fn()}
-          label="HP"
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
-
-      fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
+      const { slider } = renderBar();
+      withSynchronousRaf(() => {
+        fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
+      });
 
       await waitFor(() => {
         expect(slider).toHaveStyle({ cursor: "grabbing" });
@@ -434,566 +287,258 @@ describe("DraggableProgressBar - Mouse Interactions", () => {
 });
 
 describe("DraggableProgressBar - Touch Interactions", () => {
+  let restoreRect: (() => void) | null = null;
+
+  afterEach(() => {
+    if (restoreRect) {
+      restoreRect();
+      restoreRect = null;
+    }
+  });
+
   describe("Basic touch operations", () => {
     it("updates value on touch drag", async () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="xp"
-          current={100}
-          max={500}
-          onChange={onChange}
-          label="Experience Points"
-        />,
-      );
+      const { slider, onChange } = renderBar({
+        type: "xp",
+        current: 100,
+        max: 500,
+        label: "Experience Points",
+      });
+      restoreRect = mockElementRect(slider, { width: 500 });
 
-      const slider = screen.getByRole("slider");
-      mockSliderRect(slider, 500);
-      const startX = 100; // 20% of width
-      const endX = 300; // 60% of width
-
-      fireEvent.touchStart(slider, {
-        touches: [{ clientX: startX }],
-      });
-      fireEvent.touchMove(slider, {
-        touches: [{ clientX: endX }],
-      });
-      fireEvent.touchEnd(slider, {
-        changedTouches: [{ clientX: endX }],
-      });
+      fireEvent.touchStart(slider, { touches: [{ clientX: 100 }] });
+      fireEvent.touchMove(slider, { touches: [{ clientX: 300 }] });
+      fireEvent.touchEnd(slider, { changedTouches: [{ clientX: 300 }] });
 
       await waitFor(() => {
         expect(onChange).toHaveBeenCalledWith(300);
       });
     });
 
-    it("prevents page scroll during touch drag", () => {
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={jest.fn()}
-          label="HP"
-        />,
-      );
+    it("updates aria-valuenow during intermediate touch move", () => {
+      const { slider } = renderBar();
+      restoreRect = mockElementRect(slider, { width: 100 });
 
-      const slider = screen.getByRole("slider", { name: "HP" });
-      mockSliderRect(slider, 100);
+      fireEvent.touchStart(slider, { touches: [{ clientX: 50, clientY: 0 }] });
+      fireEvent.touchMove(slider, { touches: [{ clientX: 60, clientY: 0 }] });
 
-      // Start a touch drag and move slightly to verify drag value updates (scroll prevention implied by handler)
-      fireEvent.touchStart(slider, { touches: [{ clientX: 50, clientY: 50 }] });
-      fireEvent.touchMove(slider, { touches: [{ clientX: 60, clientY: 50 }] });
-
-      // aria-valuenow should reflect the intermediate drag position
       expect(slider).toHaveAttribute("aria-valuenow", "60");
     });
 
-    it("ignores multi-touch (only first touch active)", async () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-        />,
-      );
+    it("ignores second touch (multi-touch) and tracks first only", async () => {
+      const { slider, onChange } = renderBar();
+      restoreRect = mockElementRect(slider, { width: 100 });
 
-      const slider = screen.getByRole("slider", { name: "HP" });
-      mockSliderRect(slider, 100);
-
-      // Start with two touches - only first touch should be used (first at 50%)
       fireEvent.touchStart(slider, {
         touches: [
           { clientX: 50, clientY: 0 },
           { clientX: 80, clientY: 0 },
         ],
       });
-
-      // Move first touch to 70%
-      fireEvent.touchMove(slider, {
-        touches: [{ clientX: 70, clientY: 0 }],
-      });
-
+      fireEvent.touchMove(slider, { touches: [{ clientX: 70, clientY: 0 }] });
       fireEvent.touchEnd(slider, {
         changedTouches: [{ clientX: 70, clientY: 0 }],
       });
 
       await waitFor(() => {
-        // Should only respond to first touch (70%)
-        expect(onChange).toHaveBeenCalled();
-        const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1];
-        expect(lastCall[0]).toBeCloseTo(70, 0);
+        const calls = (onChange as jest.Mock).mock.calls;
+        expect(calls[calls.length - 1][0]).toBe(70);
       });
     });
   });
 });
 
 describe("DraggableProgressBar - Keyboard Navigation", () => {
-  describe("Arrow key navigation", () => {
-    it("increases value with right arrow key", () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-          step={1}
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
-      act(() => {
-        act(() => {
-          slider.focus();
-        });
-      });
-
+  describe("Arrow keys", () => {
+    it("ArrowRight increases value", () => {
+      const { slider, onChange } = renderBar({ current: 50, step: 1 });
+      slider.focus();
       fireEvent.keyDown(slider, { key: "ArrowRight" });
       expect(onChange).toHaveBeenCalledWith(51);
     });
 
-    it("decreases value with left arrow key", () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-          step={1}
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
-      act(() => {
-        slider.focus();
-      });
-
+    it("ArrowLeft decreases value", () => {
+      const { slider, onChange } = renderBar({ current: 50, step: 1 });
+      slider.focus();
       fireEvent.keyDown(slider, { key: "ArrowLeft" });
       expect(onChange).toHaveBeenCalledWith(49);
     });
 
-    it("increases value with up arrow key", () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-          step={1}
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
-      act(() => {
-        slider.focus();
-      });
-
+    it("ArrowUp increases value", () => {
+      const { slider, onChange } = renderBar({ current: 50, step: 1 });
+      slider.focus();
       fireEvent.keyDown(slider, { key: "ArrowUp" });
       expect(onChange).toHaveBeenCalledWith(51);
     });
 
-    it("decreases value with down arrow key", () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-          step={1}
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
-      act(() => {
-        slider.focus();
-      });
-
+    it("ArrowDown decreases value", () => {
+      const { slider, onChange } = renderBar({ current: 50, step: 1 });
+      slider.focus();
       fireEvent.keyDown(slider, { key: "ArrowDown" });
       expect(onChange).toHaveBeenCalledWith(49);
     });
 
-    it("uses custom step value for keyboard navigation", () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="xp"
-          current={100}
-          max={500}
-          onChange={onChange}
-          label="Experience Points"
-          step={10}
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "Experience Points" });
-      act(() => {
-        slider.focus();
+    it("respects custom step", () => {
+      const { slider, onChange } = renderBar({
+        type: "xp",
+        current: 100,
+        max: 500,
+        step: 10,
+        label: "Experience Points",
       });
-
+      slider.focus();
       fireEvent.keyDown(slider, { key: "ArrowRight" });
       expect(onChange).toHaveBeenCalledWith(110);
     });
   });
 
-  describe("Home/End key navigation", () => {
-    it("jumps to minimum with Home key", () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
-      act(() => {
-        slider.focus();
-      });
-
+  describe("Home/End keys", () => {
+    it("Home jumps to minimum", () => {
+      const { slider, onChange } = renderBar({ current: 50 });
+      slider.focus();
       fireEvent.keyDown(slider, { key: "Home" });
       expect(onChange).toHaveBeenCalledWith(0);
     });
 
-    it("jumps to maximum with End key", () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
-      act(() => {
-        slider.focus();
-      });
-
+    it("End jumps to maximum", () => {
+      const { slider, onChange } = renderBar({ current: 50, max: 100 });
+      slider.focus();
       fireEvent.keyDown(slider, { key: "End" });
       expect(onChange).toHaveBeenCalledWith(100);
     });
   });
 
-  describe("Page navigation keys", () => {
-    it("increases value by 10% with PageUp", () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
-      act(() => {
-        slider.focus();
-      });
-
+  describe("PageUp / PageDown keys", () => {
+    it("PageUp increases by 10% of max", () => {
+      const { slider, onChange } = renderBar({ current: 50, max: 100 });
+      slider.focus();
       fireEvent.keyDown(slider, { key: "PageUp" });
       expect(onChange).toHaveBeenCalledWith(60);
     });
 
-    it("decreases value by 10% with PageDown", () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={50}
-          max={100}
-          onChange={onChange}
-          label="HP"
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
-      act(() => {
-        act(() => {
-          slider.focus();
-        });
-      });
-
+    it("PageDown decreases by 10% of max", () => {
+      const { slider, onChange } = renderBar({ current: 50, max: 100 });
+      slider.focus();
       fireEvent.keyDown(slider, { key: "PageDown" });
       expect(onChange).toHaveBeenCalledWith(40);
     });
   });
 
-  describe("Keyboard boundary conditions", () => {
-    it("does not exceed maximum with keyboard", () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={99}
-          max={100}
-          onChange={onChange}
-          label="HP"
-          step={5}
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
+  describe("Keyboard boundaries", () => {
+    it("does not exceed maximum", () => {
+      const { slider, onChange } = renderBar({
+        current: 99,
+        max: 100,
+        step: 5,
+      });
       slider.focus();
-
       fireEvent.keyDown(slider, { key: "ArrowRight" });
-      expect(onChange).toHaveBeenCalledWith(100); // Clamped to max
+      expect(onChange).toHaveBeenCalledWith(100);
     });
 
-    it("does not go below minimum with keyboard", () => {
-      const onChange = jest.fn();
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={1}
-          max={100}
-          onChange={onChange}
-          label="HP"
-          step={5}
-        />,
-      );
-
-      const slider = screen.getByRole("slider", { name: "HP" });
+    it("does not go below minimum", () => {
+      const { slider, onChange } = renderBar({
+        current: 1,
+        max: 100,
+        step: 5,
+      });
       slider.focus();
-
       fireEvent.keyDown(slider, { key: "ArrowLeft" });
-      expect(onChange).toHaveBeenCalledWith(0); // Clamped to min
+      expect(onChange).toHaveBeenCalledWith(0);
     });
   });
 });
 
 describe("DraggableProgressBar - Visual States", () => {
-  describe("HP bar colors", () => {
-    it("applies red color when HP is low (0-30%)", () => {
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={20}
-          max={100}
-          onChange={jest.fn()}
-          label="HP"
-        />,
-      );
-
-      const progressFill = screen.getByRole("progressbar");
-      expect(progressFill).toHaveStyle({
-        backgroundColor: "var(--accent-red)",
-      });
+  describe("HP color ranges", () => {
+    it("low HP (0-30%) is red", () => {
+      renderBar({ type: "hp", current: 20, max: 100 });
+      const fill = screen.getByRole("progressbar");
+      expect(fill).toHaveStyle({ backgroundColor: "var(--accent-red)" });
     });
 
-    it("applies yellow color when HP is medium (31-60%)", () => {
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={45}
-          max={100}
-          onChange={jest.fn()}
-          label="HP"
-        />,
-      );
-
-      const progressFill = screen.getByRole("progressbar");
-      expect(progressFill).toHaveStyle({
-        backgroundColor: "var(--accent-yellow)",
-      });
+    it("medium HP (31-60%) is yellow", () => {
+      renderBar({ type: "hp", current: 45, max: 100 });
+      const fill = screen.getByRole("progressbar");
+      expect(fill).toHaveStyle({ backgroundColor: "var(--accent-yellow)" });
     });
 
-    it("applies green color when HP is high (61-100%)", () => {
-      render(
-        <DraggableProgressBar
-          type="hp"
-          current={80}
-          max={100}
-          onChange={jest.fn()}
-          label="HP"
-        />,
-      );
-
-      const progressFill = screen.getByRole("progressbar");
-      expect(progressFill).toHaveStyle({
-        backgroundColor: "var(--accent-green)",
-      });
+    it("high HP (61-100%) is green", () => {
+      renderBar({ type: "hp", current: 80, max: 100 });
+      const fill = screen.getByRole("progressbar");
+      expect(fill).toHaveStyle({ backgroundColor: "var(--accent-green)" });
     });
   });
 
-  describe("XP bar appearance", () => {
-    it("shows level-up indicator when XP is near threshold", () => {
-      render(
-        <DraggableProgressBar
-          type="xp"
-          current={495}
-          max={500}
-          onChange={jest.fn()}
-          label="Experience Points"
-          showLevelUpIndicator={true}
-        />,
-      );
-
-      const levelUpIndicator = screen.getByText(/Ready to level up/i);
-      expect(levelUpIndicator).toBeInTheDocument();
+  describe("XP indicator", () => {
+    it("shows level-up indicator near threshold", () => {
+      renderBar({
+        type: "xp",
+        current: 495,
+        max: 500,
+        label: "Experience Points",
+        showLevelUpIndicator: true,
+      });
+      expect(screen.getByText(/Ready to level up/i)).toBeInTheDocument();
     });
   });
 });
 
 describe("DraggableProgressBar - Disabled State", () => {
-  it("does not respond to mouse drag when disabled", () => {
-    const onChange = jest.fn();
-    render(
-      <DraggableProgressBar
-        type="hp"
-        current={50}
-        max={100}
-        onChange={onChange}
-        label="HP"
-        disabled={true}
-      />,
-    );
-
-    const slider = screen.getByRole("slider", { name: "HP" });
-
-    fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
-    fireEvent.mouseMove(document, { clientX: 75 });
+  it("ignores mouse drag when disabled", () => {
+    const { slider, onChange } = renderBar({ disabled: true });
+    withSynchronousRaf(() => {
+      fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
+      fireEvent.mouseMove(document, { clientX: 75 });
+    });
     fireEvent.mouseUp(document);
-
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("does not respond to keyboard input when disabled", () => {
-    const onChange = jest.fn();
-    render(
-      <DraggableProgressBar
-        type="hp"
-        current={50}
-        max={100}
-        onChange={onChange}
-        label="HP"
-        disabled={true}
-      />,
-    );
-
-    const slider = screen.getByRole("slider", { name: "HP" });
-    act(() => {
-      act(() => {
-        act(() => {
-          slider.focus();
-        });
-      });
-    });
-
+  it("ignores keyboard when disabled", () => {
+    const { slider, onChange } = renderBar({ disabled: true });
+    slider.focus();
     fireEvent.keyDown(slider, { key: "ArrowRight" });
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("shows disabled visual state", () => {
-    render(
-      <DraggableProgressBar
-        type="hp"
-        current={50}
-        max={100}
-        onChange={jest.fn()}
-        label="HP"
-        disabled={true}
-      />,
-    );
-
-    const slider = screen.getByRole("slider", { name: "HP" });
+  it("shows disabled visual styles", () => {
+    const { slider } = renderBar({ disabled: true });
     expect(slider).toHaveClass("opacity-50");
     expect(slider).toHaveStyle({ cursor: "not-allowed" });
   });
 });
 
 describe("DraggableProgressBar - Performance", () => {
-  it("debounces rapid drag movements", async () => {
+  it("debounces rapid drag movements", () => {
     jest.useFakeTimers();
-
     const onChange = jest.fn();
+    const { slider } = renderBar({ debounceMs: 100, onChange });
+    const restore = mockElementRect(slider, { width: 100 });
 
-    render(
-      <DraggableProgressBar
-        type="hp"
-        current={50}
-        max={100}
-        onChange={onChange}
-        label="HP"
-        debounceMs={100}
-      />,
-    );
-
-    const slider = screen.getByRole("slider", { name: "HP" });
-
-    // Deterministic bar geometry for percentage calculations
-    slider.getBoundingClientRect = () => ({
-      width: 100,
-      left: 0,
-      right: 100,
-      top: 0,
-      bottom: 10,
-      height: 10,
-      x: 0,
-      y: 0,
-      toJSON: () => {},
+    withSynchronousRaf(() => {
+      fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
+      for (let x = 51; x <= 75; x++) {
+        fireEvent.mouseMove(document, { clientX: x });
+      }
+      fireEvent.mouseUp(document);
     });
 
-    // Make requestAnimationFrame synchronous so dragValue updates under fake timers
-    const originalRaf = window.requestAnimationFrame;
-    window.requestAnimationFrame = (cb: FrameRequestCallback) => {
-      cb(performance.now());
-      return 0;
-    };
-
-    fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
-
-    for (let i = 51; i <= 75; i++) {
-      fireEvent.mouseMove(document, { clientX: i });
-    }
-
-    fireEvent.mouseUp(document);
-
-    // Advance timers to trigger debounced onChange
     act(() => {
-      jest.advanceTimersByTime(150);
+      flushDebounce(150);
     });
 
     expect(onChange).toHaveBeenCalledTimes(1);
-
     expect(onChange).toHaveBeenCalledWith(75);
 
-    // Restore original rAF
-    window.requestAnimationFrame = originalRaf;
+    restore();
     jest.useRealTimers();
   });
 
-  it("uses requestAnimationFrame for smooth updates", async () => {
+  it("schedules updates with requestAnimationFrame", () => {
     const rafSpy = jest.spyOn(window, "requestAnimationFrame");
-
-    render(
-      <DraggableProgressBar
-        type="hp"
-        current={50}
-        max={100}
-        onChange={jest.fn()}
-        label="HP"
-      />,
-    );
-
-    const slider = screen.getByRole("slider", { name: "HP" });
+    const { slider } = renderBar();
+    const restore = mockElementRect(slider, { width: 100 });
 
     fireEvent.mouseDown(slider, { clientX: 50, button: 0 });
     fireEvent.mouseMove(document, { clientX: 75 });
@@ -1002,5 +547,6 @@ describe("DraggableProgressBar - Performance", () => {
 
     fireEvent.mouseUp(document);
     rafSpy.mockRestore();
+    restore();
   });
 });
