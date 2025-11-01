@@ -30,11 +30,7 @@ jest.mock("@/components/shared/DeleteConfirmationModal", () => {
   };
 });
 
-jest.mock("../PokemonEditModal", () => {
-  return function MockPokemonEditModal() {
-    return <div data-testid="edit-modal">Edit Modal</div>;
-  };
-});
+// Removed legacy PokemonEditModal mock (edit now handled via route navigation)
 
 jest.mock("../AddAttackModal", () => {
   return function MockAddAttackModal() {
