@@ -158,13 +158,10 @@ describe("HPModifier", () => {
   });
 
   it("closes when backdrop is clicked", () => {
-    const { container } = render(
-      <HPModifier pokemonUuid="test-uuid" onClose={mockOnClose} />,
-    );
-
-    const backdrop = container.firstChild as HTMLElement;
-    fireEvent.click(backdrop);
-
+    render(<HPModifier pokemonUuid="test-uuid" onClose={mockOnClose} />);
+    const backdrop = screen.getByTestId("hp-modifier-backdrop");
+    // ModalShell triggers close on mouse down (and click). Use mouseDown to mirror the internal handler.
+    fireEvent.mouseDown(backdrop);
     expect(mockOnClose).toHaveBeenCalled();
   });
 

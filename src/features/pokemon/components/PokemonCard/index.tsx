@@ -11,7 +11,7 @@ import AttackCard from "../AttackCard";
 import ActionButtons from "@/components/shared/ActionButtons";
 import StatusIndicator from "../StatusIndicator";
 import StatusSelector from "../StatusSelector";
-import DraggableProgressBar from "./DraggableProgressBar";
+import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -73,20 +73,11 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
     }
   };
 
-  const hpPercentage =
-    pokemon.maxHP > 0 ? (pokemon.currentHP / pokemon.maxHP) * 100 : 0;
+  // Removed unused hpPercentage logic (handled by shared progress components)
 
-  const xpPercentage =
-    pokemon.experienceToNext > 0
-      ? (pokemon.experience / (pokemon.experience + pokemon.experienceToNext)) *
-        100
-      : 0;
+  // Removed unused xpPercentage logic (handled by shared progress components)
 
-  const getHPColor = () => {
-    if (hpPercentage > 60) return "var(--accent-green)";
-    if (hpPercentage > 30) return "var(--accent-yellow)";
-    return "var(--accent-red)";
-  };
+  // Removed unused getHPColor logic (handled by shared progress components)
 
   const getTypeColor = (type: string) => {
     return TYPE_COLORS[type as keyof typeof TYPE_COLORS] || "#A8A878";
@@ -235,7 +226,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                   {pokemon.currentHP}/{pokemon.maxHP}
                 </span>
               </div>
-              <DraggableProgressBar
+              <InteractiveProgress
                 type="hp"
                 current={pokemon.currentHP}
                 max={pokemon.maxHP}
@@ -295,7 +286,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                   {pokemon.experience + pokemon.experienceToNext}
                 </span>
               </div>
-              <DraggableProgressBar
+              <InteractiveProgress
                 type="xp"
                 current={pokemon.experience}
                 max={pokemon.experience + pokemon.experienceToNext}

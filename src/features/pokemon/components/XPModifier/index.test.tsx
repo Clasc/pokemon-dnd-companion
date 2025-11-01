@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+// NOTE: Test updated to target new ModalShell backdrop via data-testid instead of container.firstChild
 import "@testing-library/jest-dom";
 import XPModifier from ".";
 import { useAppStore } from "@/store";
@@ -139,13 +140,10 @@ describe("XPModifier", () => {
   });
 
   it("closes when backdrop is clicked", () => {
-    const { container } = render(
-      <XPModifier pokemonUuid="test-uuid" onClose={mockOnClose} />,
-    );
-
-    const backdrop = container.firstChild as HTMLElement;
-    fireEvent.click(backdrop);
-
+    render(<XPModifier pokemonUuid="test-uuid" onClose={mockOnClose} />);
+    const backdrop = screen.getByTestId("xp-modifier-backdrop");
+    // ModalShell closes on both mouseDown and click; use mouseDown (closest to original onMouseDown handler)
+    fireEvent.mouseDown(backdrop);
     expect(mockOnClose).toHaveBeenCalled();
   });
 

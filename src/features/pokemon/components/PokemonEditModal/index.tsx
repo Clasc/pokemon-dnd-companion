@@ -6,6 +6,7 @@ import EditButtons from "@/components/shared/EditButtons";
 import { useAppStore } from "@/store";
 import { Pokemon, Attributes, PokemonType } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
+import ProgressBar from "@/components/shared/ui/ProgressBar";
 
 interface PokemonEditModalProps {
   isOpen: boolean;
@@ -65,23 +66,8 @@ export default function PokemonEditModal({
     onClose();
   };
 
-  const hpPercentage =
-    editedPokemon.maxHP > 0
-      ? (editedPokemon.currentHP / editedPokemon.maxHP) * 100
-      : 0;
-
-  const xpPercentage =
-    editedPokemon.experienceToNext > 0
-      ? (editedPokemon.experience /
-          (editedPokemon.experience + editedPokemon.experienceToNext)) *
-        100
-      : 0;
-
-  const getHPColor = () => {
-    if (hpPercentage > 60) return "var(--accent-green)";
-    if (hpPercentage > 30) return "var(--accent-yellow)";
-    return "var(--accent-red)";
-  };
+  // Progress percentages & HP color logic now handled by shared ProgressBar component.
+  // Removed previous local calculations (hpPercentage, xpPercentage, getHPColor).
 
   const attributeNames: (keyof Attributes)[] = [
     "strength",
@@ -301,17 +287,14 @@ export default function PokemonEditModal({
               </div>
             </div>
             {/* HP Bar */}
-            <div className="mt-2">
-              <div className="w-full bg-gray-600/50 rounded-full h-2 overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: `${Math.min(100, hpPercentage)}%`,
-                    backgroundColor: getHPColor(),
-                  }}
-                />
-              </div>
-            </div>
+            <ProgressBar
+              variant="hp"
+              current={editedPokemon.currentHP}
+              max={editedPokemon.maxHP}
+              label="HP"
+              showValue={false}
+              className="mt-2"
+            />
           </div>
 
           {/* Experience */}
@@ -356,16 +339,14 @@ export default function PokemonEditModal({
               </div>
             </div>
             {/* XP Bar */}
-            <div className="mt-2">
-              <div className="w-full bg-gray-600/50 rounded-full h-2 overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-500 xp-bar"
-                  style={{
-                    width: `${Math.min(100, xpPercentage)}%`,
-                  }}
-                />
-              </div>
-            </div>
+            <ProgressBar
+              variant="xp"
+              current={editedPokemon.experience}
+              max={editedPokemon.experience + editedPokemon.experienceToNext}
+              label="XP"
+              showValue={false}
+              className="mt-2"
+            />
           </div>
 
           {/* Attributes */}

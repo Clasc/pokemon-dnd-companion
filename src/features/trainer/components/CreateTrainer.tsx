@@ -2,6 +2,7 @@
 
 import { ChangeEvent, useState } from "react";
 import { Trainer, DnDAttributes } from "@/types/trainer";
+import ProgressBar from "@/components/shared/ui/ProgressBar";
 
 interface TrainerFormProps {
   onTrainerUpdate?: (character: Trainer) => void;
@@ -173,26 +174,17 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
             </div>
 
             <div>
-              {/* HP Bar */}
+              <ProgressBar
+                variant="hp"
+                current={character.currentHP}
+                max={character.maxHP}
+                label="HP"
+                showValue={false}
+                className="mt-4"
+              />
               {character.maxHP > 0 && (
-                <div className="mt-4">
-                  <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-5">
-                    <div
-                      className={`h-5 rounded-full transition-all duration-300 ${
-                        character.currentHP / character.maxHP > 0.6
-                          ? "bg-green-500"
-                          : character.currentHP / character.maxHP > 0.3
-                            ? "bg-yellow-500"
-                            : "bg-red-500"
-                      }`}
-                      style={{
-                        width: `${Math.min(100, (character.currentHP / character.maxHP) * 100)}%`,
-                      }}
-                    ></div>
-                  </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400 mt-3 text-center font-medium">
-                    {character.currentHP} / {character.maxHP} HP
-                  </div>
+                <div className="text-sm text-gray-600 dark:text-gray-400 mt-3 text-center font-medium">
+                  {character.currentHP} / {character.maxHP} HP
                 </div>
               )}
             </div>

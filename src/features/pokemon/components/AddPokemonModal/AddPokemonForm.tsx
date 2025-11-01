@@ -2,6 +2,7 @@
 
 import { Pokemon, Attributes, PokemonType } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
+import ProgressBar from "@/components/shared/ui/ProgressBar";
 
 interface AddPokemonFormProps {
   pokemon: Pokemon;
@@ -76,20 +77,8 @@ export default function AddPokemonForm({
     "fairy",
   ];
 
-  const hpPercentage =
-    pokemon.maxHP > 0 ? (pokemon.currentHP / pokemon.maxHP) * 100 : 0;
-
-  const xpPercentage =
-    pokemon.experienceToNext > 0
-      ? (pokemon.experience / (pokemon.experience + pokemon.experienceToNext)) *
-        100
-      : 0;
-
-  const getHPColor = () => {
-    if (hpPercentage > 60) return "var(--accent-green)";
-    if (hpPercentage > 30) return "var(--accent-yellow)";
-    return "var(--accent-red)";
-  };
+  // Removed local hpPercentage/xpPercentage/getHPColor logic;
+  // ProgressBar now handles percentage and color internally.
 
   return (
     <div className="space-y-6 max-h-[60vh] overflow-y-auto">
@@ -225,17 +214,14 @@ export default function AddPokemonForm({
           </div>
         </div>
         {/* HP Bar */}
-        <div className="mt-2">
-          <div className="w-full bg-gray-600/50 rounded-full h-2 overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${Math.min(100, hpPercentage)}%`,
-                backgroundColor: getHPColor(),
-              }}
-            />
-          </div>
-        </div>
+        <ProgressBar
+          variant="hp"
+          current={pokemon.currentHP}
+          max={pokemon.maxHP}
+          label="HP"
+          showValue={false}
+          className="mt-2"
+        />
       </div>
 
       {/* Experience */}
@@ -275,16 +261,14 @@ export default function AddPokemonForm({
           </div>
         </div>
         {/* XP Bar */}
-        <div className="mt-2">
-          <div className="w-full bg-gray-600/50 rounded-full h-2 overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-500 xp-bar"
-              style={{
-                width: `${Math.min(100, xpPercentage)}%`,
-              }}
-            />
-          </div>
-        </div>
+        <ProgressBar
+          variant="xp"
+          current={pokemon.experience}
+          max={pokemon.experience + pokemon.experienceToNext}
+          label="XP"
+          showValue={false}
+          className="mt-2"
+        />
       </div>
 
       {/* Attributes */}

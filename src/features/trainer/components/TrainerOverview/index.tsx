@@ -6,6 +6,7 @@ import { useAppStore } from "@/store";
 import { Trainer, InventoryItem } from "@/types/trainer";
 import EditButton from "@/components/shared/ActionButtons/EditButton";
 import TrainerInventory from "../TrainerInventory";
+import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
 
 export default function TrainerOverview() {
   const [isEditing, setIsEditing] = useState(false);
@@ -131,6 +132,14 @@ export default function TrainerOverview() {
     }
   };
 
+  const handleTrainerHPDragChange = (value: number) => {
+    if (!trainer) return;
+    const clamped = Math.max(0, Math.min(value, trainer.maxHP));
+    if (clamped !== trainer.currentHP) {
+      setTrainer({ ...trainer, currentHP: clamped });
+    }
+  };
+
   const attributeNames: (keyof Trainer["attributes"])[] = [
     "strength",
     "dexterity",
@@ -171,25 +180,6 @@ export default function TrainerOverview() {
   const formatModifier = (modifier: number) => {
     return modifier >= 0 ? `+${modifier}` : `${modifier}`;
   };
-
-  const getHPPercentage = (hp: number, maxHp: number) => {
-    return maxHp > 0 ? (hp / maxHp) * 100 : 0;
-  };
-
-  const getHPColor = (percentage: number) => {
-    if (percentage > 60) return "var(--accent-green)";
-    if (percentage > 30) return "var(--accent-yellow)";
-    return "var(--accent-red)";
-  };
-
-  const trainerHPPercentage = getHPPercentage(trainer.currentHP, trainer.maxHP);
-  const trainerHPColor = getHPColor(trainerHPPercentage);
-
-  const editedHPPercentage = getHPPercentage(
-    editedTrainer.currentHP,
-    editedTrainer.maxHP,
-  );
-  const editedHPColor = getHPColor(editedHPPercentage);
 
   return (
     <>
@@ -235,19 +225,21 @@ export default function TrainerOverview() {
         </div>
 
         <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-          <h3 className="text-lg font-semibold text-white mb-4">Hit Points</h3>
-          <div className="w-full bg-gray-600/50 rounded-full h-4 md:h-5 overflow-hidden mb-3">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${Math.min(100, trainerHPPercentage)}%`,
-                backgroundColor: trainerHPColor,
-              }}
-            />
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-lg font-semibold text-white">Hit Points</h3>
+            <span className="text-xs text-gray-300 font-medium">
+              {trainer.currentHP}/{trainer.maxHP}
+            </span>
           </div>
-          <div className="text-sm md:text-base text-gray-300 font-medium text-center">
-            {trainer.currentHP}/{trainer.maxHP}
-          </div>
+          <InteractiveProgress
+            type="hp"
+            current={trainer.currentHP}
+            max={trainer.maxHP}
+            onChange={handleTrainerHPDragChange}
+            label="HP"
+            step={1}
+            className="mb-3"
+          />
         </div>
 
         {/* Inventory Section */}
@@ -402,15 +394,20 @@ export default function TrainerOverview() {
                 </div>
               </div>
 
-              <div className="w-full bg-gray-600/50 rounded-full h-5 overflow-hidden mb-3">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: `${Math.min(100, editedHPPercentage)}%`,
-                    backgroundColor: editedHPColor,
-                  }}
-                />
-              </div>
+              <InteractiveProgress
+                type="hp"
+                current={editedTrainer.currentHP}
+                max={editedTrainer.maxHP}
+                onChange={(val: number) =>
+                  setEditedTrainer({
+                    ...editedTrainer,
+                    currentHP: Math.max(0, Math.min(val, editedTrainer.maxHP)),
+                  })
+                }
+                label="HP"
+                step={1}
+                className="mb-3"
+              />
 
               <div className="flex justify-between items-center">
                 <div className="text-base text-gray-300 font-medium">

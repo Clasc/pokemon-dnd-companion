@@ -141,6 +141,9 @@ describe("TrainerOverview", () => {
 
       expect(screen.getByText("25/30")).toBeInTheDocument();
       expect(screen.getByText("Hit Points")).toBeInTheDocument();
+
+      const slider = screen.getByRole("slider", { name: /hp/i });
+      expect(slider).toHaveAttribute("aria-valuenow", "25");
     });
 
     it("should return null when no trainer is provided", () => {

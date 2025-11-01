@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 
-interface DraggableProgressBarProps {
+interface InteractiveProgressProps {
   type: "hp" | "xp";
   current: number;
   max: number;
@@ -16,7 +16,9 @@ interface DraggableProgressBarProps {
   showLevelUpIndicator?: boolean;
 }
 
-export default function DraggableProgressBar({
+// NOTE: This component is a renamed version of DraggableProgressBar.
+// Implementation kept identical to preserve behavior & tests; imports will update.
+export default function InteractiveProgress({
   type,
   current,
   max,
@@ -28,15 +30,15 @@ export default function DraggableProgressBar({
   getColor,
   debounceMs = 0,
   showLevelUpIndicator = false,
-}: DraggableProgressBarProps) {
+}: InteractiveProgressProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragValue, setDragValue] = useState(current);
   const [showTooltip, setShowTooltip] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
   const barRef = useRef<HTMLDivElement>(null);
-  const animationFrameRef = useRef<number>();
-  const debounceTimerRef = useRef<NodeJS.Timeout>();
+  const animationFrameRef = useRef<number | null>(null);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const dragStartXRef = useRef<number>(0);
   const dragStartValueRef = useRef<number>(0);
   const isEscapePressedRef = useRef<boolean>(false);
@@ -100,12 +102,12 @@ export default function DraggableProgressBar({
         // Fallback for test environment - assume 100px width
         const testWidth = 100;
         const x = clientX;
-        const percentage = Math.max(0, Math.min(1, x / testWidth));
-        return percentage * max;
+        const percentageLocal = Math.max(0, Math.min(1, x / testWidth));
+        return percentageLocal * max;
       }
       const x = clientX - rect.left;
-      const percentage = Math.max(0, Math.min(1, x / rect.width));
-      return percentage * max;
+      const percentageLocal = Math.max(0, Math.min(1, x / rect.width));
+      return percentageLocal * max;
     },
     [current, max],
   );
@@ -183,28 +185,26 @@ export default function DraggableProgressBar({
     (e: React.TouchEvent) => {
       if (!isDragging || isEscapePressedRef.current) return;
 
-      const touch = e.touches[0]; // Only use first touch
+      const touch = e.touches[0];
       const newValue = calculateValueFromPosition(touch.clientX);
       setDragValue(Math.round(newValue));
     },
     [isDragging, calculateValueFromPosition],
   );
 
-  const handleTouchEnd = useCallback(
-    (e: React.TouchEvent) => {
-      if (!isDragging) return;
+  const handleTouchEnd = useCallback(() => {
+    if (!isDragging) return;
 
-      setIsDragging(false);
-      setShowTooltip(false);
+    setIsDragging(false);
 
-      if (!isEscapePressedRef.current && dragValue !== current) {
-        handleValueChange(dragValue);
-      } else {
-        setDragValue(current);
-      }
-    },
-    [isDragging, dragValue, current, handleValueChange],
-  );
+    setShowTooltip(false);
+
+    if (!isEscapePressedRef.current && dragValue !== current) {
+      handleValueChange(dragValue);
+    } else {
+      setDragValue(current);
+    }
+  }, [isDragging, dragValue, current, handleValueChange]);
 
   // Keyboard event handlers
   const handleKeyDown = useCallback(
@@ -317,11 +317,11 @@ export default function DraggableProgressBar({
         style={{ cursor: cursorStyle }}
         onMouseDown={handleMouseDown}
         onTouchStart={(e) => {
-          e.preventDefault(); // Prevent scrolling
+          e.preventDefault();
           handleTouchStart(e);
         }}
         onTouchMove={(e) => {
-          e.preventDefault(); // Prevent scrolling
+          e.preventDefault();
           handleTouchMove(e);
         }}
         onTouchEnd={handleTouchEnd}
@@ -373,3 +373,15 @@ export default function DraggableProgressBar({
     </div>
   );
 }
+
+// Re-export props type for external usage if needed.
+export type { InteractiveProgressProps };
+
+/**
+ * InteractiveProgress
+ * Renamed from DraggableProgressBar for broader shared use.
+ * - Supports mouse, touch, and keyboard interactions.
+ * - Emits value changes via onChange (debounced if debounceMs > 0).
+ * - Accessible with slider semantics and nested progressbar for fill.
+ * - Escape cancels an active drag reverting to original value.
+ */

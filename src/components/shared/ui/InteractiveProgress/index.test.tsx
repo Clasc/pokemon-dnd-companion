@@ -6,7 +6,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import DraggableProgressBar from ".";
+import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
 import {
   mockElementRect,
   withSynchronousRaf,
@@ -17,7 +17,7 @@ import {
  * Helper to render the progress bar and return useful handles.
  */
 function renderBar(
-  props: Partial<React.ComponentProps<typeof DraggableProgressBar>> & {
+  props: Partial<React.ComponentProps<typeof InteractiveProgress>> & {
     type?: "hp" | "xp";
     current?: number;
     max?: number;
@@ -33,7 +33,7 @@ function renderBar(
     ...rest
   } = props;
   const utils = render(
-    <DraggableProgressBar
+    <InteractiveProgress
       type={type}
       current={current}
       max={max}
@@ -49,7 +49,7 @@ function renderBar(
   };
 }
 
-describe("DraggableProgressBar - Accessibility", () => {
+describe("InteractiveProgress - Accessibility", () => {
   describe("ARIA attributes", () => {
     it("renders with proper ARIA attributes for HP bar", () => {
       const { slider } = renderBar({ type: "hp", current: 50, max: 100 });
@@ -86,7 +86,7 @@ describe("DraggableProgressBar - Accessibility", () => {
       expect(slider).toHaveAttribute("aria-valuetext", "50 out of 100 HP");
 
       rerender(
-        <DraggableProgressBar
+        <InteractiveProgress
           type="hp"
           current={75}
           max={100}
@@ -94,6 +94,7 @@ describe("DraggableProgressBar - Accessibility", () => {
           label="HP"
         />,
       );
+
       expect(slider).toHaveAttribute("aria-valuetext", "75 out of 100 HP");
     });
 
@@ -133,7 +134,7 @@ describe("DraggableProgressBar - Accessibility", () => {
   });
 });
 
-describe("DraggableProgressBar - Mouse Interactions", () => {
+describe("InteractiveProgress - Mouse Interactions", () => {
   let restoreRect: (() => void) | null = null;
 
   afterEach(() => {
@@ -286,7 +287,7 @@ describe("DraggableProgressBar - Mouse Interactions", () => {
   });
 });
 
-describe("DraggableProgressBar - Touch Interactions", () => {
+describe("InteractiveProgress - Touch Interactions", () => {
   let restoreRect: (() => void) | null = null;
 
   afterEach(() => {
@@ -348,7 +349,7 @@ describe("DraggableProgressBar - Touch Interactions", () => {
   });
 });
 
-describe("DraggableProgressBar - Keyboard Navigation", () => {
+describe("InteractiveProgress - Keyboard Navigation", () => {
   describe("Arrow keys", () => {
     it("ArrowRight increases value", () => {
       const { slider, onChange } = renderBar({ current: 50, step: 1 });
@@ -449,7 +450,7 @@ describe("DraggableProgressBar - Keyboard Navigation", () => {
   });
 });
 
-describe("DraggableProgressBar - Visual States", () => {
+describe("InteractiveProgress - Visual States", () => {
   describe("HP color ranges", () => {
     it("low HP (0-30%) is red", () => {
       renderBar({ type: "hp", current: 20, max: 100 });
@@ -484,7 +485,7 @@ describe("DraggableProgressBar - Visual States", () => {
   });
 });
 
-describe("DraggableProgressBar - Disabled State", () => {
+describe("InteractiveProgress - Disabled State", () => {
   it("ignores mouse drag when disabled", () => {
     const { slider, onChange } = renderBar({ disabled: true });
     withSynchronousRaf(() => {
@@ -509,7 +510,7 @@ describe("DraggableProgressBar - Disabled State", () => {
   });
 });
 
-describe("DraggableProgressBar - Performance", () => {
+describe("InteractiveProgress - Performance", () => {
   it("debounces rapid drag movements", () => {
     jest.useFakeTimers();
     const onChange = jest.fn();
