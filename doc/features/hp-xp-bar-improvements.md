@@ -296,3 +296,14 @@ Enhanced interaction model for HP and XP progress bars allowing direct manipulat
 - Batch operations (dragging multiple bars simultaneously)
 - Custom gesture recognition beyond basic drag
 - Saving drag preferences per user
+
+## XP Correction & Decrease Capability (Update)
+
+Players can decrease a Pokémon’s XP within the current level range to correct mistakes (e.g., accidental bulk XP entry). Reducing XP:
+- Cannot lower the Pokémon’s level.
+- Cannot go below 0 XP for the current level.
+- Increases the remaining XP required for the next level proportionally.
+- Uses the same drag interaction (dragging left) for decreases.
+- Provides the same real-time feedback as increases.
+
+This correction ability is intended strictly for manual adjustment during gameplay bookkeeping.

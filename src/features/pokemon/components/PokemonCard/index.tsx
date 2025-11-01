@@ -246,11 +246,27 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             </div>
 
             {/* XP Bar with Quick Gain */}
-            <div>
+            <div className="mb-2">
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-gray-300 font-medium">XP</span>
                   <div className="flex gap-1">
+                    <button
+                      onClick={() => gainQuickXP(-10)}
+                      className="w-6 h-4 text-xs bg-red-500/20 hover:bg-red-500/40 rounded text-white flex items-center justify-center leading-none"
+                      title="Decrease 10 XP"
+                      disabled={pokemon.experience <= 0}
+                    >
+                      -10
+                    </button>
+                    <button
+                      onClick={() => gainQuickXP(-50)}
+                      className="w-7 h-4 text-xs bg-red-500/20 hover:bg-red-500/40 rounded text-white flex items-center justify-center leading-none"
+                      title="Decrease 50 XP"
+                      disabled={pokemon.experience <= 0}
+                    >
+                      -50
+                    </button>
                     <button
                       onClick={() => gainQuickXP(10)}
                       className="w-6 h-4 text-xs bg-blue-500/20 hover:bg-blue-500/40 rounded text-white flex items-center justify-center leading-none"
