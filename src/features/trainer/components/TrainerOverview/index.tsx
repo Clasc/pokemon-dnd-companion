@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import EditButtons from "@/components/shared/EditButtons";
 import { useAppStore } from "@/store";
-import { Trainer, InventoryItem } from "@/types/trainer";
+import { Trainer } from "@/types/trainer";
 import EditButton from "@/components/shared/ActionButtons/EditButton";
-import TrainerInventory from "../TrainerInventory";
+
 import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
 
 export default function TrainerOverview() {
@@ -65,71 +65,6 @@ export default function TrainerOverview() {
   const handleCancel = () => {
     setEditedTrainer(trainer);
     setIsEditing(false);
-  };
-
-  const handleUseItem = (itemId: string) => {
-    const currentInventory = editedTrainer.inventory || [];
-    const updatedInventory = currentInventory
-      .map((item) => {
-        if (item.id === itemId) {
-          return { ...item, quantity: Math.max(0, item.quantity - 1) };
-        }
-        return item;
-      })
-      .filter((item) => item.quantity > 0);
-
-    const updatedTrainer = { ...editedTrainer, inventory: updatedInventory };
-    setEditedTrainer(updatedTrainer);
-
-    if (!isEditing) {
-      setTrainer(updatedTrainer);
-    }
-  };
-
-  const handleAddItem = (newItem: Omit<InventoryItem, "id">) => {
-    const itemWithId: InventoryItem = {
-      id: Date.now().toString(),
-      ...newItem,
-    };
-
-    const updatedTrainer = {
-      ...editedTrainer,
-      inventory: [...(editedTrainer.inventory || []), itemWithId],
-    };
-    setEditedTrainer(updatedTrainer);
-
-    if (!isEditing) {
-      setTrainer(updatedTrainer);
-    }
-  };
-
-  const handleUpdatePokedollars = (newAmount: number) => {
-    const updatedTrainer = {
-      ...editedTrainer,
-      pokedollars: newAmount,
-    };
-    setEditedTrainer(updatedTrainer);
-
-    if (!isEditing) {
-      setTrainer(updatedTrainer);
-    }
-  };
-
-  const handleIncreaseItem = (itemId: string) => {
-    const currentInventory = editedTrainer.inventory || [];
-    const updatedInventory = currentInventory.map((item) => {
-      if (item.id === itemId) {
-        return { ...item, quantity: item.quantity + 1 };
-      }
-      return item;
-    });
-
-    const updatedTrainer = { ...editedTrainer, inventory: updatedInventory };
-    setEditedTrainer(updatedTrainer);
-
-    if (!isEditing) {
-      setTrainer(updatedTrainer);
-    }
   };
 
   const handleTrainerHPDragChange = (value: number) => {
@@ -241,17 +176,6 @@ export default function TrainerOverview() {
             className="mb-3"
           />
         </div>
-
-        {/* Inventory Section */}
-        <TrainerInventory
-          inventory={trainer.inventory || []}
-          pokedollars={trainer.pokedollars || 0}
-          onUseItem={handleUseItem}
-          onAddItem={handleAddItem}
-          onIncreaseItem={handleIncreaseItem}
-          onUpdatePokedollars={handleUpdatePokedollars}
-          isEditable={true}
-        />
       </div>
 
       {/* Editing Modal */}
