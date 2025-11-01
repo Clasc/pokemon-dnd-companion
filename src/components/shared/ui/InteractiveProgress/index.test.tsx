@@ -14,6 +14,24 @@ import {
 } from "@/tests/utils/mockGeometry";
 
 /**
+ * Global focus patch:
+ * Wraps native HTMLElement.prototype.focus in React Testing Library's act()
+ * to avoid warnings about state updates not wrapped in act when components
+ * set state in onFocus handlers (as InteractiveProgress does).
+ */
+const originalElementFocus = HTMLElement.prototype.focus;
+HTMLElement.prototype.focus = function patchedFocus(
+  this: HTMLElement,
+  ...args
+) {
+  let returnValue: unknown;
+  act(() => {
+    returnValue = originalElementFocus.apply(this, args as never);
+  });
+  return returnValue as void;
+};
+
+/**
  * Helper to render the progress bar and return useful handles.
  */
 function renderBar(

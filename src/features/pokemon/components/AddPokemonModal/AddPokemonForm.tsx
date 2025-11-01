@@ -94,12 +94,14 @@ export default function AddPokemonForm({
           {/* Species */}
           <div>
             <label className="block text-sm text-gray-300 mb-1">Species</label>
+
             <input
               type="text"
               value={pokemon.type || ""}
               onChange={(e) => handleInputChange("type", e.target.value)}
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
               placeholder="e.g., Pikachu, Charizard"
+              data-testid="species-input"
             />
           </div>
 
@@ -112,6 +114,7 @@ export default function AddPokemonForm({
               onChange={(e) => handleInputChange("name", e.target.value)}
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
               placeholder="Custom name for your Pokémon"
+              data-testid="nickname-input"
             />
           </div>
 

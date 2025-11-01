@@ -1,4 +1,9 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+/**
+ * NOTE: Test suite updated for route-based Add Pokémon flow.
+ * The old modal-based interactions (opening a dialog, asserting role="dialog")
+ * have been removed because the Add action now navigates to /pokemon/new via a link.
+ */
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import PokemonOverview from ".";
@@ -31,16 +36,16 @@ describe("PokemonOverview", () => {
 
       render(<PokemonOverview pokemon={emptyTeam} />);
 
-      // Check header
+      // Header
       expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
         "Pokémon Overview",
       );
 
-      // Check counter shows 0/6
+      // Counter 0/6
       expect(screen.getByText("0")).toBeInTheDocument();
       expect(screen.getByText("/ 6")).toBeInTheDocument();
 
-      // Check empty state message
+      // Empty state text
       expect(
         screen.getByText("No Pokémon in your team yet"),
       ).toBeInTheDocument();
@@ -48,28 +53,16 @@ describe("PokemonOverview", () => {
         screen.getByText("Click the button below to add one!"),
       ).toBeInTheDocument();
 
-      // Check empty state icon
+      // Icon
       expect(screen.getByText("🔍")).toBeInTheDocument();
 
-      // Check add button is present
+      // Route-based add link
       expect(
-        screen.getByRole("button", { name: /add pokémon/i }),
+        screen.getByRole("link", { name: /add pokémon/i }),
       ).toBeInTheDocument();
 
-      // Team stats should not be visible
+      // No stats yet
       expect(screen.queryByText("Team Stats")).not.toBeInTheDocument();
-    });
-
-    it("should open add pokemon modal when add button is clicked", async () => {
-      const user = userEvent.setup();
-      const emptyTeam = {};
-
-      render(<PokemonOverview pokemon={emptyTeam} />);
-
-      const addButton = screen.getByRole("button", { name: /add pokémon/i });
-      await user.click(addButton);
-
-      expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
   });
 
@@ -91,9 +84,7 @@ describe("PokemonOverview", () => {
       ).toBeVisible();
 
       // Check add button is still present (team not full)
-      expect(
-        screen.getByRole("button", { name: /add pokémon/i }),
-      ).toBeVisible();
+      expect(screen.getByRole("link", { name: /add pokémon/i })).toBeVisible();
 
       // Check team stats are displayed
       expect(screen.getByText("Team Stats")).toBeInTheDocument();
@@ -125,7 +116,7 @@ describe("PokemonOverview", () => {
 
       // Check add button is present (team not full)
       expect(
-        screen.getByRole("button", { name: /add pokémon/i }),
+        screen.getByRole("link", { name: /add pokémon/i }),
       ).toBeInTheDocument();
 
       // Check team stats
@@ -168,7 +159,7 @@ describe("PokemonOverview", () => {
 
       // Add button should not be present
       expect(
-        screen.queryByRole("button", { name: /add pokémon/i }),
+        screen.queryByRole("link", { name: /add pokémon/i }),
       ).not.toBeInTheDocument();
 
       // Team stats should still be displayed
@@ -213,28 +204,7 @@ describe("PokemonOverview", () => {
     });
   });
 
-  describe("Add Pokemon Modal Integration", () => {
-    it("should save pokemon when modal save is triggered and data is invalid", async () => {
-      const user = userEvent.setup();
-      const emptyTeam = {};
-
-      render(<PokemonOverview pokemon={emptyTeam} />);
-
-      // Open modal
-      const addButton = screen.getByRole("button", { name: /add pokémon/i });
-      await user.click(addButton);
-
-      // Save pokemon from modal
-      const saveButton = screen.getByRole("button", {
-        name: "Save Pokémon",
-      });
-      await user.click(saveButton);
-
-      // Check that addPokemon was called
-      expect(mockAddPokemon).not.toHaveBeenCalled();
-      expect(window.alert).toHaveBeenCalled();
-    });
-  });
+  // Modal integration tests removed (flow migrated to route navigation).
 
   describe("Accessibility", () => {
     it("should have proper heading structure", () => {
@@ -253,49 +223,24 @@ describe("PokemonOverview", () => {
       expect(statsHeading).toBeVisible();
     });
 
-    it("should have accessible button for adding pokemon", () => {
+    it("should have accessible link for adding pokemon", () => {
       const emptyTeam = {};
       render(<PokemonOverview pokemon={emptyTeam} />);
-
-      const addButton = screen.getByRole("button", { name: /add pokémon/i });
-      expect(addButton).toBeInTheDocument();
-      expect(addButton).toBeEnabled();
+      const addLink = screen.getByRole("link", { name: /add pokémon/i });
+      expect(addLink).toBeInTheDocument();
+      expect(addLink).toHaveAttribute("href", "/pokemon/new");
     });
 
-    it("should have proper ARIA labels and roles", () => {
+    it("should have proper ARIA roles present", () => {
       render(<PokemonOverview pokemon={mockPokemonTeam} />);
-
-      // Check that headings have proper roles
       expect(screen.getByRole("heading", { level: 2 })).toBeInTheDocument();
       expect(screen.getAllByRole("heading", { level: 3 })).not.toHaveLength(0);
-
-      // Check button accessibility
-      const addButton = screen.getByRole("button", { name: /add pokémon/i });
-      expect(addButton).toBeEnabled();
+      const addLink = screen.getByRole("link", { name: /add pokémon/i });
+      expect(addLink).toBeInTheDocument();
     });
   });
 
-  describe("Component State Management", () => {
-    it("should maintain modal state independently", async () => {
-      const user = userEvent.setup();
-      const emptyTeam = {};
-
-      render(<PokemonOverview pokemon={emptyTeam} />);
-
-      // Open and close modal multiple times
-      const addButton = screen.getByRole("button", { name: /add pokémon/i });
-
-      await user.click(addButton);
-      expect(screen.getByRole("dialog")).toBeInTheDocument();
-
-      const closeButton = screen.getByRole("button", { name: "Cancel" });
-      await user.click(closeButton);
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-
-      await user.click(addButton);
-      expect(screen.getByRole("dialog")).toBeInTheDocument();
-    });
-  });
+  // Legacy modal state management tests removed (route-based flow).
 
   describe("Responsive Design Elements", () => {
     it("should render responsive text classes", () => {

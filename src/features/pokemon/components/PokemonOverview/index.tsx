@@ -1,29 +1,49 @@
 "use client";
 
-import { useState } from "react";
-import { Pokemon, PokemonTeam } from "@/types/pokemon";
+import Link from "next/link";
+import { PokemonTeam } from "@/types/pokemon";
 import PokemonCard from "../PokemonCard/";
-import AddPokemonModal from "@/features/pokemon/components/AddPokemonModal/AddPokemonModal";
-import { useAppStore } from "@/store";
 
 interface PokemonOverviewProps {
   pokemon: PokemonTeam;
 }
 
+/**
+ * PokemonOverview
+ *
+ * Displays the user's current Pokémon team with:
+ * - Team count / capacity indicator
+ * - Grid of Pokémon cards (or an empty state if none)
+ * - Add Pokémon action (navigates to /pokemon/new)
+ * - Aggregate quick stats (total levels, total HP, average % health)
+ *
+ * This replaces the previous modal-based add flow with a route-based approach.
+ */
 export default function PokemonOverview({ pokemon }: PokemonOverviewProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const addPokemon = useAppStore.use.addPokemon();
-
-  const handleSavePokemon = (newPokemon: Pokemon) => {
-    addPokemon(newPokemon);
-    setIsModalOpen(false);
-  };
-
   const pokemonLength = Object.keys(pokemon).length;
+
+  const totalLevels = Object.values(pokemon).reduce(
+    (sum, p) => sum + p.level,
+    0,
+  );
+  const totalHP = Object.values(pokemon).reduce(
+    (sum, p) => sum + p.currentHP,
+    0,
+  );
+  const avgHealthPercent =
+    pokemonLength === 0
+      ? 0
+      : Math.round(
+          Object.values(pokemon).reduce(
+            (sum, p) => sum + (p.maxHP > 0 ? (p.currentHP / p.maxHP) * 100 : 0),
+            0,
+          ) / pokemonLength,
+        );
 
   return (
     <>
       <div className="glass rounded-2xl p-6 md:p-8">
+        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-xl md:text-2xl font-bold text-white">
             Pokémon Overview
@@ -38,11 +58,14 @@ export default function PokemonOverview({ pokemon }: PokemonOverviewProps) {
           </div>
         </div>
 
+        {/* Team Grid / Empty State */}
         <div className="pokemon-grid space-y-4">
           {pokemonLength === 0 ? (
             <div className="text-center py-12 md:py-16 px-4">
               <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-gray-600/50 to-gray-700/50 flex items-center justify-center border border-white/10">
-                <span className="text-4xl md:text-5xl">🔍</span>
+                <span className="text-4xl md:text-5xl" aria-hidden="true">
+                  🔍
+                </span>
               </div>
               <p className="text-gray-400 text-base md:text-lg mb-2">
                 No Pokémon in your team yet
@@ -58,28 +81,29 @@ export default function PokemonOverview({ pokemon }: PokemonOverviewProps) {
           )}
         </div>
 
+        {/* Add Pokémon Button (visible if capacity not reached) */}
         {pokemonLength < 6 && (
           <div className="mt-6">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white border-2 border-dashed border-white/20"
+            <Link
+              href="/pokemon/new"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white border-2 border-dashed border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
             >
               <svg
                 className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth="2"
                   d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                ></path>
+                />
               </svg>
               Add Pokémon
-            </button>
+            </Link>
           </div>
         )}
 
@@ -92,7 +116,7 @@ export default function PokemonOverview({ pokemon }: PokemonOverviewProps) {
             <div className="grid grid-cols-3 gap-6 md:gap-8 text-center">
               <div className="p-4 bg-white/5 rounded-lg border border-white/10">
                 <div className="text-xl md:text-2xl font-bold text-white mb-1">
-                  {Object.values(pokemon).reduce((sum, p) => sum + p.level, 0)}
+                  {totalLevels}
                 </div>
                 <div className="text-sm md:text-base text-gray-400">
                   Total Levels
@@ -100,10 +124,7 @@ export default function PokemonOverview({ pokemon }: PokemonOverviewProps) {
               </div>
               <div className="p-4 bg-white/5 rounded-lg border border-white/10">
                 <div className="text-xl md:text-2xl font-bold text-white mb-1">
-                  {Object.values(pokemon).reduce(
-                    (sum, p) => sum + p.currentHP,
-                    0,
-                  )}
+                  {totalHP}
                 </div>
                 <div className="text-sm md:text-base text-gray-400">
                   Total HP
@@ -111,14 +132,7 @@ export default function PokemonOverview({ pokemon }: PokemonOverviewProps) {
               </div>
               <div className="p-4 bg-white/5 rounded-lg border border-white/10">
                 <div className="text-xl md:text-2xl font-bold text-white mb-1">
-                  {Math.round(
-                    Object.values(pokemon).reduce(
-                      (sum, p) =>
-                        sum + (p.maxHP > 0 ? (p.currentHP / p.maxHP) * 100 : 0),
-                      0,
-                    ) / Math.max(pokemonLength, 1),
-                  )}
-                  %
+                  {avgHealthPercent}%
                 </div>
                 <div className="text-sm md:text-base text-gray-400">
                   Avg Health
@@ -128,11 +142,6 @@ export default function PokemonOverview({ pokemon }: PokemonOverviewProps) {
           </div>
         )}
       </div>
-      <AddPokemonModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSavePokemon}
-      />
     </>
   );
 }
