@@ -71,11 +71,14 @@ The primary user is a **player** in a campaign. The Game Master (DM) is not the 
 * Status condition system with duration tracking
 * Type-based emoji icons for visual identification
 
-**Advanced Editing Modal:**
-* Full-screen modal for detailed Pokémon editing
-* Real-time preview of changes
+
+**Route-Based Edit Page:**
+* Dedicated /pokemon/[uuid]/edit page
+* Full form parity with creation page
 * Validation and error handling
-* Save/cancel functionality
+* Integrated delete (danger zone)
+* Explicit Back/Cancel navigation
+
 
 #### 4.4. User Interface & Experience
 
@@ -87,11 +90,16 @@ The primary user is a **player** in a campaign. The Game Master (DM) is not the 
 * Smooth animations and transitions
 * Mobile-first responsive design
 
+
 **Navigation & Interaction:**
-* Modal-based editing system
+
+* Route-based add & edit pages (replaces legacy modals)
 * Confirmation dialogs for destructive actions
+
 * Intuitive touch-friendly controls
+
 * Keyboard accessibility
+
 
 #### 4.5. Data Management
 
@@ -110,30 +118,45 @@ The primary user is a **player** in a campaign. The Game Master (DM) is not the 
 
 ### 5. User Workflow
 
+
 1. **First Visit:** User is prompted to create trainer profile
+
 2. **Main Dashboard:** Two-panel layout showing trainer and Pokémon overview
+
 3. **Trainer Editing:** Click trainer card to open editing modal
-4. **Pokémon Management:** 
-   - Add new Pokémon via dedicated creation modal
-   - Edit existing Pokémon through card action buttons
-   - Delete Pokémon with confirmation dialog
+
+4. **Pokémon Management:**
+   - Add new Pokémon via `/pokemon/new` route (replaces legacy creation modal)
+   - Edit existing Pokémon via `/pokemon/[uuid]/edit` (action menu navigates instead of opening a modal)
+   - Delete Pokémon via the delete (danger) section on the edit page (inline two‑step confirmation)
 5. **Data Persistence:** All changes automatically saved to local storage
+
 
 ---
 
 ### 6. Current Status vs Original MVP
 
-**Implemented Beyond MVP:**
+
 * ✅ Full dual-type Pokémon system
+
 * ✅ Status condition tracking with duration
+
 * ✅ Advanced UI with glassmorphism design
+
 * ✅ Comprehensive responsive design
+
 * ✅ Type-safe TypeScript implementation
+
 * ✅ Sophisticated state management
+
 * ✅ Visual progress indicators and animations
+
 * ✅ Emoji-based type icon system
+
 * ✅ Team statistics and analytics
-* ✅ Modal-based editing system
+
+* ✅ Route-based add & edit Pokémon pages (legacy modals removed)
+
 
 **Not Yet Implemented (Future Scope):**
 * Attack/move management system
@@ -148,22 +171,29 @@ The primary user is a **player** in a campaign. The Game Master (DM) is not the 
 
 ### 7. Technical Architecture
 
-**Component Structure:**
+
 ```
 src/
-├── app/                     # Next.js app directory
-├── components/              # React components
-│   ├── AddPokemonModal/     # Pokemon creation flow
+├── app/                     # Next.js app directory (route-based add/edit flows)
+
+├── components/              # React components (shared/global)
+
 │   ├── Shared/              # Reusable components
-│   └── ...                  # Feature-specific components
+
+│   └── ...                  # Other shared components
+├── features/
+│   └── pokemon/             # Pokémon feature (cards, forms, overview)
 ├── store/                   # Zustand state management
+
 ├── types/                   # TypeScript type definitions
+
 └── utils/                   # Utility functions
+
 ```
+
 
 **Key Design Patterns:**
 * Custom hooks for state management
-* Compound component patterns for modals
 * Responsive CSS with container queries
 * Accessibility-first interactive elements
 

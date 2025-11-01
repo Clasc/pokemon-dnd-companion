@@ -8,7 +8,11 @@ import EditButton from "@/components/shared/ActionButtons/EditButton";
 import TrainerInventory from "../TrainerInventory";
 import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
 
-export default function TrainerOverview() {
+export default function TrainerOverview({
+  unstyled = false,
+}: {
+  unstyled?: boolean;
+}) {
   const [isEditing, setIsEditing] = useState(false);
   const trainer = useAppStore.use.trainer();
   const setTrainer = useAppStore.use.setTrainer();
@@ -184,7 +188,9 @@ export default function TrainerOverview() {
   return (
     <>
       {/* Read-only Summary View */}
-      <div className="glass rounded-2xl p-6 cursor-pointer hover:bg-white/10 transition-all duration-300 space-y-4">
+      <div
+        className={`${unstyled ? "" : "glass rounded-2xl p-6"} cursor-pointer hover:bg-white/10 transition-all duration-300 space-y-4`}
+      >
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-white p-2">Trainer Overview</h2>
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">

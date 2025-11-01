@@ -1,10 +1,27 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+
 import "@testing-library/jest-dom";
+
 import PokemonCard from ".";
+
 import { useAppStore } from "@/store";
+
 import { Pokemon } from "@/types/pokemon";
+
 import { makePokemon } from "@/tests/utils/pokemonFactories";
+
 import { resetStore, seedPokemon } from "@/tests/utils/storeHelpers";
+const mockPush = jest.fn();
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: mockPush,
+    prefetch: jest.fn(),
+    replace: jest.fn(),
+    refresh: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+  }),
+}));
 
 // Mock components that are imported
 jest.mock("@/components/shared/DeleteConfirmationModal", () => {
@@ -13,11 +30,7 @@ jest.mock("@/components/shared/DeleteConfirmationModal", () => {
   };
 });
 
-jest.mock("../PokemonEditModal", () => {
-  return function MockPokemonEditModal() {
-    return <div data-testid="edit-modal">Edit Modal</div>;
-  };
-});
+// Removed legacy PokemonEditModal mock (edit now handled via route navigation)
 
 jest.mock("../AddAttackModal", () => {
   return function MockAddAttackModal() {
@@ -408,16 +421,18 @@ describe("PokemonCard", () => {
     });
   });
 
-  it("shows edit modal when edit is clicked from menu", () => {
+  it("navigates to edit route when edit is clicked from menu", () => {
     render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
 
     const menuButton = screen.getByTitle("Actions");
+
     fireEvent.click(menuButton);
 
     const editButton = screen.getByText("Edit");
+
     fireEvent.click(editButton);
 
-    expect(screen.getByTestId("edit-modal")).toBeInTheDocument();
+    expect(mockPush).toHaveBeenCalledWith("/pokemon/test-uuid/edit");
   });
 
   it("shows delete modal when delete is clicked from menu", () => {

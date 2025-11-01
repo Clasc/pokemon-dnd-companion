@@ -23,8 +23,6 @@
  *   });
  */
 
-type Mutable<T> = { -readonly [K in keyof T]: T[K] };
-
 export interface MockRectOptions {
   width?: number;
   height?: number;
@@ -39,18 +37,24 @@ export interface MockRectOptions {
  * We intentionally avoid constructing a real DOMRect to keep things simple and
  * fully serializable.
  */
+
 function buildRect(options: MockRectOptions): DOMRect {
   const {
     width = 100,
+
     height = 10,
+
     left = 0,
+
     top = 0,
+
     right = left + width,
+
     bottom = top + height,
   } = options;
 
-  // Create a plain object matching DOMRectReadOnly fields
-  const rect: Partial<Mutable<DOMRect>> = {
+  // Return a plain object implementing the DOMRect shape up front (no post‑mutation of read‑only fields)
+  const rect = {
     x: left,
     y: top,
     left,
@@ -59,28 +63,21 @@ function buildRect(options: MockRectOptions): DOMRect {
     bottom,
     width,
     height,
-  };
+    toJSON() {
+      return {
+        x: this.x,
+        y: this.y,
+        left: this.left,
+        top: this.top,
+        right: this.right,
+        bottom: this.bottom,
+        width: this.width,
+        height: this.height,
+      };
+    },
+  } as DOMRect;
 
-  // Fill any missing numeric properties JSDOM consumers might read
-  const requiredNumeric: Array<keyof DOMRect> = [
-    "x",
-    "y",
-    "left",
-    "top",
-    "right",
-    "bottom",
-    "width",
-    "height",
-  ];
-
-  for (const key of requiredNumeric) {
-    if (typeof rect[key] !== "number") {
-      (rect as DOMRect)[key] = 0;
-    }
-  }
-
-  // Cast to DOMRect (good enough for tests)
-  return rect as DOMRect;
+  return rect;
 }
 
 /**
@@ -111,10 +108,15 @@ export function mockElementRect(
       spy.mockRestore();
     };
   } else {
-    // Manual override
-    (element as any).getBoundingClientRect = () => rect;
+    // Manual override (no jest.spyOn available): strongly typed override
+
+    const overrideEl = element as HTMLElement & {
+      getBoundingClientRect: () => DOMRect;
+    };
+    overrideEl.getBoundingClientRect = () => rect;
+
     restore = () => {
-      (element as any).getBoundingClientRect = original;
+      overrideEl.getBoundingClientRect = original;
     };
   }
 
@@ -126,9 +128,15 @@ export function mockElementRect(
  *
  * Useful for debounced / animated drag update tests so you don't need manual timers or nested awaits.
  */
+
 export function withSynchronousRaf<T>(run: () => T): T {
-  const g: any = globalThis as any;
+  const g = globalThis as {
+    requestAnimationFrame: (cb: FrameRequestCallback) => number;
+    cancelAnimationFrame: (handle: number) => void;
+    performance?: { now: () => number };
+  };
   const originalRAF = g.requestAnimationFrame;
+
   const originalCancel = g.cancelAnimationFrame;
 
   let frameId = 0;
@@ -164,10 +172,14 @@ export function withSynchronousRaf<T>(run: () => T): T {
  * @param ms milliseconds to advance (defaults to 0 => run all pending).
  */
 export function flushDebounce(ms: number = 0) {
+  const j = jest as unknown as {
+    advanceTimersByTime?: (ms: number) => void;
+    runOnlyPendingTimers?: () => void;
+  };
   if (
     typeof jest === "undefined" ||
-    !(jest as any).advanceTimersByTime ||
-    !(jest as any).runOnlyPendingTimers
+    !j.advanceTimersByTime ||
+    !j.runOnlyPendingTimers
   ) {
     throw new Error(
       "flushDebounce requires Jest fake timers (enable with jest.useFakeTimers())",
@@ -175,8 +187,12 @@ export function flushDebounce(ms: number = 0) {
   }
 
   if (ms > 0) {
-    (jest as any).advanceTimersByTime(ms);
+    (
+      jest as unknown as { advanceTimersByTime?: (ms: number) => void }
+    ).advanceTimersByTime?.(ms);
   } else {
-    (jest as any).runOnlyPendingTimers();
+    (
+      jest as unknown as { runOnlyPendingTimers?: () => void }
+    ).runOnlyPendingTimers?.();
   }
 }

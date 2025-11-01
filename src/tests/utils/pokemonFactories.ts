@@ -10,7 +10,13 @@
  * - Allow targeted overrides for specific test scenarios (HP ranges, types, statuses, etc).
  */
 
-import { Pokemon, PokemonTeam, Attack, StatusEffect } from "@/types/pokemon";
+import {
+  Pokemon,
+  PokemonTeam,
+  Attack,
+  StatusEffect,
+  StatusCondition,
+} from "@/types/pokemon";
 import { testPokemon } from "@/fixtures/pokemon";
 
 /**
@@ -135,7 +141,7 @@ export function makeAttack(
  * Convenience for creating a simple StatusEffect.
  */
 export function makeStatus(
-  condition: Pokemon["primaryStatus"]["condition"],
+  condition: StatusCondition,
   overrides: Partial<StatusEffect> = {},
 ): StatusEffect {
   return {

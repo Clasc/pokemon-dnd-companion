@@ -26,8 +26,9 @@
 
 import { useAppStore } from "@/store";
 import { testFixtures, testPokemon } from "@/fixtures";
-import { Pokemon, PokemonTeam, Trainer } from "@/types/pokemon";
+import { Pokemon, PokemonTeam } from "@/types/pokemon";
 import type { StatusEffect } from "@/types/pokemon";
+import { Trainer } from "@/types/trainer";
 
 /**
  * Options for resetStore.
@@ -88,10 +89,7 @@ function getDefaultPokemon(): Pokemon {
  * If `pokemon` is omitted, uses a deterministic default fixture.
  * Returns the Pokemon that was inserted.
  */
-export function seedPokemon(
-  uuid: string,
-  pokemon?: Partial<Pokemon>,
-): Pokemon {
+export function seedPokemon(uuid: string, pokemon?: Partial<Pokemon>): Pokemon {
   const base = pokemon
     ? { ...getDefaultPokemon(), ...pokemon }
     : getDefaultPokemon();
@@ -116,7 +114,9 @@ export function seedPokemon(
  *                the default fixture base is used.
  * @returns The final PokemonTeam inserted.
  */
-export function seedTeam(teamMap: Record<string, Partial<Pokemon> | undefined>): PokemonTeam {
+export function seedTeam(
+  teamMap: Record<string, Partial<Pokemon> | undefined>,
+): PokemonTeam {
   const inserted: PokemonTeam = {};
   for (const [uuid, partial] of Object.entries(teamMap)) {
     inserted[uuid] = seedPokemon(uuid, partial);

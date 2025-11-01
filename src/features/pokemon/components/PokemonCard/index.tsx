@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAppStore } from "@/store";
 import { Pokemon, Attributes, TYPE_COLORS } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
 import DeleteConfirmationModal from "@/components/shared/DeleteConfirmationModal";
-import PokemonEditModal from "../PokemonEditModal";
 import AddAttackModal from "../AddAttackModal";
 import AttackCard from "../AttackCard";
 import ActionButtons from "@/components/shared/ActionButtons";
@@ -19,8 +19,9 @@ interface PokemonCardProps {
 }
 
 export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
+  const router = useRouter();
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
   const [isAttacksVisible, setIsAttacksVisible] = useState(false);
   const [showAddAttackModal, setShowAddAttackModal] = useState(false);
   const [showStatusSelector, setShowStatusSelector] = useState(false);
@@ -44,15 +45,15 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
 
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setShowEditModal(true);
+    router.push(`/pokemon/${uuid}/edit`);
   };
 
-  // Direct HP modification functions
+  // Direct HP modification
   const modifyHP = (amount: number) => {
     modifyPokemonHP(uuid, amount);
   };
 
-  // Handle HP drag change
+  // HP drag change
   const handleHPDragChange = (value: number) => {
     const diff = value - pokemon.currentHP;
     if (diff !== 0) {
@@ -60,12 +61,12 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
     }
   };
 
-  // Quick XP gain function
+  // Quick XP gain
   const gainQuickXP = (amount: number) => {
     gainExperience(uuid, amount);
   };
 
-  // Handle XP drag change
+  // XP drag change
   const handleXPDragChange = (value: number) => {
     const diff = value - pokemon.experience;
     if (diff !== 0) {
@@ -73,15 +74,8 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
     }
   };
 
-  // Removed unused hpPercentage logic (handled by shared progress components)
-
-  // Removed unused xpPercentage logic (handled by shared progress components)
-
-  // Removed unused getHPColor logic (handled by shared progress components)
-
-  const getTypeColor = (type: string) => {
-    return TYPE_COLORS[type as keyof typeof TYPE_COLORS] || "#A8A878";
-  };
+  const getTypeColor = (type: string) =>
+    TYPE_COLORS[type as keyof typeof TYPE_COLORS] || "#A8A878";
 
   const attributeNames: (keyof Attributes)[] = [
     "strength",
@@ -104,26 +98,23 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
     return shortNames[attr];
   };
 
-  const getAttributeModifier = (score: number) => {
-    return Math.floor((score - 10) / 2);
-  };
+  const getAttributeModifier = (score: number) => Math.floor((score - 10) / 2);
 
-  const formatModifier = (modifier: number) => {
-    return modifier >= 0 ? `+${modifier}` : `${modifier}`;
-  };
+  const formatModifier = (modifier: number) =>
+    modifier >= 0 ? `+${modifier}` : `${modifier}`;
 
   return (
     <>
       <div className="glass rounded-2xl p-4">
         <div className="flex items-start gap-4">
-          {/* Pokemon Sprite/Icon */}
+          {/* Icon */}
           <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-xl md:text-2xl border border-white/10">
             {pokemon.type1
               ? getPokemonIcon(pokemon.type1, pokemon.type2)
               : "❓"}
           </div>
 
-          {/* Pokemon Info */}
+          {/* Info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               <h3 className="font-semibold text-white text-base md:text-lg truncate">
@@ -137,7 +128,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
               </span>
             </div>
 
-            {/* Type Badges and Status */}
+            {/* Types & Status */}
             <div className="flex items-center gap-2 mb-2">
               {pokemon.type1 && (
                 <span
@@ -156,7 +147,6 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                 </span>
               )}
 
-              {/* Clickable Status */}
               <div
                 onClick={() => setShowStatusSelector(true)}
                 className="cursor-pointer hover:bg-white/10 rounded px-1 transition-colors"
@@ -165,7 +155,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
               </div>
             </div>
 
-            {/* Attributes Chips */}
+            {/* Attribute chips */}
             <div className="mb-2">
               <div className="flex flex-wrap justify-start gap-1">
                 {attributeNames.map((attr) => (
@@ -186,7 +176,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
               </div>
             </div>
 
-            {/* HP Bar with Inline Controls */}
+            {/* HP */}
             <div className="mb-2">
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
@@ -236,7 +226,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
               />
             </div>
 
-            {/* XP Bar with Quick Gain */}
+            {/* XP */}
             <div className="mb-2">
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
@@ -297,7 +287,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
               />
             </div>
 
-            {/* Attacks as Chips */}
+            {/* Attacks summary */}
             {pokemon.attacks && pokemon.attacks.length > 0 && (
               <div className="mt-3">
                 <div className="flex items-center gap-2 mb-2">
@@ -338,7 +328,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
               </div>
             )}
 
-            {/* Add attack button if no attacks */}
+            {/* Add first attack */}
             {(!pokemon.attacks || pokemon.attacks.length === 0) && (
               <div className="mt-3">
                 <button
@@ -391,14 +381,6 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
           </div>
         )}
       </div>
-
-      {/* Edit Modal */}
-      <PokemonEditModal
-        isOpen={showEditModal}
-        pokemon={pokemon}
-        uuid={uuid}
-        onClose={() => setShowEditModal(false)}
-      />
 
       {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal

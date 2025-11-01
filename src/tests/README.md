@@ -45,10 +45,13 @@ The PokemonOverview component tests are organized into the following test suites
 - Tests rounding behavior for percentage calculations
 - Validates various team compositions
 
-#### 6. Modal Integration Tests
-- Tests opening and closing of AddPokemonModal
-- Verifies saving Pokémon through modal
-- Ensures proper state management during modal interactions
+
+#### 6. Route-Based Form Tests
+- Navigates to /pokemon/new and renders creation form
+- Validates required fields and shows error messaging (currently alert-based; planned inline errors)
+- Navigates to /pokemon/[uuid]/edit and persists updates
+- Executes inline delete (danger zone) flow on the edit page
+
 
 #### 7. Accessibility Tests
 - Verifies proper heading structure
@@ -107,18 +110,18 @@ The PokemonOverview component tests are organized into the following test suites
 
 We mock child components to focus on the component under test:
 
-```typescript
-jest.mock('../components/AddPokemonModal/AddPokemonModal', () => {
-  return function MockAddPokemonModal({ isOpen, onClose, onSave }: any) {
-    if (!isOpen) return null
-    return (
-      <div data-testid="add-pokemon-modal">
-        <button onClick={() => onSave(mockPokemon)}>Save Test Pokemon</button>
-        <button onClick={onClose}>Close Modal</button>
-      </div>
-    )
-  }
-})
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+    prefetch: jest.fn(),
+    replace: jest.fn(),
+    refresh: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+  }),
+}))
+
 ```
 
 ### 2. Store Mocking
