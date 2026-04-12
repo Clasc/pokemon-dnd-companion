@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { formatPokemonName } from "@/types/pokeapi";
 import { Pokemon } from "@/types/pokemon";
 import { useAppStore } from "@/store";
 import PokemonForm from "@/features/pokemon/components/PokemonForm";
@@ -42,7 +43,6 @@ export default function NewPokemonPage() {
 
   const validate = (): string[] => {
     const errors: string[] = [];
-    if (!pokemon.name.trim()) errors.push("Nickname is required.");
     if (!pokemon.type.trim()) errors.push("Species is required.");
     if (!pokemon.type1) errors.push("Primary type is required.");
     if (pokemon.maxHP < 1) errors.push("Max HP must be at least 1.");
@@ -60,10 +60,13 @@ export default function NewPokemonPage() {
     }
     setSubmitting(true);
     const uuid = crypto.randomUUID();
+    const pokemonName =
+      pokemon.name.trim() || formatPokemonName(pokemon.type);
 
     addPokemon(
       {
         ...pokemon,
+        name: pokemonName,
         currentHP: Math.min(Math.max(0, pokemon.currentHP), pokemon.maxHP),
         attacks: pokemon.attacks || [],
       },

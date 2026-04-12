@@ -55,6 +55,7 @@ export default function PokemonAutocomplete({
 }: PokemonAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<PokeAPINamedResource[]>([]);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pokemonSpecies, setPokemonSpecies] = useState<PokeAPINamedResource[]>(
@@ -108,15 +109,48 @@ export default function PokemonAutocomplete({
     if (!value.trim()) {
       setSuggestions([]);
       setIsOpen(false);
+      setHighlightedIndex(-1);
       return;
     }
     debouncedFilter(value);
   }, [value, debouncedFilter]);
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!isOpen || suggestions.length === 0) return;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setHighlightedIndex((prev) =>
+          prev < suggestions.length - 1 ? prev + 1 : 0,
+        );
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setHighlightedIndex((prev) =>
+          prev > 0 ? prev - 1 : suggestions.length - 1,
+        );
+        break;
+      case "Enter":
+        e.preventDefault();
+        if (highlightedIndex >= 0 && suggestions[highlightedIndex]) {
+          handleSelect(suggestions[highlightedIndex]);
+        }
+        break;
+      case "Escape":
+        e.preventDefault();
+        setIsOpen(false);
+        setHighlightedIndex(-1);
+        inputRef.current?.blur();
+        break;
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     onChange(newValue);
     setError(null);
+    setHighlightedIndex(-1);
 
     if (!newValue.trim()) {
       setSuggestions([]);
@@ -190,6 +224,7 @@ export default function PokemonAutocomplete({
           type="text"
           value={value}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           onFocus={handleFocus}
           onBlur={handleBlur}
           placeholder={placeholder}
@@ -217,17 +252,21 @@ export default function PokemonAutocomplete({
           className="absolute z-50 w-full mt-1 bg-gray-800 border border-white/20 rounded-lg shadow-lg max-h-64 overflow-y-auto"
           data-testid={testIds?.dropdown}
         >
-          {suggestions.map((pokemon) => (
-            <button
-              key={pokemon.name}
-              type="button"
-              onClick={() => handleSelect(pokemon)}
-              className="w-full px-4 py-2 text-left text-white hover:bg-white/10 focus:outline-none focus:bg-white/20 transition-colors"
-              data-testid={testIds?.option}
-            >
-              {formatPokemonName(pokemon.name)}
-            </button>
-          ))}
+{suggestions.map((pokemon, index) => (
+              <button
+                key={pokemon.name}
+                type="button"
+                onClick={() => handleSelect(pokemon)}
+                className={`w-full px-4 py-2 text-left transition-colors ${
+                  index === highlightedIndex
+                    ? "bg-blue-600 text-white"
+                    : "text-white hover:bg-white/10 focus:bg-white/20"
+                }`}
+                data-testid={testIds?.option}
+              >
+                {formatPokemonName(pokemon.name)}
+              </button>
+            ))}
         </div>
       )}
 

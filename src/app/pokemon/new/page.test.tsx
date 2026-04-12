@@ -128,7 +128,6 @@ describe("NewPokemonPage (route-based creation flow)", () => {
 
     expect(alertSpy).toHaveBeenCalledTimes(1);
     const message = String(alertSpy.mock.calls[0]?.[0] ?? "");
-    expect(message).toMatch(/nickname is required/i);
     expect(message).toMatch(/species is required/i);
 
     alertSpy.mockRestore();
@@ -183,7 +182,7 @@ describe("NewPokemonPage (route-based creation flow)", () => {
     expect(mockBack).toHaveBeenCalledTimes(1);
   });
 
-  it("does not create a Pokémon when validation fails (missing species & nickname)", async () => {
+  it("does not create a Pokémon when validation fails (missing species)", async () => {
     const user = userEvent.setup();
 
     const alertSpy = jest.spyOn(window, "alert").mockImplementation(() => {});

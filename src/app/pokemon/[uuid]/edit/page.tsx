@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { formatPokemonName } from "@/types/pokeapi";
 import { Pokemon } from "@/types/pokemon";
 import { useAppStore } from "@/store";
 import PokemonForm from "@/features/pokemon/components/PokemonForm";
@@ -47,7 +48,6 @@ export default function EditPokemonPage() {
 
   const validate = (candidate: Pokemon): string[] => {
     const errors: string[] = [];
-    if (!candidate.name.trim()) errors.push("Nickname is required.");
     if (!candidate.type.trim()) errors.push("Species is required.");
     if (!candidate.type1) errors.push("Primary type is required.");
     if (candidate.maxHP < 1) errors.push("Max HP must be at least 1.");
@@ -75,8 +75,11 @@ export default function EditPokemonPage() {
     }
     setSubmitting(true);
 
+    const pokemonName =
+      pokemon.name.trim() || formatPokemonName(pokemon.type);
     const clamped: Pokemon = {
       ...pokemon,
+      name: pokemonName,
       currentHP: Math.min(Math.max(0, pokemon.currentHP), pokemon.maxHP),
       attacks: pokemon.attacks || [],
     };

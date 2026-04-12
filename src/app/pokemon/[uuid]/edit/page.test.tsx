@@ -231,7 +231,6 @@ describe("EditPokemonPage route", () => {
     expect(alertSpy).toHaveBeenCalledTimes(1);
     const message = String(alertSpy.mock.calls[0]?.[0]);
     expect(message).toMatch(/species is required/i);
-    expect(message).toMatch(/nickname is required/i);
 
     // Ensure store not changed
     const stored = useAppStore.getState().pokemonTeam[FIXED_UUID];
