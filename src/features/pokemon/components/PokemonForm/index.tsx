@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Pokemon, Attributes, PokemonType } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
 import ProgressBar from "@/components/shared/ui/ProgressBar";
+import PokemonAutocomplete from "@/features/pokemon/components/PokemonAutocomplete";
+import { PokemonAutocompleteResult } from "@/types/pokeapi";
 
 /**
  * PokemonForm
@@ -54,6 +56,18 @@ export default function PokemonForm({
   autoAdjustCurrentHPOnMaxChange = false,
   testIds,
 }: PokemonFormProps) {
+  const [spriteUrl, setSpriteUrl] = useState<string>("");
+
+  const handlePokemonSelect = (result: PokemonAutocompleteResult) => {
+    setSpriteUrl(result.spriteUrl);
+    onChange({
+      ...pokemon,
+      type: result.displayName,
+      type1: result.types[0],
+      type2: result.types[1] ?? null,
+    });
+  };
+
   const handleFieldChange = (
     field: keyof Pokemon,
     value:
@@ -122,23 +136,35 @@ export default function PokemonForm({
     <div className="space-y-6 max-h-[60vh] overflow-y-auto">
       {/* Icon + Basic Info */}
       <div className="flex items-start gap-4">
-        {/* Pokémon Icon */}
-        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-2xl border border-white/10">
-          {pokemon.type1 ? getPokemonIcon(pokemon.type1, pokemon.type2) : "❓"}
+        {/* Pokémon Icon / Sprite */}
+        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-2xl border border-white/10 overflow-hidden">
+          {spriteUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={spriteUrl}
+              alt={pokemon.type || "Pokemon"}
+              className="w-full h-full object-contain"
+            />
+          ) : pokemon.type1 ? (
+            getPokemonIcon(pokemon.type1, pokemon.type2)
+          ) : (
+            "❓"
+          )}
         </div>
 
         {/* Core Fields */}
         <div className="flex-1 min-w-0 space-y-3">
           {/* Species */}
-            <div>
+          <div>
             <label className="block text-sm text-gray-300 mb-1">Species</label>
-            <input
-              type="text"
-              value={pokemon.type || ""}
-              onChange={(e) => handleFieldChange("type", e.target.value)}
-              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400"
-              placeholder="e.g., Pikachu, Charizard"
-              data-testid={testIds?.species}
+            <PokemonAutocomplete
+              value={pokemon.type}
+              onSelect={handlePokemonSelect}
+              onChange={(value) => handleFieldChange("type", value)}
+              placeholder="Search for a Pokemon..."
+              testIds={{
+                input: testIds?.species,
+              }}
             />
           </div>
 
