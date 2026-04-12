@@ -41,6 +41,11 @@ export interface PokemonFormProps {
   autoAdjustCurrentHPOnMaxChange?: boolean;
 
   /**
+   * Callback to indicate when species autocomplete is loading from PokeAPI.
+   */
+  onSpeciesLoadingChange?: (loading: boolean) => void;
+
+  /**
    * Optional test IDs for specific inputs to enable stable test selectors
    * without forcing them universally.
    */
@@ -54,6 +59,7 @@ export default function PokemonForm({
   pokemon,
   onChange,
   autoAdjustCurrentHPOnMaxChange = false,
+  onSpeciesLoadingChange,
   testIds,
 }: PokemonFormProps) {
   const [spriteUrl, setSpriteUrl] = useState<string>("");
@@ -162,6 +168,7 @@ export default function PokemonForm({
               value={pokemon.type}
               onSelect={handlePokemonSelect}
               onChange={(value) => handleFieldChange("type", value)}
+              onLoadingChange={onSpeciesLoadingChange}
               placeholder="Search for a Pokemon..."
               testIds={{
                 input: testIds?.species,

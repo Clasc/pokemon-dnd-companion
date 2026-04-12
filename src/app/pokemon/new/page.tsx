@@ -40,6 +40,7 @@ export default function NewPokemonPage() {
   const addPokemon = useAppStore.use.addPokemon();
   const [pokemon, setPokemon] = useState<Pokemon>(initialPokemon);
   const [submitting, setSubmitting] = useState(false);
+  const [speciesLoading, setSpeciesLoading] = useState(false);
 
   const validate = (): string[] => {
     const errors: string[] = [];
@@ -84,12 +85,12 @@ export default function NewPokemonPage() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
         e.preventDefault();
-        if (!submitting) handleSave();
+        if (!submitting && !speciesLoading) handleSave();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [submitting, handleSave]);
+  }, [submitting, speciesLoading, handleSave]);
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
@@ -109,6 +110,7 @@ export default function NewPokemonPage() {
           pokemon={pokemon}
           onChange={setPokemon}
           autoAdjustCurrentHPOnMaxChange
+          onSpeciesLoadingChange={setSpeciesLoading}
           testIds={{
             species: "species-input",
             nickname: "nickname-input",
@@ -119,7 +121,7 @@ export default function NewPokemonPage() {
           <button
             type="button"
             onClick={handleCancel}
-            disabled={submitting}
+            disabled={submitting || speciesLoading}
             className="px-5 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-50"
           >
             Cancel
@@ -128,7 +130,7 @@ export default function NewPokemonPage() {
             type="button"
             data-testid="save-pokemon-button"
             onClick={handleSave}
-            disabled={submitting}
+            disabled={submitting || speciesLoading}
             className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-colors disabled:opacity-50"
           >
             {submitting ? "Saving..." : "Save Pokémon"}

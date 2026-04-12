@@ -27,6 +27,7 @@ export interface PokemonAutocompleteProps {
   onChange: (value: string) => void;
   placeholder?: string;
   disabled?: boolean;
+  onLoadingChange?: (loading: boolean) => void;
   testIds?: {
     input?: string;
     dropdown?: string;
@@ -51,6 +52,7 @@ export default function PokemonAutocomplete({
   onChange,
   placeholder = "Search for a Pokemon...",
   disabled = false,
+  onLoadingChange,
   testIds,
 }: PokemonAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -63,6 +65,10 @@ export default function PokemonAutocomplete({
   );
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    onLoadingChange?.(isLoading);
+  }, [isLoading, onLoadingChange]);
 
   useEffect(() => {
     const fetchSpecies = async () => {

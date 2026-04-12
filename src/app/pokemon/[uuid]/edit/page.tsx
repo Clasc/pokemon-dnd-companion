@@ -33,6 +33,7 @@ export default function EditPokemonPage() {
   // Local editable copy (only if Pokémon exists).
   const [pokemon, setPokemon] = useState<Pokemon | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [speciesLoading, setSpeciesLoading] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Initialize local state when store data loads / changes.
@@ -97,12 +98,12 @@ export default function EditPokemonPage() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
         e.preventDefault();
-        if (!submitting) handleSave();
+        if (!submitting && !speciesLoading) handleSave();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [submitting, handleSave]);
+  }, [submitting, speciesLoading, handleSave]);
 
   if (isNotFound) {
     return (
@@ -159,9 +160,9 @@ export default function EditPokemonPage() {
       <section className="glass rounded-2xl p-6 border border-white/10 space-y-6">
         <PokemonForm
           pokemon={pokemon}
-            onChange={(next) => setPokemon(next)}
-          // In edit mode we still clamp, but do not auto-fill to full if HP is 0 intentionally.
+          onChange={(next) => setPokemon(next)}
           autoAdjustCurrentHPOnMaxChange={false}
+          onSpeciesLoadingChange={setSpeciesLoading}
           testIds={{
             species: "species-input",
             nickname: "nickname-input",
@@ -172,7 +173,7 @@ export default function EditPokemonPage() {
           <button
             type="button"
             onClick={handleCancel}
-            disabled={submitting}
+            disabled={submitting || speciesLoading}
             className="px-5 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-50"
           >
             Cancel
@@ -181,7 +182,7 @@ export default function EditPokemonPage() {
             type="button"
             data-testid="save-pokemon-button"
             onClick={handleSave}
-            disabled={submitting}
+            disabled={submitting || speciesLoading}
             className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-colors disabled:opacity-50"
           >
             {submitting ? "Saving..." : "Save Changes"}
