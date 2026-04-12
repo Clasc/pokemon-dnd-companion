@@ -109,6 +109,7 @@ export default function PokemonOverview({
                 <PokemonCompactCard
                   key={uuid}
                   pokemon={poke}
+                  uuid={uuid}
                   onClick={() => setExpandedUuid(uuid)}
                 />
               ),

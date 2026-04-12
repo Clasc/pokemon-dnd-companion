@@ -141,14 +141,22 @@ export const useAppStore = createSelectors(
               Math.min(pokemon.maxHP, pokemon.currentHP + hpChange),
             );
 
-            // Clear confusion when Pokemon faints (HP reaches 0)
-            const updatedPokemon = {
+            let updatedPokemon: typeof pokemon = {
               ...pokemon,
               currentHP: newCurrentHP,
             };
 
-            if (newCurrentHP === 0 && pokemon.confusion) {
-              updatedPokemon.confusion = undefined;
+            if (newCurrentHP === 0) {
+              updatedPokemon = {
+                ...updatedPokemon,
+                primaryStatus: { condition: "fainted", turnsActive: 0 },
+                confusion: undefined,
+              };
+            } else if (pokemon.primaryStatus?.condition === "fainted" && newCurrentHP > 0) {
+              updatedPokemon = {
+                ...updatedPokemon,
+                primaryStatus: undefined,
+              };
             }
 
             return {

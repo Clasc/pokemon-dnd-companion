@@ -11,6 +11,7 @@ import AttackCard from "../AttackCard";
 import ActionButtons from "@/components/shared/ActionButtons";
 import StatusIndicator from "../StatusIndicator";
 import StatusSelector from "../StatusSelector";
+import QuickStatusDropdown from "../QuickStatusDropdown";
 import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
 
 interface PokemonCardProps {
@@ -105,7 +106,10 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
 
   return (
     <>
-      <div className="glass rounded-2xl p-4">
+      <div className="glass rounded-2xl p-4 relative">
+        <div className="absolute top-2 right-2 z-10">
+          <QuickStatusDropdown pokemonUuid={uuid} />
+        </div>
         <div className="flex items-start gap-4">
           {/* Icon */}
           <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-xl md:text-2xl border border-white/10 overflow-hidden">
@@ -115,6 +119,9 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                 src={pokemon.spriteUrl}
                 alt={pokemon.name}
                 className="w-full h-full object-contain"
+                style={{
+                  filter: pokemon.primaryStatus?.condition === "fainted" ? "grayscale(100%)" : undefined,
+                }}
               />
             ) : pokemon.type1 ? (
               getPokemonIcon(pokemon.type1, pokemon.type2)

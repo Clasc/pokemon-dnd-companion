@@ -3,14 +3,17 @@
 import { Pokemon, TYPE_COLORS } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
 import ProgressBar from "@/components/shared/ui/ProgressBar";
+import QuickStatusDropdown from "../QuickStatusDropdown";
 
 interface PokemonCompactCardProps {
   pokemon: Pokemon;
+  uuid: string;
   onClick: () => void;
 }
 
 export default function PokemonCompactCard({
   pokemon,
+  uuid,
   onClick,
 }: PokemonCompactCardProps) {
   const getTypeColor = (type: string) =>
@@ -19,8 +22,11 @@ export default function PokemonCompactCard({
   return (
     <div
       onClick={onClick}
-      className="glass rounded-xl p-3 cursor-pointer hover:bg-white/20 transition-all duration-200 active:scale-[0.98]"
+      className="glass rounded-xl p-3 cursor-pointer hover:bg-white/20 transition-all duration-200 active:scale-[0.98] relative z-0"
     >
+      <div className="absolute top-2 right-0 z-10 mr-1">
+        <QuickStatusDropdown pokemonUuid={uuid} />
+      </div>
       <div className="flex items-center gap-3">
         <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-2xl md:text-3xl border border-white/10 overflow-hidden flex-shrink-0">
           {pokemon.spriteUrl ? (
@@ -28,6 +34,9 @@ export default function PokemonCompactCard({
               src={pokemon.spriteUrl}
               alt={pokemon.name}
               className="w-full h-full object-contain"
+              style={{
+                filter: pokemon.primaryStatus?.condition === "fainted" ? "grayscale(100%)" : undefined,
+              }}
             />
           ) : pokemon.type1 ? (
             getPokemonIcon(pokemon.type1, pokemon.type2)

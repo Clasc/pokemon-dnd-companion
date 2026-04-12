@@ -26,6 +26,7 @@ export type StatusCondition =
   | "asleep"
   | "confused"
   | "flinching"
+  | "fainted"
   | "none";
 
 export interface Pokemon {
@@ -113,6 +114,7 @@ export const STATUS_COLORS: Record<StatusCondition, Color> = {
   asleep: "#5DADE2",
   confused: "#F39C12",
   flinching: "#95A5A6",
+  fainted: "#4A4A4A",
   none: "#00000000",
 };
 

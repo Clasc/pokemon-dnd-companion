@@ -10,6 +10,7 @@ import AddAttackModal from "../AddAttackModal";
 import AttackCard from "../AttackCard";
 import StatusIndicator from "../StatusIndicator";
 import StatusSelector from "../StatusSelector";
+import QuickStatusDropdown from "../QuickStatusDropdown";
 import ProgressBar from "@/components/shared/ui/ProgressBar";
 
 interface PokemonExpandedModalProps {
@@ -139,6 +140,10 @@ export default function PokemonExpandedModal({
           </svg>
         </button>
 
+        <div className="absolute top-3 right-10 z-10">
+          <QuickStatusDropdown pokemonUuid={uuid} />
+        </div>
+
         <div className="p-4 md:p-6">
           <div className="flex items-start gap-4 mb-6">
             <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-4xl md:text-5xl border border-white/10 overflow-hidden flex-shrink-0">
@@ -182,13 +187,6 @@ export default function PokemonExpandedModal({
                     {pokemon.type2.toUpperCase()}
                   </span>
                 )}
-
-                <div
-                  onClick={() => setShowStatusSelector(true)}
-                  className="cursor-pointer hover:bg-white/10 rounded px-1 transition-colors"
-                >
-                  <StatusIndicator pokemon={pokemon} />
-                </div>
               </div>
 
               <div className="flex flex-wrap gap-1">
