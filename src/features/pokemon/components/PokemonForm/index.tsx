@@ -70,7 +70,7 @@ export default function PokemonForm({
       ...pokemon,
       type: result.displayName,
       type1: result.types[0],
-      type2: result.types[1] ?? null,
+      type2: result.types[1] ?? undefined,
       spriteUrl: result.spriteUrl,
     });
   };

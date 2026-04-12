@@ -21,7 +21,7 @@ export default function TrainerPage() {
   const setTrainer = useAppStore.use.setTrainer();
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-6 md:py-10 space-y-8">
+    <main className="max-w-4xl mx-auto px-4 py-6 md:py-10 space-y-8 overflow-x-hidden">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl md:text-3xl font-bold text-white">Trainer</h1>
       </header>

@@ -1,46 +1,33 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 
-import { PokemonTeam } from "@/types/pokemon";
+import { PokemonTeam, Pokemon } from "@/types/pokemon";
 
-import PokemonCard from "../PokemonCard/";
+import PokemonCompactCard from "./PokemonCompactCard";
+import PokemonExpandedModal from "../PokemonExpandedModal";
 
 interface PokemonOverviewProps {
   pokemon: PokemonTeam;
 
-  /**
-
-   * When true, suppresses rendering full PokemonCard components and instead
-
-   * renders lightweight placeholders (used in tests to avoid router dependency).
-
-   */
-
   disableCards?: boolean;
 
-  /**
-   * When true, renders without the outer glass/rounded card container
-   * so the overview can be inlined in a page that already provides a surface.
-   */
   unstyled?: boolean;
 }
 
-/**
-
- * PokemonOverview (Compacted)
-
- *
-
- * Reduced outer padding, removed redundant vertical margins,
- * and tightened empty state + stats spacing for higher information density.
- */
 export default function PokemonOverview({
   pokemon,
   disableCards = false,
   unstyled = false,
 }: PokemonOverviewProps) {
+  const [expandedUuid, setExpandedUuid] = useState<string | null>(null);
+
   const pokemonLength = Object.keys(pokemon).length;
+
+  const expandedPokemon: Pokemon | null = expandedUuid
+    ? pokemon[expandedUuid] ?? null
+    : null;
 
   const totalLevels = Object.values(pokemon).reduce(
     (sum, p) => sum + p.level,
@@ -91,7 +78,7 @@ export default function PokemonOverview({
           </div>
         </header>
 
-        <div className="pokemon-grid space-y-4">
+        <div className="pokemon-grid space-y-3">
           {pokemonLength === 0 ? (
             <div className="text-center py-8 md:py-10 px-4">
               <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-5 rounded-xl bg-gradient-to-br from-gray-600/50 to-gray-700/50 flex items-center justify-center border border-white/10">
@@ -119,7 +106,11 @@ export default function PokemonOverview({
                   {poke.name} ({poke.type})
                 </div>
               ) : (
-                <PokemonCard key={uuid} pokemon={poke} uuid={uuid} />
+                <PokemonCompactCard
+                  key={uuid}
+                  pokemon={poke}
+                  onClick={() => setExpandedUuid(uuid)}
+                />
               ),
             )
           )}
@@ -187,6 +178,15 @@ export default function PokemonOverview({
           </section>
         )}
       </div>
+
+      {expandedPokemon && (
+        <PokemonExpandedModal
+          pokemon={expandedPokemon}
+          uuid={expandedUuid!}
+          isOpen={expandedUuid !== null}
+          onClose={() => setExpandedUuid(null)}
+        />
+      )}
     </>
   );
 }

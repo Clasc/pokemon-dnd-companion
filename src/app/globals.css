@@ -110,6 +110,8 @@ body {
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    max-width: 100vw;
 }
 
 /* Typography */
@@ -376,6 +378,13 @@ h6 {
     display: grid;
     grid-template-columns: 1fr;
     gap: 12px;
+}
+
+@media (min-width: 640px) {
+    .pokemon-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
 }
 
 @media (min-width: 768px) {

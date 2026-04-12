@@ -37,7 +37,7 @@ export default function DashboardPage() {
         </p>
       </header>
 
-      <section className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-8">
+      <section className="max-w-7xl mx-auto flex flex-col md:grid md:grid-cols-2 gap-5 md:gap-8">
         <div>
           <TrainerOverview />
         </div>
