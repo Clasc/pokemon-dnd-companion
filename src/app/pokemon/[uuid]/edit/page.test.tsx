@@ -39,8 +39,10 @@ jest.mock(
   "@/features/pokemon/components/PokemonAutocomplete",
   () =>
     function MockPokemonAutocomplete({
+      value,
       onChange,
     }: {
+      value: string;
       onChange: (value: string) => void;
       onSelect: (pokemon: { displayName: string }) => void;
     }) {
@@ -50,8 +52,35 @@ jest.mock(
       return (
         <input
           type="text"
+          value={value}
           placeholder="Search for a Pokemon..."
           data-testid="species-input"
+          onChange={handleChange}
+        />
+      );
+    },
+);
+
+jest.mock(
+  "@/features/pokemon/components/MoveAutocomplete",
+  () =>
+    function MockMoveAutocomplete({
+      value,
+      onChange,
+    }: {
+      value: string;
+      onChange: (value: string) => void;
+      onSelect: (move: { displayName: string; pp: number; description: string }) => void;
+    }) {
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange(e.target.value);
+      };
+      return (
+        <input
+          type="text"
+          value={value}
+          placeholder="Search for a move..."
+          data-testid="move-input"
           onChange={handleChange}
         />
       );

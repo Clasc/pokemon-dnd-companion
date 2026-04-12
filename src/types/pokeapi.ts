@@ -31,11 +31,39 @@ export interface PokeAPIPokemonDetailResponse {
   sprites: PokeAPIPokemonSprites;
 }
 
+export interface PokeAPIMoveListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: PokeAPINamedResource[];
+}
+
+export interface PokeAPIMoveFlavorText {
+  flavor_text: string;
+  language: PokeAPINamedResource;
+  version: PokeAPINamedResource;
+}
+
+export interface PokeAPIMoveDetailResponse {
+  id: number;
+  name: string;
+  pp: number;
+  type: PokeAPINamedResource;
+  flavor_text_entries: PokeAPIMoveFlavorText[];
+}
+
 export interface PokemonAutocompleteResult {
   name: string;
   displayName: string;
   types: [PokemonType, PokemonType?] | [];
   spriteUrl: string;
+}
+
+export interface MoveAutocompleteResult {
+  name: string;
+  displayName: string;
+  pp: number;
+  description: string;
 }
 
 type PokemonType =
@@ -84,6 +112,28 @@ export function formatPokemonName(name: string): string {
     .split("-")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+export function formatMoveName(name: string): string {
+  return name
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+export function getEnglishFlavorText(
+  flavorTextEntries: PokeAPIMoveFlavorText[] | undefined,
+): string {
+  if (!flavorTextEntries || flavorTextEntries.length === 0) {
+    return "";
+  }
+  const englishEntry = flavorTextEntries.find(
+    (entry) => entry.language.name === "en",
+  );
+  if (!englishEntry) {
+    return "";
+  }
+  return englishEntry.flavor_text.replace(/\n/g, " ");
 }
 
 export function isValidPokemonType(type: string): type is PokemonType {

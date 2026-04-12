@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAppStore } from "@/store";
 import { Attack } from "@/types/pokemon";
+import MoveAutocomplete from "@/features/pokemon/components/MoveAutocomplete";
 
 interface AddAttackModalProps {
   isOpen: boolean;
@@ -49,6 +50,20 @@ export default function AddAttackModal({
     }));
   };
 
+  const handleMoveSelect = (move: {
+    name: string;
+    displayName: string;
+    pp: number;
+    description: string;
+  }) => {
+    setAttack((prev) => ({
+      ...prev,
+      name: move.displayName,
+      maxPp: move.pp,
+      description: move.description,
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addAttack(pokemonUuid, attackIndex, attack as Attack);
@@ -77,14 +92,11 @@ export default function AddAttackModal({
             >
               Attack Name
             </label>
-            <input
-              type="text"
-              name="name"
-              id="name"
+            <MoveAutocomplete
               value={attack.name}
-              onChange={handleChange}
-              className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-blue-500"
-              required
+              onSelect={handleMoveSelect}
+              onChange={(value) => setAttack((prev) => ({ ...prev, name: value }))}
+              placeholder="Search for a move..."
             />
           </div>
 

@@ -1,3 +1,4 @@
+import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import AddAttackModal from ".";
 import { useAppStore } from "@/store";
@@ -10,6 +11,29 @@ jest.mock("@/store", () => ({
     },
   },
 }));
+
+jest.mock(
+  "@/features/pokemon/components/MoveAutocomplete",
+  () =>
+    function MockMoveAutocomplete({
+      onChange,
+    }: {
+      onChange: (value: string) => void;
+      onSelect: (move: { displayName: string; pp: number; description: string }) => void;
+    }) {
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange(e.target.value);
+      };
+      return (
+        <input
+          type="text"
+          placeholder="Search for a move..."
+          data-testid="move-input"
+          onChange={handleChange}
+        />
+      );
+    },
+);
 
 describe("AddAttackModal", () => {
   const addAttackMock = jest.fn();
@@ -48,11 +72,9 @@ describe("AddAttackModal", () => {
       />,
     );
     expect(screen.getByText("Add New Attack")).toBeInTheDocument();
-    expect(screen.getByLabelText("Attack Name")).toBeInTheDocument();
-    expect(screen.getByLabelText("Max PP")).toBeInTheDocument();
+    expect(screen.getByTestId("move-input")).toBeInTheDocument();
     expect(screen.getByLabelText("Max PP")).toBeInTheDocument();
     expect(screen.getByLabelText("Action Type")).toBeInTheDocument();
-    expect(screen.getByLabelText("Max PP")).toBeInTheDocument();
   });
 
   it("allows typing in form fields", () => {
@@ -65,7 +87,7 @@ describe("AddAttackModal", () => {
       />,
     );
 
-    const nameInput = screen.getByLabelText("Attack Name") as HTMLInputElement;
+    const nameInput = screen.getByTestId("move-input") as HTMLInputElement;
     fireEvent.change(nameInput, { target: { value: "Tackle" } });
     expect(nameInput.value).toBe("Tackle");
 
@@ -90,7 +112,7 @@ describe("AddAttackModal", () => {
       />,
     );
 
-    fireEvent.change(screen.getByLabelText("Attack Name"), {
+    fireEvent.change(screen.getByTestId("move-input"), {
       target: { value: "Quick Attack" },
     });
     fireEvent.change(screen.getByLabelText("Max PP"), {
