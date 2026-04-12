@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { formatPokemonName } from "@/types/pokeapi";
@@ -66,7 +66,7 @@ export default function EditPokemonPage() {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     if (!pokemon || isNotFound) return;
     const errors = validate(pokemon);
     if (errors.length) {
@@ -86,12 +86,23 @@ export default function EditPokemonPage() {
 
     updatePokemon(clamped, uuid);
     router.push("/pokemon");
-  };
+  }, [pokemon, isNotFound, uuid, updatePokemon, router]);
 
   const handleDelete = () => {
     removePokemon(uuid);
     router.push("/pokemon");
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        if (!submitting) handleSave();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [submitting, handleSave]);
 
   if (isNotFound) {
     return (

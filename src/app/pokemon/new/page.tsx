@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatPokemonName } from "@/types/pokeapi";
 import { Pokemon } from "@/types/pokemon";
@@ -52,7 +52,7 @@ export default function NewPokemonPage() {
     return errors;
   };
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     const errors = validate();
     if (errors.length) {
       alert(errors.join("\n"));
@@ -74,11 +74,22 @@ export default function NewPokemonPage() {
     );
 
     router.push("/pokemon");
-  };
+  }, [pokemon, addPokemon, router]);
 
   const handleCancel = () => {
     router.back();
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        if (!submitting) handleSave();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [submitting, handleSave]);
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
