@@ -24,6 +24,29 @@ jest.mock("next/navigation", () => ({
   }),
 }));
 
+jest.mock(
+  "@/features/pokemon/components/PokemonAutocomplete",
+  () =>
+    function MockPokemonAutocomplete({
+      onChange,
+    }: {
+      onChange: (value: string) => void;
+      onSelect: (pokemon: { displayName: string }) => void;
+    }) {
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange(e.target.value);
+      };
+      return (
+        <input
+          type="text"
+          placeholder="Search for a Pokemon..."
+          data-testid="species-input"
+          onChange={handleChange}
+        />
+      );
+    },
+);
+
 // A deterministic, structurally valid UUID (version 4 style) for stable assertions.
 const FIXED_UUID = "00000000-0000-4000-8000-000000000000" as const;
 

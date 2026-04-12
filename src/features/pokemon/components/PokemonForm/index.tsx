@@ -65,6 +65,7 @@ export default function PokemonForm({
       type: result.displayName,
       type1: result.types[0],
       type2: result.types[1] ?? null,
+      spriteUrl: result.spriteUrl,
     });
   };
 

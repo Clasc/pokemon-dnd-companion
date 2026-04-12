@@ -513,4 +513,24 @@ describe("PokemonCard", () => {
     // Should not show any type badges
     expect(screen.queryByText("ELECTRIC")).not.toBeInTheDocument();
   });
+
+  it("displays sprite image when spriteUrl is provided", () => {
+    const pokemonWithSprite = {
+      ...mockPokemon,
+      spriteUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+    };
+
+    render(<PokemonCard pokemon={pokemonWithSprite} uuid="test-uuid" />);
+
+    const spriteImage = screen.getByAltText("Pikachu") as HTMLImageElement;
+    expect(spriteImage).toBeInTheDocument();
+    expect(spriteImage.src).toBe("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png");
+  });
+
+  it("falls back to icon when spriteUrl is not provided", () => {
+    render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
+
+    // Should use the icon mapper fallback since no spriteUrl
+    expect(screen.getByText("🔥")).toBeInTheDocument();
+  });
 });

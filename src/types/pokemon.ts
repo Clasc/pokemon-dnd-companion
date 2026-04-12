@@ -51,6 +51,8 @@ export interface Pokemon {
   primaryStatus?: StatusEffect; // Mutually exclusive conditions
   confusion?: StatusEffect; // Special case - can coexist with primary
   temporaryEffects?: StatusEffect[]; // Flinching, etc.
+
+  spriteUrl?: string; // Pokemon sprite from PokeAPI
 }
 
 export type PokemonType =

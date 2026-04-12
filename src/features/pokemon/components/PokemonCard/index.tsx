@@ -108,10 +108,19 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
       <div className="glass rounded-2xl p-4">
         <div className="flex items-start gap-4">
           {/* Icon */}
-          <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-xl md:text-2xl border border-white/10">
-            {pokemon.type1
-              ? getPokemonIcon(pokemon.type1, pokemon.type2)
-              : "❓"}
+          <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-xl md:text-2xl border border-white/10 overflow-hidden">
+            {pokemon.spriteUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={pokemon.spriteUrl}
+                alt={pokemon.name}
+                className="w-full h-full object-contain"
+              />
+            ) : pokemon.type1 ? (
+              getPokemonIcon(pokemon.type1, pokemon.type2)
+            ) : (
+              "❓"
+            )}
           </div>
 
           {/* Info */}

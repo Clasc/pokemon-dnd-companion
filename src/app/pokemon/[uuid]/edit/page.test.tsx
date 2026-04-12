@@ -35,6 +35,29 @@ jest.mock("next/navigation", () => ({
   useParams: jest.fn(() => ({ uuid: FIXED_UUID })),
 }));
 
+jest.mock(
+  "@/features/pokemon/components/PokemonAutocomplete",
+  () =>
+    function MockPokemonAutocomplete({
+      onChange,
+    }: {
+      onChange: (value: string) => void;
+      onSelect: (pokemon: { displayName: string }) => void;
+    }) {
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange(e.target.value);
+      };
+      return (
+        <input
+          type="text"
+          placeholder="Search for a Pokemon..."
+          data-testid="species-input"
+          onChange={handleChange}
+        />
+      );
+    },
+);
+
 import * as NextNav from "next/navigation";
 
 // Stable crypto UUID (some internal logic may use it)

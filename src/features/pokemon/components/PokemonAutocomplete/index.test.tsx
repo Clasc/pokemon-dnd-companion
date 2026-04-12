@@ -446,7 +446,7 @@ describe("PokemonAutocomplete", () => {
           json: () => Promise.resolve(mockCharizardDetailResponse),
         } as Response);
 
-      const { rerender } = render(
+      render(
         <PokemonAutocomplete
           value=""
           onSelect={mockOnSelect}
