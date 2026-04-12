@@ -1,5 +1,5 @@
 ---
-name: bugtracker
+name: bug-tracking
 description: Bugtracker skill for tracking and managing bugs in the project. Use this skill whenever the user finds a bug, reports an issue, mentions something isn't working, or asks to track a problem. Always create bug files in the /bugs directory and mark them as fixed when the user confirms the bug is resolved.
 ---
 
