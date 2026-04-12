@@ -66,6 +66,35 @@ export interface MoveAutocompleteResult {
   description: string;
 }
 
+export interface PokeAPIItemListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: PokeAPINamedResource[];
+}
+
+export interface PokeAPIItemFlavorText {
+  text: string;
+  language: PokeAPINamedResource;
+  version: PokeAPINamedResource;
+}
+
+export interface PokeAPIItemDetailResponse {
+  id: number;
+  name: string;
+  sprites: {
+    default: string | null;
+  };
+  flavor_text_entries: PokeAPIItemFlavorText[];
+}
+
+export interface ItemAutocompleteResult {
+  name: string;
+  displayName: string;
+  description: string;
+  spriteUrl: string;
+}
+
 type PokemonType =
   | "normal"
   | "fire"
@@ -119,6 +148,28 @@ export function formatMoveName(name: string): string {
     .split("-")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+export function formatItemName(name: string): string {
+  return name
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+export function getEnglishItemDescription(
+  flavorTextEntries: PokeAPIItemFlavorText[] | undefined,
+): string {
+  if (!flavorTextEntries || flavorTextEntries.length === 0) {
+    return "";
+  }
+  const englishEntry = flavorTextEntries.find(
+    (entry) => entry.language.name === "en",
+  );
+  if (!englishEntry) {
+    return "";
+  }
+  return englishEntry.text.replace(/\n/g, " ");
 }
 
 export function getEnglishFlavorText(

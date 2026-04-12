@@ -12,6 +12,7 @@ export interface InventoryItem {
   name: string;
   quantity: number;
   description?: string;
+  spriteUrl?: string;
 }
 
 export interface Trainer {

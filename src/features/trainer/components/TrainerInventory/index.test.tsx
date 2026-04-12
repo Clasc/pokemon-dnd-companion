@@ -4,6 +4,37 @@ import "@testing-library/jest-dom";
 import TrainerInventory from "./index";
 import { InventoryItem } from "@/types/trainer";
 
+jest.mock(
+  "@/features/trainer/components/ItemAutocomplete",
+  () =>
+    function MockItemAutocomplete({
+      value,
+      onChange,
+    }: {
+      value: string;
+      onChange: (value: string) => void;
+      onSelect: (item: {
+        name: string;
+        displayName: string;
+        description: string;
+        spriteUrl: string;
+      }) => void;
+    }) {
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange(e.target.value);
+      };
+      return (
+        <input
+          type="text"
+          value={value}
+          placeholder="Search for an item..."
+          data-testid="item-autocomplete"
+          onChange={handleChange}
+        />
+      );
+    },
+);
+
 describe("TrainerInventory", () => {
   const mockOnUseItem = jest.fn();
   const mockOnAddItem = jest.fn();
@@ -166,10 +197,10 @@ describe("TrainerInventory", () => {
     fireEvent.click(addItemButton);
 
     expect(screen.getByText("Add New Item")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Item name")).toBeInTheDocument();
+    expect(screen.getByTestId("item-autocomplete")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Quantity")).toBeInTheDocument();
     expect(
-      screen.getByPlaceholderText("Description (optional)"),
+      screen.getByPlaceholderText("Description (auto-filled from PokeAPI)"),
     ).toBeInTheDocument();
   });
 
@@ -212,10 +243,10 @@ describe("TrainerInventory", () => {
     const addItemButton = screen.getByText("Add Item");
     fireEvent.click(addItemButton);
 
-    const nameInput = screen.getByPlaceholderText("Item name");
+    const nameInput = screen.getByTestId("item-autocomplete");
     const quantityInput = screen.getByPlaceholderText("Quantity");
     const descriptionInput = screen.getByPlaceholderText(
-      "Description (optional)",
+      "Description (auto-filled from PokeAPI)",
     );
 
     fireEvent.change(nameInput, { target: { value: "Test Item" } });
@@ -233,6 +264,7 @@ describe("TrainerInventory", () => {
       name: "Test Item",
       quantity: 2,
       description: "Test description",
+      spriteUrl: undefined,
     });
   });
 
@@ -245,7 +277,7 @@ describe("TrainerInventory", () => {
     const addItemButton = screen.getByText("Add Item");
     fireEvent.click(addItemButton);
 
-    const nameInput = screen.getByPlaceholderText("Item name");
+    const nameInput = screen.getByTestId("item-autocomplete");
     const quantityInput = screen.getByPlaceholderText("Quantity");
 
     fireEvent.change(nameInput, { target: { value: "Test Item" } });
@@ -259,6 +291,7 @@ describe("TrainerInventory", () => {
       name: "Test Item",
       quantity: 3,
       description: undefined,
+      spriteUrl: undefined,
     });
   });
 
@@ -271,10 +304,10 @@ describe("TrainerInventory", () => {
     const addItemButton = screen.getByText("Add Item");
     fireEvent.click(addItemButton);
 
-    const nameInput = screen.getByPlaceholderText("Item name");
+    const nameInput = screen.getByTestId("item-autocomplete");
     const quantityInput = screen.getByPlaceholderText("Quantity");
     const descriptionInput = screen.getByPlaceholderText(
-      "Description (optional)",
+      "Description (auto-filled from PokeAPI)",
     );
 
     fireEvent.change(nameInput, { target: { value: "Test Item" } });
@@ -293,10 +326,10 @@ describe("TrainerInventory", () => {
     // Reopen modal to check if fields are reset
     fireEvent.click(addItemButton);
 
-    const newNameInput = screen.getByPlaceholderText("Item name");
+    const newNameInput = screen.getByTestId("item-autocomplete");
     const newQuantityInput = screen.getByPlaceholderText("Quantity");
     const newDescriptionInput = screen.getByPlaceholderText(
-      "Description (optional)",
+      "Description (auto-filled from PokeAPI)",
     );
 
     expect(newNameInput).toHaveValue("");
@@ -327,7 +360,7 @@ describe("TrainerInventory", () => {
     const addItemButton = screen.getByText("Add Item");
     fireEvent.click(addItemButton);
 
-    const nameInput = screen.getByPlaceholderText("Item name");
+    const nameInput = screen.getByTestId("item-autocomplete");
     fireEvent.change(nameInput, { target: { value: "Test Item" } });
 
     const addButtons = screen.getAllByText("Add Item");
@@ -374,7 +407,7 @@ describe("TrainerInventory", () => {
     const addItemButton = screen.getByText("Add Item");
     fireEvent.click(addItemButton);
 
-    const nameInput = screen.getByPlaceholderText("Item name");
+    const nameInput = screen.getByTestId("item-autocomplete");
     fireEvent.change(nameInput, { target: { value: "  Test Item  " } });
 
     const addButtons = screen.getAllByText("Add Item");
@@ -385,6 +418,7 @@ describe("TrainerInventory", () => {
       name: "Test Item",
       quantity: 1,
       description: undefined,
+      spriteUrl: undefined,
     });
   });
 
@@ -397,7 +431,7 @@ describe("TrainerInventory", () => {
     const addItemButton = screen.getByText("Add Item");
     fireEvent.click(addItemButton);
 
-    const nameInput = screen.getByPlaceholderText("Item name");
+    const nameInput = screen.getByTestId("item-autocomplete");
     fireEvent.change(nameInput, { target: { value: "   " } });
 
     const addButtons = screen.getAllByText("Add Item");

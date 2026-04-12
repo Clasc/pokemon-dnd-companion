@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { InventoryItem } from "@/types/trainer";
+import ItemAutocomplete from "@/features/trainer/components/ItemAutocomplete";
 
 interface TrainerInventoryProps {
   inventory: InventoryItem[];
@@ -27,7 +28,19 @@ export default function TrainerInventory({
   const [newItemName, setNewItemName] = useState("");
   const [newItemQuantity, setNewItemQuantity] = useState(1);
   const [newItemDescription, setNewItemDescription] = useState("");
+  const [newItemSpriteUrl, setNewItemSpriteUrl] = useState("");
   const [pokedollarAmount, setPokedollarAmount] = useState("");
+
+  const handleItemSelect = (item: {
+    name: string;
+    displayName: string;
+    description: string;
+    spriteUrl: string;
+  }) => {
+    setNewItemName(item.displayName);
+    setNewItemDescription(item.description);
+    setNewItemSpriteUrl(item.spriteUrl);
+  };
 
   const handleAddItem = () => {
     if (newItemName.trim()) {
@@ -35,6 +48,7 @@ export default function TrainerInventory({
         name: newItemName.trim(),
         quantity: Math.max(1, newItemQuantity),
         description: newItemDescription.trim() || undefined,
+        spriteUrl: newItemSpriteUrl || undefined,
       };
 
       onAddItem(newItem);
@@ -42,6 +56,7 @@ export default function TrainerInventory({
       setNewItemName("");
       setNewItemQuantity(1);
       setNewItemDescription("");
+      setNewItemSpriteUrl("");
       setShowAddItem(false);
     }
   };
@@ -50,6 +65,7 @@ export default function TrainerInventory({
     setNewItemName("");
     setNewItemQuantity(1);
     setNewItemDescription("");
+    setNewItemSpriteUrl("");
     setShowAddItem(false);
   };
 
@@ -141,23 +157,37 @@ export default function TrainerInventory({
                   key={item.id}
                   className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
                 >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-white font-medium">
-                        {item.name}
-                      </span>
-                      <span className="text-gray-400 text-sm">
-                        x{item.quantity}
-                      </span>
-                    </div>
-                    {item.description && (
-                      <p className="text-gray-400 text-xs mt-1">
-                        {item.description}
-                      </p>
+                  <div className="flex items-center gap-3 flex-1">
+                    {item.spriteUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={item.spriteUrl}
+                        alt={item.name}
+                        className="w-10 h-10 object-contain"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 flex items-center justify-center text-xl">
+                        📦
+                      </div>
                     )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-white font-medium truncate">
+                          {item.name}
+                        </span>
+                        <span className="text-gray-400 text-sm">
+                          x{item.quantity}
+                        </span>
+                      </div>
+                      {item.description && (
+                        <p className="text-gray-400 text-xs mt-1 truncate">
+                          {item.description}
+                        </p>
+                      )}
+                    </div>
                   </div>
                   {isEditable && (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 ml-2">
                       <button
                         onClick={() => onIncreaseItem(item.id)}
                         className="w-8 h-8 rounded-md bg-green-500/80 hover:bg-green-500 text-white font-bold transition-colors flex items-center justify-center"
@@ -228,13 +258,17 @@ export default function TrainerInventory({
             </div>
 
             <div className="space-y-4">
-              <input
-                type="text"
-                value={newItemName}
-                onChange={(e) => setNewItemName(e.target.value)}
-                placeholder="Item name"
-                className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-purple-500 focus:outline-none"
-              />
+              <div>
+                <label className="block text-sm text-gray-300 mb-1">
+                  Item Name
+                </label>
+                <ItemAutocomplete
+                  value={newItemName}
+                  onSelect={handleItemSelect}
+                  onChange={setNewItemName}
+                  placeholder="Search for an item..."
+                />
+              </div>
 
               <input
                 type="number"
@@ -247,13 +281,30 @@ export default function TrainerInventory({
                 className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-purple-500 focus:outline-none"
               />
 
-              <textarea
-                value={newItemDescription}
-                onChange={(e) => setNewItemDescription(e.target.value)}
-                placeholder="Description (optional)"
-                rows={3}
-                className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-purple-500 focus:outline-none resize-none"
-              />
+              <div>
+                <label className="block text-sm text-gray-300 mb-1">
+                  Description
+                </label>
+                <textarea
+                  value={newItemDescription}
+                  onChange={(e) => setNewItemDescription(e.target.value)}
+                  placeholder="Description (auto-filled from PokeAPI)"
+                  rows={3}
+                  className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-purple-500 focus:outline-none resize-none"
+                />
+              </div>
+
+              {newItemSpriteUrl && (
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <span>Preview:</span>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={newItemSpriteUrl}
+                    alt="Item preview"
+                    className="w-8 h-8 object-contain"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="flex gap-3 mt-6">
