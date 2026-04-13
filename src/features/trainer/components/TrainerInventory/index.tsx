@@ -156,7 +156,7 @@ export default function TrainerInventory({
               inventory.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
+                  className="flex items-center justify-between p-space-3 hover:bg-white/5 transition-colors border-b border-white/10 last:border-b-0"
                 >
                   <div className="flex items-center gap-3 flex-1">
                     {item.spriteUrl ? (

@@ -22,7 +22,7 @@ export default function PokemonCompactCard({
   return (
     <div
       onClick={onClick}
-      className="card rounded-lg p-space-2 cursor-pointer hover:bg-[#2d2d2d] transition-all duration-200 active:scale-[0.98] relative z-0"
+      className="p-space-2 cursor-pointer hover:bg-white/5 transition-all duration-200 relative z-0 border-b border-white/10 last:border-b-0"
     >
       <div className="absolute top-1 right-1 z-10">
         <QuickStatusDropdown pokemonUuid={uuid} />
