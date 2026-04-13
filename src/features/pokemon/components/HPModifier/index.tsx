@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 
 import { useAppStore } from "@/store";
 
-import ModalShell from "@/components/shared/ui/ModalShell";
+import BaseModal from "@/components/shared/ui/BaseModal";
 
 interface HPModifierProps {
   pokemonUuid: string;
@@ -23,12 +23,11 @@ export default function HPModifier({ pokemonUuid, onClose }: HPModifierProps) {
 
   const pokemon = useAppStore.use.pokemonTeam()[pokemonUuid];
 
-  // Autofocus input when modal opens
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  }, [pokemon]); // re-run if pokemon changes
+  }, [pokemon]);
 
   if (!pokemon) return null;
 
@@ -55,7 +54,7 @@ export default function HPModifier({ pokemonUuid, onClose }: HPModifierProps) {
     : pokemon.currentHP;
 
   return (
-    <ModalShell
+    <BaseModal
       isOpen={true}
       onClose={onClose}
       title="Modify HP"
@@ -94,7 +93,6 @@ export default function HPModifier({ pokemonUuid, onClose }: HPModifierProps) {
         onSubmit={handleSubmit}
         className="space-y-5 mt-2"
       >
-        {/* Heal / Damage Toggle */}
         <div className="flex bg-white/10 rounded-lg p-1">
           <button
             type="button"
@@ -122,7 +120,6 @@ export default function HPModifier({ pokemonUuid, onClose }: HPModifierProps) {
           </button>
         </div>
 
-        {/* HP Input */}
         <div>
           <label
             htmlFor="hp-amount"
@@ -153,6 +150,6 @@ export default function HPModifier({ pokemonUuid, onClose }: HPModifierProps) {
           )}
         </div>
       </form>
-    </ModalShell>
+    </BaseModal>
   );
 }

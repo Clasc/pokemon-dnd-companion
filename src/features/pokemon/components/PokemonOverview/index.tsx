@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 
 import { PokemonTeam, Pokemon } from "@/types/pokemon";
 
 import PokemonCompactCard from "./PokemonCompactCard";
 import PokemonExpandedModal from "../PokemonExpandedModal";
+import AddPokemonModal from "../AddPokemonModal";
 
 interface PokemonOverviewProps {
   pokemon: PokemonTeam;
@@ -22,6 +22,7 @@ export default function PokemonOverview({
   unstyled = false,
 }: PokemonOverviewProps) {
   const [expandedUuid, setExpandedUuid] = useState<string | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const pokemonLength = Object.keys(pokemon).length;
 
@@ -119,8 +120,9 @@ export default function PokemonOverview({
 
         {pokemonLength < 6 && (
           <div>
-            <Link
-              href="/pokemon/new"
+            <button
+              type="button"
+              onClick={() => setShowAddModal(true)}
               className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white border-2 border-dashed border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
             >
               <svg
@@ -138,7 +140,7 @@ export default function PokemonOverview({
                 />
               </svg>
               Add Pokémon
-            </Link>
+            </button>
           </div>
         )}
 
@@ -188,6 +190,11 @@ export default function PokemonOverview({
           onClose={() => setExpandedUuid(null)}
         />
       )}
+
+      <AddPokemonModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+      />
     </>
   );
 }

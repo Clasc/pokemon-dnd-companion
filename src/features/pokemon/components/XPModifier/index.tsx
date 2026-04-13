@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 
 import { useAppStore } from "@/store";
 
-import ModalShell from "@/components/shared/ui/ModalShell";
+import BaseModal from "@/components/shared/ui/BaseModal";
 
 interface XPModifierProps {
   pokemonUuid: string;
@@ -21,7 +21,6 @@ export default function XPModifier({ pokemonUuid, onClose }: XPModifierProps) {
 
   const pokemon = useAppStore.use.pokemonTeam()[pokemonUuid];
 
-  // Focus input when pokemon/context ready or mode changes
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -46,7 +45,7 @@ export default function XPModifier({ pokemonUuid, onClose }: XPModifierProps) {
   };
 
   return (
-    <ModalShell
+    <BaseModal
       isOpen={true}
       onClose={onClose}
       title="Gain Experience"
@@ -108,6 +107,6 @@ export default function XPModifier({ pokemonUuid, onClose }: XPModifierProps) {
           )}
         </div>
       </form>
-    </ModalShell>
+    </BaseModal>
   );
 }

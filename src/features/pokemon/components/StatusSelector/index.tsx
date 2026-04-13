@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { StatusCondition, StatusEffect, STATUS_COLORS } from "@/types/pokemon";
 import { useAppStore } from "@/store";
+import BaseModal from "@/components/shared/ui/BaseModal";
 
 interface StatusSelectorProps {
   pokemonUuid: string;
@@ -34,9 +35,9 @@ const getStatusDisplayName = (condition: StatusCondition): string => {
 const getDefaultDuration = (condition: StatusCondition): number | undefined => {
   switch (condition) {
     case "asleep":
-      return 2; // 1-3 turns, default to 2
+      return 2;
     case "confused":
-      return 3; // 1-4 turns, default to 3
+      return 3;
     default:
       return undefined;
   }
@@ -64,11 +65,9 @@ export default function StatusSelector({
   >(undefined);
   const [isFlinching, setIsFlinching] = useState(false);
 
-  // Initialize state from current pokemon status
   useEffect(() => {
     if (!pokemon) return;
 
-    // Set primary status
     if (pokemon.primaryStatus) {
       setSelectedPrimaryStatus(pokemon.primaryStatus.condition);
       setPrimaryDuration(pokemon.primaryStatus.duration);
@@ -77,7 +76,6 @@ export default function StatusSelector({
       setPrimaryDuration(undefined);
     }
 
-    // Set confusion status
     if (pokemon.confusion) {
       setIsConfused(true);
       setConfusionDuration(pokemon.confusion.duration);
@@ -86,7 +84,6 @@ export default function StatusSelector({
       setConfusionDuration(undefined);
     }
 
-    // Set flinching status
     const hasFlinching = pokemon.temporaryEffects?.some(
       (effect) => effect.condition === "flinching",
     );
@@ -112,7 +109,6 @@ export default function StatusSelector({
   };
 
   const handleSave = () => {
-    // Save primary status
     if (selectedPrimaryStatus === "none") {
       setPrimaryStatus(pokemonUuid, null);
     } else {
@@ -124,7 +120,6 @@ export default function StatusSelector({
       setPrimaryStatus(pokemonUuid, primaryStatusEffect);
     }
 
-    // Save confusion
     if (isConfused) {
       const confusionEffect: StatusEffect = {
         condition: "confused",
@@ -136,7 +131,6 @@ export default function StatusSelector({
       setConfusion(pokemonUuid, null);
     }
 
-    // Save flinching
     const currentlyHasFlinching = pokemon.temporaryEffects?.some(
       (effect) => effect.condition === "flinching",
     );
@@ -160,7 +154,6 @@ export default function StatusSelector({
   };
 
   const handleCancel = () => {
-    // Reset to current pokemon state
     if (pokemon?.primaryStatus) {
       setSelectedPrimaryStatus(pokemon.primaryStatus.condition);
       setPrimaryDuration(pokemon.primaryStatus.duration);
@@ -177,7 +170,6 @@ export default function StatusSelector({
       setConfusionDuration(undefined);
     }
 
-    // Reset flinching state
     const hasFlinching = pokemon?.temporaryEffects?.some(
       (effect) => effect.condition === "flinching",
     );
@@ -189,32 +181,18 @@ export default function StatusSelector({
   if (!isOpen || !pokemon) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="glass rounded-2xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-white">Status Effects</h3>
-          <button
-            onClick={handleCancel}
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="sm"
+      titleId="status-selector-title"
+    >
+      <div className="p-2">
+        <h2 id="status-selector-title" className="text-xl font-bold mb-4 text-white">
+          Status Effects
+        </h2>
 
         <div className="space-y-6">
-          {/* Primary Status Effects */}
           <div>
             <h4 className="text-lg font-semibold text-white mb-3">
               Primary Status
@@ -270,7 +248,6 @@ export default function StatusSelector({
             </div>
           </div>
 
-          {/* Secondary Status Effects */}
           <div className="border-t border-white/10 pt-4">
             <h4 className="text-lg font-semibold text-white mb-3">
               Secondary Effects
@@ -311,8 +288,7 @@ export default function StatusSelector({
               )}
             </label>
 
-            {/* Flinching */}
-            <label className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+            <label className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer mt-2">
               <input
                 type="checkbox"
                 checked={isFlinching}
@@ -333,7 +309,6 @@ export default function StatusSelector({
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex gap-3 mt-6">
           <button
             onClick={handleCancel}
@@ -349,6 +324,6 @@ export default function StatusSelector({
           </button>
         </div>
       </div>
-    </div>
+    </BaseModal>
   );
 }

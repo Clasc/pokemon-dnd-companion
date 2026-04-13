@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { InventoryItem } from "@/types/trainer";
+import BaseModal from "@/components/shared/ui/BaseModal";
 import ItemAutocomplete from "@/features/trainer/components/ItemAutocomplete";
 
 interface TrainerInventoryProps {
@@ -232,99 +233,84 @@ export default function TrainerInventory({
       </div>
 
       {/* Add Item Modal */}
-      {showAddItem && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex justify-center items-center z-50 p-4">
-          <div className="glass rounded-2xl p-6 w-full max-w-md border border-white/20">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-white">Add New Item</h2>
-              <button
-                onClick={handleCancelAddItem}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
+      <BaseModal
+        isOpen={showAddItem}
+        onClose={handleCancelAddItem}
+        size="sm"
+        titleId="add-item-title"
+      >
+        <div className="p-2">
+          <h2 id="add-item-title" className="text-xl font-bold mb-4 text-white">
+            Add New Item
+          </h2>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-gray-300 mb-1">
-                  Item Name
-                </label>
-                <ItemAutocomplete
-                  value={newItemName}
-                  onSelect={handleItemSelect}
-                  onChange={setNewItemName}
-                  placeholder="Search for an item..."
-                />
-              </div>
-
-              <input
-                type="number"
-                value={newItemQuantity}
-                onChange={(e) =>
-                  setNewItemQuantity(Math.max(1, parseInt(e.target.value) || 1))
-                }
-                placeholder="Quantity"
-                min="1"
-                className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm text-gray-300 mb-1">
+                Item Name
+              </label>
+              <ItemAutocomplete
+                value={newItemName}
+                onSelect={handleItemSelect}
+                onChange={setNewItemName}
+                placeholder="Search for an item..."
               />
+            </div>
 
-              <div>
-                <label className="block text-sm text-gray-300 mb-1">
-                  Description
-                </label>
-                <textarea
-                  value={newItemDescription}
-                  onChange={(e) => setNewItemDescription(e.target.value)}
-                  placeholder="Description (auto-filled from PokeAPI)"
-                  rows={3}
-                  className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-purple-500 focus:outline-none resize-none"
+            <input
+              type="number"
+              value={newItemQuantity}
+              onChange={(e) =>
+                setNewItemQuantity(Math.max(1, parseInt(e.target.value) || 1))
+              }
+              placeholder="Quantity"
+              min="1"
+              className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+            />
+
+            <div>
+              <label className="block text-sm text-gray-300 mb-1">
+                Description
+              </label>
+              <textarea
+                value={newItemDescription}
+                onChange={(e) => setNewItemDescription(e.target.value)}
+                placeholder="Description (auto-filled from PokeAPI)"
+                rows={3}
+                className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-purple-500 focus:outline-none resize-none"
+              />
+            </div>
+
+            {newItemSpriteUrl && (
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <span>Preview:</span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={newItemSpriteUrl}
+                  alt="Item preview"
+                  className="w-8 h-8 object-contain"
                 />
               </div>
+            )}
+          </div>
 
-              {newItemSpriteUrl && (
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <span>Preview:</span>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={newItemSpriteUrl}
-                    alt="Item preview"
-                    className="w-8 h-8 object-contain"
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={handleCancelAddItem}
-                className="flex-1 px-4 py-2 bg-gray-500/80 hover:bg-gray-500 text-white rounded-lg transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddItem}
-                disabled={!newItemName.trim()}
-                className="flex-1 px-4 py-2 bg-green-500/80 hover:bg-green-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
-              >
-                Add Item
-              </button>
-            </div>
+          <div className="flex gap-3 mt-6">
+            <button
+              onClick={handleCancelAddItem}
+              className="flex-1 px-4 py-2 bg-gray-500/80 hover:bg-gray-500 text-white rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAddItem}
+              disabled={!newItemName.trim()}
+              className="flex-1 px-4 py-2 bg-green-500/80 hover:bg-green-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+            >
+              Add Item
+            </button>
           </div>
         </div>
-      )}
+      </BaseModal>
     </>
   );
 }

@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppStore } from "@/store";
 import { Pokemon, Attributes, TYPE_COLORS } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
+import BaseModal from "@/components/shared/ui/BaseModal";
 import DeleteConfirmationModal from "@/components/shared/DeleteConfirmationModal";
 import AddAttackModal from "../AddAttackModal";
 import AttackCard from "../AttackCard";
-import StatusIndicator from "../StatusIndicator";
 import StatusSelector from "../StatusSelector";
 import QuickStatusDropdown from "../QuickStatusDropdown";
 import ProgressBar from "@/components/shared/ui/ProgressBar";
@@ -86,60 +86,16 @@ export default function PokemonExpandedModal({
   const formatModifier = (modifier: number) =>
     modifier >= 0 ? `+${modifier}` : `${modifier}`;
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    },
-    [onClose],
-  );
-
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "hidden";
-    }
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
-    };
-  }, [isOpen, handleKeyDown]);
-
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      role="dialog"
-      aria-modal="true"
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="fullscreen"
+      className="md:max-w-2xl md:h-auto md:max-h-[90vh] md:rounded-2xl"
     >
-      <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-        onClick={onClose}
-      />
-
-      <div className="relative w-full h-full md:h-auto md:m-4 md:max-w-2xl md:max-h-[90vh] md:rounded-2xl glass overflow-y-auto">
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-          aria-label="Close"
-        >
-          <svg
-            className="w-5 h-5 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-
+      <div className="p-4 md:p-6">
         <div className="absolute top-3 right-10 z-10">
           <QuickStatusDropdown pokemonUuid={uuid} />
         </div>
@@ -404,6 +360,6 @@ export default function PokemonExpandedModal({
         isOpen={showStatusSelector}
         onClose={() => setShowStatusSelector(false)}
       />
-    </div>
+    </BaseModal>
   );
 }

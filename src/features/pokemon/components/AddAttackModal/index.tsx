@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAppStore } from "@/store";
 import { Attack } from "@/types/pokemon";
+import BaseModal from "@/components/shared/ui/BaseModal";
 import MoveAutocomplete from "@/features/pokemon/components/MoveAutocomplete";
 
 interface AddAttackModalProps {
@@ -70,20 +71,17 @@ export default function AddAttackModal({
     onClose();
   };
 
-  if (!isOpen) {
-    return null;
-  }
-
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center p-4"
-      onClick={onClose}
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="md"
+      titleId="add-attack-title"
     >
-      <div
-        className="glass rounded-lg p-6 w-full max-w-md text-white"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h2 className="text-xl font-bold mb-4">Add New Attack</h2>
+      <div className="p-2">
+        <h2 id="add-attack-title" className="text-xl font-bold mb-4 text-white">
+          Add New Attack
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
@@ -230,6 +228,6 @@ export default function AddAttackModal({
           </div>
         </form>
       </div>
-    </div>
+    </BaseModal>
   );
 }
