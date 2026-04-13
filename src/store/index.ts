@@ -166,73 +166,42 @@ export const useAppStore = createSelectors(
               },
             };
           }),
-        gainExperience: (pokemonUuid, xpChange) =>
+        gainExperience: (pokemonUuid, xpGained) =>
           set((state) => {
             const pokemon = state.pokemonTeam[pokemonUuid];
             if (!pokemon) return state;
 
-            // Apply XP change (can be negative) while preventing level downs
-            const proposedExperience = pokemon.experience + xpChange;
-            let newLevel = pokemon.level;
-            let newExperience = proposedExperience;
+            // XP can only be gained (positive values only)
+            if (xpGained <= 0) return state;
 
-            if (xpChange >= 0) {
-              // Positive XP flow (existing behavior)
-              if (xpChange >= pokemon.experienceToNext) {
-                newLevel += 1;
-                const remainingXP = xpChange - pokemon.experienceToNext;
-                newExperience = pokemon.experience + xpChange;
-                let newExperienceToNext = 100 * newLevel - remainingXP;
-                if (newExperienceToNext <= 0) {
-                  newExperienceToNext = 100;
-                }
-                return {
-                  pokemonTeam: {
-                    ...state.pokemonTeam,
-                    [pokemonUuid]: {
-                      ...pokemon,
-                      experience: newExperience,
-                      experienceToNext: newExperienceToNext,
-                      level: newLevel,
-                    },
-                  },
-                };
-              } else {
-                const newExperienceToNext = pokemon.experienceToNext - xpChange;
-                newExperience = pokemon.experience + xpChange;
-                return {
-                  pokemonTeam: {
-                    ...state.pokemonTeam,
-                    [pokemonUuid]: {
-                      ...pokemon,
-                      experience: newExperience,
-                      experienceToNext: newExperienceToNext,
-                      level: newLevel,
-                    },
-                  },
-                };
+            const newExperience = pokemon.experience + xpGained;
+            let newLevel = pokemon.level;
+            let newExperienceToNext = pokemon.experienceToNext;
+
+            if (xpGained >= pokemon.experienceToNext) {
+              // Level up
+              newLevel += 1;
+              const remainingXP = xpGained - pokemon.experienceToNext;
+              newExperienceToNext = 100 * newLevel - remainingXP;
+              if (newExperienceToNext <= 0) {
+                newExperienceToNext = 100;
               }
             } else {
-              // Negative XP correction (no level down)
-              newExperience = Math.max(0, proposedExperience);
-              // Recalculate remaining XP to next level based on base requirement for current level (100 * level).
-              const levelRequirement = 100 * newLevel;
-              const newExperienceToNext = Math.max(
-                1,
-                levelRequirement - newExperience,
-              );
-              return {
-                pokemonTeam: {
-                  ...state.pokemonTeam,
-                  [pokemonUuid]: {
-                    ...pokemon,
-                    experience: newExperience,
-                    experienceToNext: newExperienceToNext,
-                    level: newLevel,
-                  },
-                },
-              };
+              // No level up, reduce XP needed
+              newExperienceToNext = pokemon.experienceToNext - xpGained;
             }
+
+            return {
+              pokemonTeam: {
+                ...state.pokemonTeam,
+                [pokemonUuid]: {
+                  ...pokemon,
+                  experience: newExperience,
+                  experienceToNext: newExperienceToNext,
+                  level: newLevel,
+                },
+              },
+            };
           }),
         setPrimaryStatus: (pokemonUuid, status) =>
           set((state) => {

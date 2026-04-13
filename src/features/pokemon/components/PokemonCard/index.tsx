@@ -12,6 +12,7 @@ import ActionButtons from "@/components/shared/ActionButtons";
 import StatusIndicator from "../StatusIndicator";
 import StatusSelector from "../StatusSelector";
 import QuickStatusDropdown from "../QuickStatusDropdown";
+import XPModifier from "../XPModifier";
 import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
 
 interface PokemonCardProps {
@@ -26,6 +27,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
   const [isAttacksVisible, setIsAttacksVisible] = useState(false);
   const [showAddAttackModal, setShowAddAttackModal] = useState(false);
   const [showStatusSelector, setShowStatusSelector] = useState(false);
+  const [showXPModifier, setShowXPModifier] = useState(false);
   const [selectedAttackIndex, setSelectedAttackIndex] = useState<number | null>(
     null,
   );
@@ -60,11 +62,6 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
     if (diff !== 0) {
       modifyPokemonHP(uuid, diff);
     }
-  };
-
-  // Quick XP gain
-  const gainQuickXP = (amount: number) => {
-    gainExperience(uuid, amount);
   };
 
   // XP drag change
@@ -245,48 +242,14 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             {/* XP */}
             <div className="mb-2">
               <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowXPModifier(true)}
+                  className="flex items-center gap-2 hover:bg-white/10 rounded px-1 -mx-1 transition-colors"
+                  title="Gain XP"
+                >
                   <span className="text-xs text-gray-300 font-medium">XP</span>
-                  <div className="flex gap-1">
-                    <button
-                      onClick={() => gainQuickXP(-10)}
-                      className="w-6 h-4 text-xs bg-red-500/20 hover:bg-red-500/40 rounded text-white flex items-center justify-center leading-none"
-                      title="Decrease 10 XP"
-                      disabled={pokemon.experience <= 0}
-                    >
-                      -10
-                    </button>
-                    <button
-                      onClick={() => gainQuickXP(-50)}
-                      className="w-7 h-4 text-xs bg-red-500/20 hover:bg-red-500/40 rounded text-white flex items-center justify-center leading-none"
-                      title="Decrease 50 XP"
-                      disabled={pokemon.experience <= 0}
-                    >
-                      -50
-                    </button>
-                    <button
-                      onClick={() => gainQuickXP(10)}
-                      className="w-6 h-4 text-xs bg-blue-500/20 hover:bg-blue-500/40 rounded text-white flex items-center justify-center leading-none"
-                      title="Gain 10 XP"
-                    >
-                      +10
-                    </button>
-                    <button
-                      onClick={() => gainQuickXP(50)}
-                      className="w-6 h-4 text-xs bg-blue-500/20 hover:bg-blue-500/40 rounded text-white flex items-center justify-center leading-none"
-                      title="Gain 50 XP"
-                    >
-                      +50
-                    </button>
-                    <button
-                      onClick={() => gainQuickXP(100)}
-                      className="w-7 h-4 text-xs bg-blue-500/20 hover:bg-blue-500/40 rounded text-white flex items-center justify-center leading-none"
-                      title="Gain 100 XP"
-                    >
-                      +100
-                    </button>
-                  </div>
-                </div>
+                  <span className="text-xs text-purple-300">+</span>
+                </button>
                 <span className="text-xs text-gray-300 font-medium">
                   {pokemon.experience}/
                   {pokemon.experience + pokemon.experienceToNext}
@@ -424,6 +387,12 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
         pokemonUuid={uuid}
         isOpen={showStatusSelector}
         onClose={() => setShowStatusSelector(false)}
+      />
+
+      {/* XP Modifier Modal */}
+      <XPModifier
+        pokemonUuid={uuid}
+        onClose={() => setShowXPModifier(false)}
       />
     </>
   );
