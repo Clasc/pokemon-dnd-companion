@@ -193,11 +193,6 @@ export default function TrainerOverview({
       >
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-white p-2">Trainer Overview</h2>
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-            <span className="text-white text-sm font-bold">
-              {trainer.level || 1}
-            </span>
-          </div>
         </div>
         <EditButton onClick={() => setIsEditing(true)} />
         <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
@@ -205,7 +200,7 @@ export default function TrainerOverview({
             {trainer.name || "Unnamed Trainer"}
           </h3>
           <p className="text-gray-300 text-sm">
-            Level {trainer.level} {trainer.class || "Adventurer"}
+            Lv. {trainer.level} {trainer.class || "Adventurer"}
           </p>
         </div>
 
@@ -286,11 +281,6 @@ export default function TrainerOverview({
 
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-white">Edit Trainer</h2>
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-                <span className="text-white text-lg font-bold">
-                  {editedTrainer.level || 1}
-                </span>
-              </div>
             </div>
 
             {/* Trainer Name & Class - Editable */}

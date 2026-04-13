@@ -175,7 +175,7 @@ export default function Navigation() {
                     className={`absolute left-0 top-0 h-full w-1 rounded-tr rounded-br transition-opacity
                       ${
                         active
-                          ? "bg-blue-400 opacity-100"
+                          ? "bg-[#EE5D20] opacity-100"
                           : "bg-transparent opacity-0 group-hover:opacity-40"
                       }`}
                     aria-hidden="true"
@@ -195,7 +195,7 @@ export default function Navigation() {
                       className={`ml-auto inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold
                         ${
                           active
-                            ? "bg-blue-500/30 text-blue-100"
+                            ? "bg-[#EE5D20]/30 text-white"
                             : "bg-white/10 text-gray-300 group-hover:bg-white/20"
                         }`}
                     >
@@ -247,7 +247,7 @@ export default function Navigation() {
                       className={`text-[10px] leading-none font-semibold mt-0.5 px-1.5 py-0.5 rounded
                         ${
                           active
-                            ? "bg-blue-500/30 text-blue-100"
+                            ? "bg-[#EE5D20]/30 text-white"
                             : "bg-white/10 text-gray-300"
                         }`}
                     >

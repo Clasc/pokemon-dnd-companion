@@ -121,7 +121,7 @@ export default function QuickStatusDropdown({
           e.stopPropagation();
           setIsOpen(!isOpen);
         }}
-        className="flex items-center gap-1 px-2 py-1 text-xs bg-white/10 hover:bg-white/20 rounded-md border border-white/20 transition-colors"
+        className="flex items-center gap-1 px-2 py-1 text-xs bg-[#4a4a4a] hover:bg-[#5a5a5a] rounded-md border border-white/10 transition-colors"
       >
         <span
           className="w-2 h-2 rounded-full"
@@ -162,7 +162,7 @@ export default function QuickStatusDropdown({
         createPortal(
           <div 
             id="quick-status-portal"
-            className="fixed w-48 bg-gray-800 border border-white/20 rounded-lg shadow-lg z-[9999] pointer-events-auto"
+            className="fixed w-48 bg-[#2d2d2d] border border-white/10 rounded-lg shadow-lg z-[9999] pointer-events-auto"
             style={{ 
               top: buttonRef.current?.getBoundingClientRect().bottom,
               right: window.innerWidth - (buttonRef.current?.getBoundingClientRect().right || 0)
