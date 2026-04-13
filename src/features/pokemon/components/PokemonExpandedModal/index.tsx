@@ -95,13 +95,13 @@ export default function PokemonExpandedModal({
       size="fullscreen"
       className="md:max-w-2xl md:h-auto md:max-h-[90vh] md:rounded-2xl"
     >
-      <div className="p-4 md:p-6">
+      <div className="p-space-4 md:p-space-6">
         <div className="absolute top-3 right-10 z-10">
           <QuickStatusDropdown pokemonUuid={uuid} />
         </div>
 
-        <div className="p-4 md:p-6">
-          <div className="flex items-start gap-4 mb-6">
+        <div className="p-space-4 md:p-space-6">
+          <div className="flex items-start gap-space-4 mb-space-6">
             <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-4xl md:text-5xl border border-white/10 overflow-hidden flex-shrink-0">
               {pokemon.spriteUrl ? (
                 <img
@@ -117,7 +117,7 @@ export default function PokemonExpandedModal({
             </div>
 
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-space-2 mb-space-2">
                 <h2 className="font-bold text-white text-xl md:text-2xl truncate">
                   {pokemon.name}
                 </h2>
@@ -126,7 +126,7 @@ export default function PokemonExpandedModal({
                 </span>
               </div>
 
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-space-2 mb-space-3">
                 {pokemon.type1 && (
                   <span
                     className="text-xs px-2 py-1 rounded-md text-white font-medium"
@@ -145,11 +145,11 @@ export default function PokemonExpandedModal({
                 )}
               </div>
 
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-tight">
                 {attributeNames.map((attr) => (
                   <div
                     key={attr}
-                    className="bg-white/10 rounded-full px-2 py-1 text-xs font-medium text-white flex items-center gap-1"
+                    className="bg-white/10 rounded-full px-space-2 py-space-1 text-xs font-medium text-white flex items-center gap-tight"
                   >
                     <span className="text-gray-300 font-semibold">
                       {getAttributeShortName(attr)}
@@ -165,11 +165,11 @@ export default function PokemonExpandedModal({
             </div>
           </div>
 
-          <div className="space-y-4 mb-6">
+          <div className="space-y-space-4 mb-space-6">
             <div>
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-space-2">
                 <span className="text-sm text-gray-300 font-medium">HP</span>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-space-2">
                   <button
                     onClick={() => modifyHP(-1)}
                     className="w-7 h-7 text-sm bg-red-500/20 hover:bg-red-500/40 rounded text-white flex items-center justify-center"
@@ -204,9 +204,9 @@ export default function PokemonExpandedModal({
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-space-2">
                 <span className="text-sm text-gray-300 font-medium">XP</span>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-space-2">
                   <button
                     onClick={() => gainQuickXP(-10)}
                     className="w-8 h-7 text-sm bg-red-500/20 hover:bg-red-500/40 rounded text-white flex items-center justify-center"

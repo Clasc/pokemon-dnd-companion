@@ -189,14 +189,14 @@ export default function TrainerOverview({
     <>
       {/* Read-only Summary View */}
       <div
-        className={`${unstyled ? "" : "card rounded-lg p-4"} cursor-pointer hover:bg-[#4a4a4a] transition-all duration-300 space-y-4`}
+        className={`${unstyled ? "" : "card rounded-lg p-space-4"} cursor-pointer hover:bg-[#4a4a4a] transition-all duration-300 space-y-space-4`}
       >
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-white p-2">Trainer Overview</h2>
         </div>
         <EditButton onClick={() => setIsEditing(true)} />
-        <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
-          <h3 className="text-lg font-semibold text-white mb-2">
+        <div className="text-center p-space-4 bg-white/5 rounded-lg border border-white/10">
+          <h3 className="text-lg font-semibold text-white mb-space-2">
             {trainer.name || "Unnamed Trainer"}
           </h3>
           <p className="text-gray-300 text-sm">
@@ -205,12 +205,12 @@ export default function TrainerOverview({
         </div>
 
         {/* Attributes Chips */}
-        <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-          <div className="flex flex-wrap justify-center gap-2">
+        <div className="p-space-4 bg-white/5 rounded-lg border border-white/10">
+          <div className="flex flex-wrap justify-center gap-sm">
             {attributeNames.map((attr) => (
               <div
                 key={attr}
-                className="bg-white/10 rounded-full px-3 py-1 text-sm font-medium text-white flex items-center gap-2"
+                className="bg-white/10 rounded-full px-space-3 py-space-1 text-sm font-medium text-white flex items-center gap-sm"
               >
                 <span className="text-gray-300 font-semibold">
                   {getAttributeShortName(attr)}
@@ -225,8 +225,8 @@ export default function TrainerOverview({
           </div>
         </div>
 
-        <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-          <div className="flex items-center justify-between mb-2">
+        <div className="p-space-4 bg-white/5 rounded-lg border border-white/10">
+          <div className="flex items-center justify-between mb-space-2">
             <h3 className="text-lg font-semibold text-white">Hit Points</h3>
             <span className="text-xs text-gray-300 font-medium">
               {trainer.currentHP}/{trainer.maxHP}
@@ -257,7 +257,7 @@ export default function TrainerOverview({
 
       {/* Editing Modal */}
       {isEditing && (
-        <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-2">
+        <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-space-2">
           <div className="card rounded-lg p-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative border border-white/20">
             <button
               onClick={handleCancel}
@@ -292,9 +292,9 @@ export default function TrainerOverview({
                   setEditedTrainer({ ...editedTrainer, name: e.target.value })
                 }
                 placeholder="Trainer Name"
-                className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-purple-500 focus:outline-none"
               />
-              <div className="flex gap-4">
+              <div className="flex gap-space-4">
                 <input
                   type="text"
                   value={editedTrainer.class}
@@ -305,7 +305,7 @@ export default function TrainerOverview({
                     })
                   }
                   placeholder="Class"
-                  className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                  className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-purple-500 focus:outline-none"
                 />
                 <input
                   type="number"
@@ -327,11 +327,11 @@ export default function TrainerOverview({
               <h3 className="text-lg font-semibold text-white mb-4">
                 Attributes
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-space-4">
                 {attributeNames.map((attr) => (
                   <div
                     key={attr}
-                    className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10"
+                    className="flex items-center justify-between p-space-3 bg-white/5 rounded-lg border border-white/10"
                   >
                     <span className="text-gray-300 font-medium">
                       {getAttributeDisplayName(attr)}

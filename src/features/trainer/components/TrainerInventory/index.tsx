@@ -83,8 +83,8 @@ export default function TrainerInventory({
   return (
     <>
       {/* Pokedollars Section */}
-      <div className="p-4 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 rounded-lg border border-yellow-500/30 mb-4">
-        <div className="flex items-center justify-between mb-2">
+      <div className="p-space-4 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 rounded-lg border border-yellow-500/30 mb-space-4">
+        <div className="flex items-center justify-between mb-space-2">
           <div className="flex items-center gap-2">
             <span className="text-2xl">💰</span>
             <span className="text-lg font-semibold text-yellow-400">
@@ -97,19 +97,19 @@ export default function TrainerInventory({
         </div>
 
         {isEditable && (
-          <div className="flex items-center gap-2 mt-3">
+          <div className="flex items-center gap-space-2 mt-space-3">
             <input
               type="number"
               value={pokedollarAmount}
               onChange={(e) => setPokedollarAmount(e.target.value)}
               placeholder="Amount"
               min="1"
-              className="flex-1 bg-white/10 text-white placeholder-gray-400 rounded-lg p-2 border border-white/20 focus:ring-2 focus:ring-yellow-500 focus:outline-none"
+              className="flex-1 bg-white/10 text-white placeholder-gray-400 rounded-lg p-space-2 border border-white/20 focus:ring-2 focus:ring-yellow-500 focus:outline-none"
             />
             <button
               onClick={() => handlePokedollarChange("add")}
               disabled={!pokedollarAmount || parseInt(pokedollarAmount) <= 0}
-              className="px-4 py-2 bg-green-500/80 hover:bg-green-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium"
+              className="px-space-4 py-space-2 bg-green-500/80 hover:bg-green-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium"
             >
               Add
             </button>

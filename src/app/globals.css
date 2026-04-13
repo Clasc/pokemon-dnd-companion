@@ -33,12 +33,21 @@
 @utility gap-4 { gap: var(--spacing-gap-md); }
 @utility gap-6 { gap: var(--spacing-gap-lg); }
 
+@utility px-3 { padding-left: var(--spacing-space-3); padding-right: var(--spacing-space-3); }
+@utility py-2 { padding-top: var(--spacing-space-2); padding-bottom: var(--spacing-space-2); }
+@utility px-4 { padding-left: var(--spacing-space-4); padding-right: var(--spacing-space-4); }
+@utility py-3 { padding-top: var(--spacing-space-3); padding-bottom: var(--spacing-space-3); }
+
 @utility mb-1 { margin-bottom: var(--spacing-space-1); }
 @utility mb-2 { margin-bottom: var(--spacing-space-2); }
+@utility mb-space-2 { margin-bottom: var(--spacing-space-2); }
 @utility mb-3 { margin-bottom: var(--spacing-space-3); }
 @utility mt-1 { margin-top: var(--spacing-space-1); }
 @utility mt-2 { margin-top: var(--spacing-space-2); }
 @utility mt-3 { margin-top: var(--spacing-space-3); }
+
+@utility mb-3 { margin-bottom: var(--spacing-space-3); }
+@utility mb-space-3 { margin-bottom: var(--spacing-space-3); }
 
 @utility mb-space-1 { margin-bottom: var(--spacing-space-1); }
 @utility mb-space-2 { margin-bottom: var(--spacing-space-2); }
