@@ -117,7 +117,7 @@ export default function EditPokemonPage() {
             Team
           </Link>
         </header>
-        <section className="glass rounded-2xl p-6 border border-white/10 space-y-4">
+        <section className="card rounded-lg p-4 border border-white/10 space-y-4">
           <p className="text-gray-300">
             The Pokémon you are trying to edit no longer exists or the link is
             invalid.

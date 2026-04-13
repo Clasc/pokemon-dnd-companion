@@ -57,7 +57,7 @@ export default function PokemonOverview({
     <>
       <div
         className={
-          unstyled ? "space-y-5" : "glass rounded-xl p-4 md:p-5 space-y-5"
+          unstyled ? "space-y-3" : "card rounded-lg p-3 md:p-4 space-y-3"
         }
         data-testid={
           unstyled ? "pokemon-overview-unstyled" : "pokemon-overview-card"
@@ -68,8 +68,8 @@ export default function PokemonOverview({
             Pokémon Overview
           </h2>
 
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#EE5D20] flex items-center justify-center">
               <span className="text-white text-sm md:text-base font-bold">
                 {pokemonLength}
               </span>
@@ -81,9 +81,9 @@ export default function PokemonOverview({
 
         <div className="pokemon-grid space-y-3">
           {pokemonLength === 0 ? (
-            <div className="text-center py-8 md:py-10 px-4">
-              <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-5 rounded-xl bg-gradient-to-br from-gray-600/50 to-gray-700/50 flex items-center justify-center border border-white/10">
-                <span className="text-4xl md:text-5xl" aria-hidden="true">
+            <div className="text-center py-4 px-2">
+              <div className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-3 rounded-lg bg-[#4a4a4a] flex items-center justify-center border border-white/10">
+                <span className="text-3xl md:text-4xl" aria-hidden="true">
                   🔍
                 </span>
               </div>

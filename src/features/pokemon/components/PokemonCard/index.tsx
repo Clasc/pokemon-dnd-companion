@@ -103,13 +103,13 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
 
   return (
     <>
-      <div className="glass rounded-2xl p-4 relative">
-        <div className="absolute top-2 right-2 z-10">
+      <div className="card rounded-lg p-2 relative">
+        <div className="absolute top-1 right-1 z-10">
           <QuickStatusDropdown pokemonUuid={uuid} />
         </div>
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-2">
           {/* Icon */}
-          <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-xl md:text-2xl border border-white/10 overflow-hidden">
+          <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-[#4a4a4a] flex items-center justify-center text-xl md:text-2xl border border-white/10 overflow-hidden">
             {pokemon.spriteUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -240,15 +240,15 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             </div>
 
             {/* XP */}
-            <div className="mb-2">
+            <div className="mb-1">
               <div className="flex items-center justify-between mb-1">
                 <button
                   onClick={() => setShowXPModifier(true)}
-                  className="flex items-center gap-2 hover:bg-white/10 rounded px-1 -mx-1 transition-colors"
+                  className="flex items-center gap-1 px-2 py-0.5 bg-[#EE5D20] hover:bg-[#ff6e35] rounded text-white text-xs font-medium"
                   title="Gain XP"
                 >
-                  <span className="text-xs text-gray-300 font-medium">XP</span>
-                  <span className="text-xs text-purple-300">+</span>
+                  <span>XP</span>
+                  <span>+</span>
                 </button>
                 <span className="text-xs text-gray-300 font-medium">
                   {pokemon.experience}/
@@ -390,10 +390,12 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
       />
 
       {/* XP Modifier Modal */}
-      <XPModifier
-        pokemonUuid={uuid}
-        onClose={() => setShowXPModifier(false)}
-      />
+      {showXPModifier && (
+        <XPModifier
+          pokemonUuid={uuid}
+          onClose={() => setShowXPModifier(false)}
+        />
+      )}
     </>
   );
 }

@@ -189,7 +189,7 @@ export default function TrainerOverview({
     <>
       {/* Read-only Summary View */}
       <div
-        className={`${unstyled ? "" : "glass rounded-2xl p-6"} cursor-pointer hover:bg-white/10 transition-all duration-300 space-y-4`}
+        className={`${unstyled ? "" : "card rounded-lg p-4"} cursor-pointer hover:bg-[#4a4a4a] transition-all duration-300 space-y-4`}
       >
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-white p-2">Trainer Overview</h2>
@@ -262,8 +262,8 @@ export default function TrainerOverview({
 
       {/* Editing Modal */}
       {isEditing && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex justify-center items-center z-50 p-4">
-          <div className="glass rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative border border-white/20">
+        <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-2">
+          <div className="card rounded-lg p-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative border border-white/20">
             <button
               onClick={handleCancel}
               className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10"

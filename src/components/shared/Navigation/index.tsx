@@ -146,8 +146,8 @@ export default function Navigation() {
       {/* Desktop Sidebar */}
       <nav
         aria-label="Main"
-        className="hidden md:flex fixed left-0 top-0 h-screen w-52 flex-col gap-2 px-3 py-6
-          bg-gradient-to-b from-black/30 to-black/20 backdrop-blur-xl border-r border-white/10
+        className="hidden md:flex fixed left-0 top-0 h-screen w-44 flex-col gap-1 px-2 py-3
+          bg-[#1a1a1a] border-r border-white/10
           text-sm z-40"
       >
         <div className="px-2 mb-4">
@@ -163,7 +163,7 @@ export default function Navigation() {
                 <Link
                   href={item.href}
                   aria-current={active ? "page" : undefined}
-                  className={`group relative flex items-center gap-3 px-3 py-2 rounded-lg transition-colors
+                  className={`group relative flex items-center gap-2 px-2 py-1.5 rounded transition-colors
                     ${
                       active
                         ? "bg-white/15 text-white"
@@ -210,13 +210,13 @@ export default function Navigation() {
       </nav>
 
       {/* To avoid content under sidebar on desktop */}
-      <div className="hidden md:block w-52 shrink-0" aria-hidden="true" />
+      <div className="hidden md:block w-44 shrink-0" aria-hidden="true" />
 
       {/* Mobile Bottom Bar */}
       <nav
         aria-label="Main"
         className="md:hidden fixed bottom-0 left-0 right-0 z-40
-          bg-gradient-to-t from-black/60 to-black/40 backdrop-blur-xl
+          bg-[#1a1a1a]
           border-t border-white/10"
       >
         <ul className="flex justify-around items-stretch">

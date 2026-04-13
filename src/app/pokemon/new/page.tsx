@@ -105,7 +105,7 @@ export default function NewPokemonPage() {
         </button>
       </header>
 
-      <section className="glass rounded-2xl p-6 border border-white/10 space-y-6">
+      <section className="card rounded-lg p-4 border border-white/10 space-y-6">
         <PokemonForm
           pokemon={pokemon}
           onChange={setPokemon}
