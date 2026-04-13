@@ -22,12 +22,12 @@ export default function PokemonCompactCard({
   return (
     <div
       onClick={onClick}
-      className="card rounded-lg p-2 cursor-pointer hover:bg-[#2d2d2d] transition-all duration-200 active:scale-[0.98] relative z-0"
+      className="card rounded-lg p-space-2 cursor-pointer hover:bg-[#2d2d2d] transition-all duration-200 active:scale-[0.98] relative z-0"
     >
       <div className="absolute top-1 right-1 z-10">
         <QuickStatusDropdown pokemonUuid={uuid} />
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-sm">
         <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg bg-[#4a4a4a] flex items-center justify-center text-xl md:text-2xl border border-white/10 overflow-hidden flex-shrink-0">
           {pokemon.spriteUrl ? (
             <img
@@ -46,7 +46,7 @@ export default function PokemonCompactCard({
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-sm mb-space-1">
             <h3 className="font-semibold text-white text-sm md:text-base truncate">
               {pokemon.name}
             </h3>
@@ -55,7 +55,7 @@ export default function PokemonCompactCard({
             </span>
           </div>
 
-          <div className="flex items-center gap-1 mb-1">
+          <div className="flex items-center gap-tight mb-space-1">
             {pokemon.type1 && (
               <span
                 className="text-[10px] px-1 py-0.5 rounded text-white font-medium"

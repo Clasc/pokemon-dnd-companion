@@ -57,7 +57,7 @@ export default function PokemonOverview({
     <>
       <div
         className={
-          unstyled ? "space-y-3" : "card rounded-lg p-3 md:p-4 space-y-3"
+          unstyled ? "space-y-3" : "card rounded-lg p-space-3 md:p-space-4 space-y-3"
         }
         data-testid={
           unstyled ? "pokemon-overview-unstyled" : "pokemon-overview-card"
@@ -68,7 +68,7 @@ export default function PokemonOverview({
             Pokémon Overview
           </h2>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-sm">
             <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#EE5D20] flex items-center justify-center">
               <span className="text-white text-sm md:text-base font-bold">
                 {pokemonLength}
@@ -81,14 +81,14 @@ export default function PokemonOverview({
 
         <div className="pokemon-grid space-y-3">
           {pokemonLength === 0 ? (
-            <div className="text-center py-4 px-2">
+            <div className="text-center py-space-4 px-space-2">
               <div className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-3 rounded-lg bg-[#4a4a4a] flex items-center justify-center border border-white/10">
                 <span className="text-3xl md:text-4xl" aria-hidden="true">
                   🔍
                 </span>
               </div>
 
-              <p className="text-gray-400 text-base md:text-lg mb-2">
+              <p className="text-gray-400 text-base md:text-lg mb-space-2">
                 No Pokémon in your team yet
               </p>
 
@@ -102,7 +102,7 @@ export default function PokemonOverview({
                 <div
                   key={uuid}
                   data-testid="pokemon-card-placeholder"
-                  className="rounded-lg bg-white/5 p-4 text-sm text-white/70"
+                  className="rounded-lg bg-white/5 p-space-4 text-sm text-white/70"
                 >
                   {poke.name} ({poke.type})
                 </div>
@@ -123,7 +123,7 @@ export default function PokemonOverview({
             <button
               type="button"
               onClick={() => setShowAddModal(true)}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white border-2 border-dashed border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
+              className="w-full flex items-center justify-center gap-sm py-space-3 px-space-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white border-2 border-dashed border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
             >
               <svg
                 className="w-6 h-6"
@@ -145,13 +145,13 @@ export default function PokemonOverview({
         )}
 
         {pokemonLength > 0 && (
-          <section className="pt-4 border-t border-white/10">
-            <h3 className="text-lg font-semibold text-white mb-4 text-center">
+          <section className="pt-space-4 border-t border-white/10">
+            <h3 className="text-lg font-semibold text-white mb-space-4 text-center">
               Team Stats
             </h3>
 
-            <div className="grid grid-cols-3 gap-4 md:gap-6 text-center">
-              <div className="p-3 md:p-4 bg-white/5 rounded-lg border border-white/10">
+            <div className="grid grid-cols-3 gap-space-4 md:gap-space-6 text-center">
+              <div className="p-space-3 md:p-space-4 bg-white/5 rounded-lg border border-white/10">
                 <div className="text-lg md:text-2xl font-bold text-white mb-1">
                   {totalLevels}
                 </div>
@@ -161,14 +161,14 @@ export default function PokemonOverview({
                 </div>
               </div>
 
-              <div className="p-3 md:p-4 bg-white/5 rounded-lg border border-white/10">
+              <div className="p-space-3 md:p-space-4 bg-white/5 rounded-lg border border-white/10">
                 <div className="text-lg md:text-2xl font-bold text-white mb-1">
                   {totalHP}
                 </div>
 
                 <div className="text-xs md:text-sm text-gray-400">Total HP</div>
               </div>
-              <div className="p-3 md:p-4 bg-white/5 rounded-lg border border-white/10">
+              <div className="p-space-3 md:p-space-4 bg-white/5 rounded-lg border border-white/10">
                 <div className="text-lg md:text-2xl font-bold text-white mb-1">
                   {avgHealthPercent}%
                 </div>

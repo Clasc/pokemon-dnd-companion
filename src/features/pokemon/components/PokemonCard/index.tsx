@@ -103,11 +103,11 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
 
   return (
     <>
-      <div className="card rounded-lg p-2 relative">
+      <div className="card rounded-lg p-space-2 relative">
         <div className="absolute top-1 right-1 z-10">
           <QuickStatusDropdown pokemonUuid={uuid} />
         </div>
-        <div className="flex items-start gap-2">
+        <div className="flex items-start gap-sm">
           {/* Icon */}
           <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-[#4a4a4a] flex items-center justify-center text-xl md:text-2xl border border-white/10 overflow-hidden">
             {pokemon.spriteUrl ? (
@@ -129,7 +129,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
 
           {/* Info */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-sm mb-space-2">
               <h3 className="font-semibold text-white text-base md:text-lg truncate">
                 {pokemon.name}
               </h3>
@@ -142,7 +142,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             </div>
 
             {/* Types & Status */}
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-sm mb-space-2">
               {pokemon.type1 && (
                 <span
                   className="text-xs px-2 py-1 rounded-md text-white font-medium"
@@ -169,8 +169,8 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             </div>
 
             {/* Attribute chips */}
-            <div className="mb-2">
-              <div className="flex flex-wrap justify-start gap-1">
+            <div className="mb-space-2">
+              <div className="flex flex-wrap justify-start gap-tight">
                 {attributeNames.map((attr) => (
                   <div
                     key={attr}
@@ -190,11 +190,11 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             </div>
 
             {/* HP */}
-            <div className="mb-2">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
+            <div className="mb-space-2">
+              <div className="flex items-center justify-between mb-space-1">
+                <div className="flex items-center gap-sm">
                   <span className="text-xs text-gray-300 font-medium">HP</span>
-                  <div className="flex gap-1">
+                  <div className="flex gap-tight">
                     <button
                       onClick={() => modifyHP(-1)}
                       className="w-4 h-4 text-xs bg-red-500/20 hover:bg-red-500/40 rounded text-white flex items-center justify-center leading-none"
@@ -240,8 +240,8 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             </div>
 
             {/* XP */}
-            <div className="mb-1">
-              <div className="flex items-center justify-between mb-1">
+            <div className="mb-space-1">
+              <div className="flex items-center justify-between mb-space-1">
                 <button
                   onClick={() => setShowXPModifier(true)}
                   className="flex items-center gap-1 px-2 py-0.5 bg-[#EE5D20] hover:bg-[#ff6e35] rounded text-white text-xs font-medium"
@@ -269,7 +269,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             {/* Attacks summary */}
             {pokemon.attacks && pokemon.attacks.length > 0 && (
               <div className="mt-3">
-                <div className="flex items-center gap-2 mb-2">
+<div className="flex items-center gap-sm mb-space-2">
                   <span className="text-xs text-gray-300 font-medium">
                     Attacks
                   </span>
