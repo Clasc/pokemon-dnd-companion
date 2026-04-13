@@ -137,7 +137,7 @@ export default function BaseModal({
       aria-hidden={!isOpen}
     >
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in"
+        className="absolute inset-0 bg-black/80 animate-fade-in"
         onMouseDown={handleBackdropMouseDown}
         onClick={handleBackdropMouseDown}
         data-testid={backdropTestId}
@@ -153,7 +153,7 @@ export default function BaseModal({
         aria-describedby={descriptionId}
         className={`
           relative w-full ${sizeClassMap[size]} ${size === "fullscreen" ? "" : "max-h-[90vh] overflow-y-auto"}
-          glass rounded-2xl border border-white/20 shadow-lg
+          bg-[#252525] rounded-lg border border-white/10 shadow-lg
           focus:outline-none
           animate-scale-in
           ${className}
