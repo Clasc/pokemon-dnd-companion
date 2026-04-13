@@ -189,7 +189,7 @@ export default function TrainerOverview({
     <>
       {/* Read-only Summary View */}
       <div
-        className={`${unstyled ? "" : "card rounded-lg p-space-4"} cursor-pointer hover:bg-[#4a4a4a] transition-all duration-300 space-y-space-4`}
+        className={`${unstyled ? "" : "bg-white/5 rounded-lg p-space-4 border border-white/10"} cursor-pointer hover:bg-[#4a4a4a] transition-all duration-300 space-y-space-4`}
       >
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-white p-2">Trainer Overview</h2>
