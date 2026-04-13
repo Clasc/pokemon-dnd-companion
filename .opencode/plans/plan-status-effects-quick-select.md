@@ -3,6 +3,7 @@ title: Status Effects Quick Select
 version: 1.0
 date_created: 2026-04-12
 owner: Pokemon DnD Companion
+status: done
 tags: `feature`, `pokemon`, `status-effects`, `ui`, `quick-access`
 ---
 

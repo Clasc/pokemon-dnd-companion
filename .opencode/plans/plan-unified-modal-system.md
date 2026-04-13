@@ -1,3 +1,12 @@
+---
+title: Unified Modal System
+version: 1.0
+date_created: 2026-04-12
+owner: Pokemon DnD Companion
+status: open
+tags: `design-system`, `ui`, `modal`
+---
+
 # Unified Modal System Specification
 
 ## Current State Analysis

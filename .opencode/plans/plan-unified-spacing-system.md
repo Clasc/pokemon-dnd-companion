@@ -3,6 +3,7 @@ title: Unified Spacing Design System
 version: 1.0
 date_created: 2026-04-12
 owner: Pokemon DnD Companion
+status: open
 tags: `design-system`, `tailwind`, `spacing`, `css`
 ---
 

@@ -1,3 +1,12 @@
+---
+title: Unified Dropdown System
+version: 1.0
+date_created: 2026-04-12
+owner: Pokemon DnD Companion
+status: open
+tags: `design-system`, `ui`, `dropdown`
+---
+
 # Unified Dropdown System Specification
 
 ## Current State Analysis

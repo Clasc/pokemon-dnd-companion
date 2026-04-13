@@ -3,6 +3,7 @@ title: Add AC (Armor Class) to Pokemon
 version: 1.0
 date_created: 2026-04-12
 owner: Pokemon D&D Companion
+status: open
 tags: `design`, `dnd`, `pokemon`, `armor-class`
 ---
 

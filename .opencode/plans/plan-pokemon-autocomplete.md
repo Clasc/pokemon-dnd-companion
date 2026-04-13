@@ -3,6 +3,7 @@ title: Pokemon Autocomplete Feature
 version: 1.0
 date_created: 2026-04-12
 owner: pokemon-dnd-companion
+status: done
 tags: [`feature`, `pokemon`, `autocomplete`, `api-integration`]
 ---
 
