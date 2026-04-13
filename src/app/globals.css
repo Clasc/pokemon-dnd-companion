@@ -73,23 +73,6 @@
     }
 }
 
-@media (prefers-color-scheme: light) {
-    :root {
-        /* Light Theme Colors */
-        --bg-primary: #f5f5f7;
-        --bg-secondary: #ffffff;
-        --bg-card: rgba(255, 255, 255, 0.8);
-        --bg-card-hover: rgba(255, 255, 255, 0.95);
-        --text-primary: #333333;
-        --text-secondary: #666666;
-        --text-accent: #000000;
-
-        /* Lighter shadows for light theme */
-        --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.1);
-        --shadow-button: 0 4px 16px rgba(0, 0, 0, 0.08);
-    }
-}
-
 body {
     font-family:
         "Inter",
@@ -98,7 +81,7 @@ body {
         "Segoe UI",
         "Roboto",
         sans-serif;
-    background: var(--gradient-primary);
+    background: var(--bg-primary);
     color: var(--text-primary);
     min-height: 100vh;
     line-height: 1.6;
