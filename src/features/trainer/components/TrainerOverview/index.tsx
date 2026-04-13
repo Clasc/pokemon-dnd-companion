@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import EditButtons from "@/components/shared/EditButtons";
 import { useAppStore } from "@/store";
 import { Trainer, InventoryItem } from "@/types/trainer";
-import EditButton from "@/components/shared/ActionButtons/EditButton";
+import ActionButtons from "@/components/shared/ActionButtons";
 import TrainerInventory from "../TrainerInventory";
 import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
 
@@ -187,15 +187,17 @@ export default function TrainerOverview({
 
   return (
     <>
-      {/* Read-only Summary View */}
       <div
-        className={`${unstyled ? "" : "bg-white/5 rounded-lg p-space-4 border border-white/10"} cursor-pointer hover:bg-[#4a4a4a] transition-all duration-300 space-y-space-4`}
+        className={unstyled ? "space-y-3" : "space-y-space-2"}
       >
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-white p-2">Trainer Overview</h2>
-        </div>
-        <EditButton onClick={() => setIsEditing(true)} />
-        <div className="text-center p-space-4 bg-white/5 rounded-lg border border-white/10">
+        <header className="flex items-center justify-between">
+          <h2 className="text-xl md:text-2xl font-bold text-white">
+            Trainer Overview
+          </h2>
+          <ActionButtons onEdit={() => setIsEditing(true)} />
+        </header>
+
+        <div className="text-center py-space-4 px-space-2">
           <h3 className="text-lg font-semibold text-white mb-space-2">
             {trainer.name || "Unnamed Trainer"}
           </h3>
@@ -204,28 +206,25 @@ export default function TrainerOverview({
           </p>
         </div>
 
-        {/* Attributes Chips */}
-        <div className="p-space-4 bg-white/5 rounded-lg border border-white/10">
-          <div className="flex flex-wrap justify-center gap-sm">
-            {attributeNames.map((attr) => (
-              <div
-                key={attr}
-                className="bg-white/10 rounded-full px-space-3 py-space-1 text-sm font-medium text-white flex items-center gap-sm"
-              >
-                <span className="text-gray-300 font-semibold">
-                  {getAttributeShortName(attr)}
-                </span>
-                <span className="font-bold text-base">
-                  {formatModifier(
-                    getAttributeModifier(trainer.attributes[attr]),
-                  )}
-                </span>
-              </div>
-            ))}
-          </div>
+        <div className="flex flex-wrap justify-center gap-sm">
+          {attributeNames.map((attr) => (
+            <div
+              key={attr}
+              className="bg-white/10 rounded-full px-space-3 py-space-1 text-sm font-medium text-white flex items-center gap-sm"
+            >
+              <span className="text-gray-300 font-semibold">
+                {getAttributeShortName(attr)}
+              </span>
+              <span className="font-bold text-base">
+                {formatModifier(
+                  getAttributeModifier(trainer.attributes[attr]),
+                )}
+              </span>
+            </div>
+          ))}
         </div>
 
-        <div className="p-space-4 bg-white/5 rounded-lg border border-white/10">
+        <div>
           <div className="flex items-center justify-between mb-space-2">
             <h3 className="text-lg font-semibold text-white">Hit Points</h3>
             <span className="text-xs text-gray-300 font-medium">
@@ -243,7 +242,6 @@ export default function TrainerOverview({
           />
         </div>
 
-        {/* Inventory Section */}
         <TrainerInventory
           inventory={trainer.inventory || []}
           pokedollars={trainer.pokedollars || 0}
