@@ -57,7 +57,7 @@ export default function PokemonOverview({
     <>
       <div
         className={
-          unstyled ? "space-y-3" : "bg-white/5 rounded-lg p-space-3 md:p-space-4 space-y-3 border border-white/10"
+          unstyled ? "space-y-3" : "space-y-space-2"
         }
         data-testid={
           unstyled ? "pokemon-overview-unstyled" : "pokemon-overview-card"

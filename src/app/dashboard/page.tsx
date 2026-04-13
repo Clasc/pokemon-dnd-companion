@@ -37,11 +37,11 @@ export default function DashboardPage() {
         </p>
       </header>
 
-      <section className="max-w-7xl mx-auto flex flex-col md:grid md:grid-cols-2 gap-5 md:gap-8">
-        <div>
+      <section className="max-w-7xl mx-auto flex flex-col md:grid md:grid-cols-2">
+        <div className="md:border-r md:border-white/10 md:pr-6">
           <TrainerOverview />
         </div>
-        <div>
+        <div className="md:pl-6">
           <PokemonOverview pokemon={pokemon} />
         </div>
       </section>
