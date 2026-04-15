@@ -6,7 +6,7 @@ interface InteractiveProgressProps {
   type: "hp" | "xp";
   current: number;
   max: number;
-  onChange: (value: number) => void;
+  onChange?: (value: number) => void;
   label: string;
   step?: number;
   className?: string;
@@ -31,6 +31,7 @@ export default function InteractiveProgress({
   debounceMs = 0,
   showLevelUpIndicator = false,
 }: InteractiveProgressProps) {
+  const handleChange = onChange ?? (() => {});
   const [isDragging, setIsDragging] = useState(false);
   const [dragValue, setDragValue] = useState(current);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -82,13 +83,13 @@ export default function InteractiveProgress({
           clearTimeout(debounceTimerRef.current);
         }
         debounceTimerRef.current = setTimeout(() => {
-          onChange(clampedValue);
+          handleChange(clampedValue);
         }, debounceMs);
       } else {
-        onChange(clampedValue);
+        handleChange(clampedValue);
       }
     },
-    [max, onChange, debounceMs],
+    [max, handleChange, debounceMs],
   );
 
   // Calculate value from mouse position

@@ -36,7 +36,6 @@ export default function PokemonExpandedModal({
 
   const removePokemon = useAppStore.use.removePokemon();
   const modifyPokemonHP = useAppStore.use.modifyPokemonHP();
-  const gainExperience = useAppStore.use.gainExperience();
 
   const handleDelete = () => {
     removePokemon(uuid);
@@ -51,10 +50,6 @@ export default function PokemonExpandedModal({
 
   const modifyHP = (amount: number) => {
     modifyPokemonHP(uuid, amount);
-  };
-
-  const gainQuickXP = (amount: number) => {
-    gainExperience(uuid, amount);
   };
 
   const getTypeColor = (type: string) =>
@@ -206,33 +201,6 @@ export default function PokemonExpandedModal({
             <div>
               <div className="flex items-center justify-between mb-space-2">
                 <span className="text-sm text-gray-300 font-medium">XP</span>
-                <div className="flex items-center gap-space-2">
-                  <button
-                    onClick={() => gainQuickXP(-10)}
-                    className="w-8 h-7 text-sm bg-red-500/20 hover:bg-red-500/40 rounded text-white flex items-center justify-center"
-                    disabled={pokemon.experience <= 0}
-                  >
-                    -10
-                  </button>
-                  <button
-                    onClick={() => gainQuickXP(10)}
-                    className="w-8 h-7 text-sm bg-blue-500/20 hover:bg-blue-500/40 rounded text-white flex items-center justify-center"
-                  >
-                    +10
-                  </button>
-                  <button
-                    onClick={() => gainQuickXP(50)}
-                    className="w-8 h-7 text-sm bg-blue-500/20 hover:bg-blue-500/40 rounded text-white flex items-center justify-center"
-                  >
-                    +50
-                  </button>
-                  <button
-                    onClick={() => gainQuickXP(100)}
-                    className="w-10 h-7 text-sm bg-blue-500/20 hover:bg-blue-500/40 rounded text-white flex items-center justify-center"
-                  >
-                    +100
-                  </button>
-                </div>
               </div>
               <ProgressBar
                 variant="xp"

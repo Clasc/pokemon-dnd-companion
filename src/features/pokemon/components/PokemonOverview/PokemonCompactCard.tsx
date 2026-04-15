@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { Pokemon, TYPE_COLORS } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
 import ProgressBar from "@/components/shared/ui/ProgressBar";
 import QuickStatusDropdown from "../QuickStatusDropdown";
+import { useAppStore } from "@/store";
 
 interface PokemonCompactCardProps {
   pokemon: Pokemon;
@@ -16,6 +18,17 @@ export default function PokemonCompactCard({
   uuid,
   onClick,
 }: PokemonCompactCardProps) {
+  const [xpInput, setXpInput] = useState("");
+  const gainExperience = useAppStore.use.gainExperience();
+
+  const handleAddXP = () => {
+    const amount = parseInt(xpInput);
+    if (amount > 0) {
+      gainExperience(uuid, amount);
+      setXpInput("");
+    }
+  };
+
   const getTypeColor = (type: string) =>
     TYPE_COLORS[type as keyof typeof TYPE_COLORS] || "#A8A878";
 
@@ -90,9 +103,30 @@ export default function PokemonCompactCard({
 
             <div className="flex items-center justify-between">
               <span className="text-[10px] text-gray-400">XP</span>
-              <span className="text-[10px] text-gray-300">
-                {pokemon.experience}/{pokemon.experience + pokemon.experienceToNext}
-              </span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min="1"
+                  value={xpInput}
+                  onChange={(e) => setXpInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddXP()}
+                  placeholder="+XP"
+                  className="w-14 px-2 py-0.5 bg-white/10 border border-white/20 rounded text-[10px] text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  onClick={(e) => e.stopPropagation()}
+                />
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddXP();
+                  }}
+                  className="px-2 py-0.5 bg-[#EE5D20] hover:bg-[#ff6e35] rounded text-[10px] text-white"
+                >
+                  +
+                </button>
+                <span className="text-[10px] text-gray-300">
+                  {pokemon.experience}/{pokemon.experience + pokemon.experienceToNext}
+                </span>
+              </div>
             </div>
             <ProgressBar
               variant="xp"

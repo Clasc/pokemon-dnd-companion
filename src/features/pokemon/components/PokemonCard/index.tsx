@@ -12,7 +12,6 @@ import ActionButtons from "@/components/shared/ActionButtons";
 import StatusIndicator from "../StatusIndicator";
 import StatusSelector from "../StatusSelector";
 import QuickStatusDropdown from "../QuickStatusDropdown";
-import XPModifier from "../XPModifier";
 import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
 
 interface PokemonCardProps {
@@ -27,7 +26,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
   const [isAttacksVisible, setIsAttacksVisible] = useState(false);
   const [showAddAttackModal, setShowAddAttackModal] = useState(false);
   const [showStatusSelector, setShowStatusSelector] = useState(false);
-  const [showXPModifier, setShowXPModifier] = useState(false);
+  const [xpInput, setXpInput] = useState("");
   const [selectedAttackIndex, setSelectedAttackIndex] = useState<number | null>(
     null,
   );
@@ -64,11 +63,12 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
     }
   };
 
-  // XP drag change
-  const handleXPDragChange = (value: number) => {
-    const diff = value - pokemon.experience;
-    if (diff !== 0) {
-      gainExperience(uuid, diff);
+  // XP add
+  const handleAddXP = () => {
+    const amount = parseInt(xpInput);
+    if (amount > 0) {
+      gainExperience(uuid, amount);
+      setXpInput("");
     }
   };
 
@@ -242,14 +242,24 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             {/* XP */}
             <div className="mb-space-1">
               <div className="flex items-center justify-between mb-space-1">
-                <button
-                  onClick={() => setShowXPModifier(true)}
-                  className="flex items-center gap-1 px-2 py-0.5 bg-[#EE5D20] hover:bg-[#ff6e35] rounded text-white text-xs font-medium"
-                  title="Gain XP"
-                >
-                  <span>XP</span>
-                  <span>+</span>
-                </button>
+                <div className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    min="1"
+                    value={xpInput}
+                    onChange={(e) => setXpInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleAddXP()}
+                    placeholder="XP"
+                    className="w-16 px-2 py-0.5 bg-white/10 border border-white/20 rounded text-white text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                  <button
+                    onClick={handleAddXP}
+                    className="px-2 py-0.5 bg-[#EE5D20] hover:bg-[#ff6e35] rounded text-white text-xs font-medium"
+                    title="Add XP"
+                  >
+                    Add
+                  </button>
+                </div>
                 <span className="text-xs text-gray-300 font-medium">
                   {pokemon.experience}/
                   {pokemon.experience + pokemon.experienceToNext}
@@ -259,7 +269,6 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                 type="xp"
                 current={pokemon.experience}
                 max={pokemon.experience + pokemon.experienceToNext}
-                onChange={handleXPDragChange}
                 label="Experience Points"
                 step={10}
                 showLevelUpIndicator={pokemon.experienceToNext <= 10}
@@ -388,14 +397,6 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
         isOpen={showStatusSelector}
         onClose={() => setShowStatusSelector(false)}
       />
-
-      {/* XP Modifier Modal */}
-      {showXPModifier && (
-        <XPModifier
-          pokemonUuid={uuid}
-          onClose={() => setShowXPModifier(false)}
-        />
-      )}
     </>
   );
 }
