@@ -3,7 +3,7 @@ title: XP Gain System Revision
 version: 1.0
 date_created: 2026-04-13
 owner: Pokemon DnD Companion
-status: done
+status: not_started
 tags: `feature`, `xp`, `ux`, `pokemon`
 ---
 

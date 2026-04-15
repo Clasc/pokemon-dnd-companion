@@ -1,6 +1,13 @@
-# Dashboard Pokemon Card Redesign
+---
+title: Dashboard Pokemon Card Redesign
+version: 1.0
+date_created: 2026-04-15
+owner: Pokemon D&D Companion
+status: done
+tags: `design`, `dashboard`, `pokemon`, `cards`, `ui`
+---
 
-## Overview
+# Overview
 
 Redesign the Pokemon cards on the dashboard to show less detail while making the Pokemon image the visual focal point. Add an expand-on-click feature to show full details in a fullscreen modal with animation.
 

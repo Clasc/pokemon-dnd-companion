@@ -1,6 +1,13 @@
-# Attack Management Redesign
+---
+title: Attack Management Redesign
+version: 1.0
+date_created: 2026-04-15
+owner: Pokemon D&D Companion
+status: done
+tags: `design`, `attacks`, `pokemon`, `management`
+---
 
-## Overview
+# Overview
 
 Improve attack management on Pokemon cards:
 1. Execute attacks directly from the overview card (compact card)
