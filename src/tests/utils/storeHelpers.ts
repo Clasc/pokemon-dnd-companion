@@ -5,16 +5,15 @@
  * during tests without re‑implementing ad‑hoc logic in each spec file.
  *
  * Goals:
- * - Deterministic seeding of Pokemon and Trainer data.
+ * - Deterministic seeding of Pokemon data.
  * - Single reset path that clears persisted localStorage state.
  * - Keep behavior aligned with production store (do NOT mock or replace).
  *
  * Usage examples (in a test):
- *   import { resetStore, seedPokemon, seedTrainer } from "@/tests/utils/storeHelpers";
+ *   import { resetStore, seedPokemon } from "@/tests/utils/storeHelpers";
  *
  *   beforeEach(() => {
  *     resetStore(); // clears store & persisted storage
- *     seedTrainer(); // adds default trainer
  *     seedPokemon("pikachu-uuid"); // adds default Pikachu under that uuid
  *   });
  *
@@ -25,10 +24,9 @@
  */
 
 import { useAppStore } from "@/store";
-import { testFixtures, testPokemon } from "@/fixtures";
+import { testPokemon } from "@/fixtures";
 import { Pokemon, PokemonTeam } from "@/types/pokemon";
 import type { StatusEffect } from "@/types/pokemon";
-import { Trainer } from "@/types/trainer";
 
 /**
  * Options for resetStore.
@@ -60,18 +58,6 @@ export function resetStore(options: ResetOptions = {}) {
   useAppStore.getState().reset();
 
   return useAppStore.getState();
-}
-
-/**
- * Seed the store with the default trainer fixture or a provided trainer.
- * Returns the trainer applied.
- */
-export function seedTrainer(trainer?: Trainer): Trainer {
-  const finalTrainer =
-    trainer ?? (testFixtures.trainer as Trainer) ?? testFixtures.trainer;
-
-  useAppStore.getState().setTrainer(finalTrainer);
-  return finalTrainer;
 }
 
 /**

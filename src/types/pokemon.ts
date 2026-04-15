@@ -76,10 +76,8 @@ export type PokemonType =
   | "steel"
   | "fairy";
 
-type uuid = string;
-
 export interface PokemonTeam {
-  [key: uuid]: Pokemon;
+  [key: string]: Pokemon;
 }
 
 type Color = `#${string}`;

@@ -1,3 +1,5 @@
+import { PokemonType } from "./pokemon";
+
 export interface PokeAPINamedResource {
   name: string;
   url: string;
@@ -59,13 +61,6 @@ export interface PokemonAutocompleteResult {
   spriteUrl: string;
 }
 
-export interface MoveAutocompleteResult {
-  name: string;
-  displayName: string;
-  pp: number;
-  description: string;
-}
-
 export interface PokeAPIItemListResponse {
   count: number;
   next: string | null;
@@ -87,33 +82,6 @@ export interface PokeAPIItemDetailResponse {
   };
   flavor_text_entries: PokeAPIItemFlavorText[];
 }
-
-export interface ItemAutocompleteResult {
-  name: string;
-  displayName: string;
-  description: string;
-  spriteUrl: string;
-}
-
-type PokemonType =
-  | "normal"
-  | "fire"
-  | "water"
-  | "electric"
-  | "grass"
-  | "ice"
-  | "fighting"
-  | "poison"
-  | "ground"
-  | "flying"
-  | "psychic"
-  | "bug"
-  | "rock"
-  | "ghost"
-  | "dragon"
-  | "dark"
-  | "steel"
-  | "fairy";
 
 export const POKEAPI_TYPES: PokemonType[] = [
   "normal",
