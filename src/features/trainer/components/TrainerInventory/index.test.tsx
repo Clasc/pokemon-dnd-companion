@@ -228,7 +228,7 @@ describe("TrainerInventory", () => {
     const addItemButton = screen.getByText("Add Item");
     fireEvent.click(addItemButton);
 
-    const closeButton = screen.getByRole("button", { name: "" }); // X button has no text
+    const closeButton = screen.getByRole("button", { name: /close/i });
     fireEvent.click(closeButton);
 
     expect(screen.queryByText("Add New Item")).not.toBeInTheDocument();

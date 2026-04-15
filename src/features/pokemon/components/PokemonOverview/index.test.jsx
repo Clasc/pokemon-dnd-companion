@@ -10,9 +10,9 @@
  * - Accessibility / structural expectations
  * - Responsive utility class presence (basic smoke)
  *
- * Adaptations for route-based flows:
- * - Add Pokémon action is now a <Link href="/pokemon/new"> (not a button)
- * - Edit flow moved to /pokemon/[uuid]/edit (not covered directly here)
+ * Adaptations for current implementation:
+ * - Add Pokémon action uses a button that opens AddPokemonModal
+ * - Edit flow uses /pokemon/[uuid]/edit route
  *
  * NOTE:
  * We mock next/navigation's useRouter so nested PokemonCard components
@@ -70,10 +70,8 @@ describe("PokemonOverview", () => {
       ).toBeInTheDocument();
       expect(screen.getByText("🔍")).toBeInTheDocument();
 
-      // Add link
-      const addLink = screen.getByRole("link", { name: /add pokémon/i });
-      expect(addLink).toBeInTheDocument();
-      expect(addLink).toHaveAttribute("href", "/pokemon/new");
+      // Add button
+      expect(screen.getByRole("button", { name: /add pokémon/i })).toBeInTheDocument();
 
       // No stats section yet
       expect(screen.queryByText("Team Stats")).not.toBeInTheDocument();
@@ -93,8 +91,8 @@ describe("PokemonOverview", () => {
       // Card heading / placeholder text (name may have surrounding characters in placeholder mode)
       expect(screen.getByText(new RegExp(mockPokemon.name))).toBeVisible();
 
-      // Add link still present
-      expect(screen.getByRole("link", { name: /add pokémon/i })).toBeVisible();
+      // Add button still present
+      expect(screen.getByRole("button", { name: /add pokémon/i })).toBeVisible();
 
       // Team stats block
       expect(screen.getByText("Team Stats")).toBeInTheDocument();
@@ -119,8 +117,8 @@ describe("PokemonOverview", () => {
 
       expect(screen.getByText(/Blaze/)).toBeVisible();
 
-      // Add link still (team not full)
-      expect(screen.getByRole("link", { name: /add pokémon/i })).toBeVisible();
+      // Add button still (team not full)
+      expect(screen.getByRole("button", { name: /add pokémon/i })).toBeVisible();
 
       // Stats verified via helper to avoid duplicating logic
       const { totalLevels, totalHP, avgHealth } =
@@ -141,7 +139,7 @@ describe("PokemonOverview", () => {
   });
 
   describe("Full Team (6 Pokemon)", () => {
-    it("hides add link when at capacity", () => {
+    it("hides add button when at capacity", () => {
       const fullTeam = {};
       for (let i = 1; i <= 6; i++) {
         fullTeam[`uuid-${i}`] = {
@@ -155,7 +153,7 @@ describe("PokemonOverview", () => {
       expect(screen.getByText("6")).toBeInTheDocument();
       expect(screen.getByText("/ 6")).toBeInTheDocument();
       expect(
-        screen.queryByRole("link", { name: /add pokémon/i }),
+        screen.queryByRole("button", { name: /add pokémon/i }),
       ).not.toBeInTheDocument();
       expect(screen.getByText("Team Stats")).toBeInTheDocument();
     });
@@ -196,11 +194,9 @@ describe("PokemonOverview", () => {
       ).toBeVisible();
     });
 
-    it("provides accessible add link", () => {
+    it("provides accessible add button", () => {
       render(<PokemonOverview pokemon={{}} disableCards />);
-      const addLink = screen.getByRole("link", { name: /add pokémon/i });
-      expect(addLink).toBeInTheDocument();
-      expect(addLink).toHaveAttribute("href", "/pokemon/new");
+      expect(screen.getByRole("button", { name: /add pokémon/i })).toBeInTheDocument();
     });
 
     it("renders expected heading roles", () => {

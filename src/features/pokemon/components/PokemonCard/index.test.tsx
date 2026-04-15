@@ -115,12 +115,11 @@ describe("PokemonCard", () => {
     expect(screen.getByTitle("Increase HP by 5")).toBeInTheDocument();
   });
 
-  it("renders inline XP control buttons", () => {
+  it("renders inline XP input field", () => {
     render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
 
-    expect(screen.getByTitle("Gain 10 XP")).toBeInTheDocument();
-    expect(screen.getByTitle("Gain 50 XP")).toBeInTheDocument();
-    expect(screen.getByTitle("Gain 100 XP")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("XP")).toBeInTheDocument();
+    expect(screen.getByTitle("Add XP")).toBeInTheDocument();
   });
 
   it("modifies HP when inline buttons are clicked", () => {
@@ -167,11 +166,14 @@ describe("PokemonCard", () => {
     expect(state.pokemonTeam[testUuid]?.currentHP).toBe(100);
   });
 
-  it("gains XP when inline buttons are clicked", () => {
+  it("gains XP when add button is clicked with input value", () => {
     render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
 
-    const gainXP50Button = screen.getByTitle("Gain 50 XP");
-    fireEvent.click(gainXP50Button);
+    const xpInput = screen.getByPlaceholderText("XP");
+    const addButton = screen.getByTitle("Add XP");
+    
+    fireEvent.change(xpInput, { target: { value: "50" } });
+    fireEvent.click(addButton);
 
     const state = useAppStore.getState();
     expect(state.pokemonTeam[testUuid]?.experience).toBe(1550);

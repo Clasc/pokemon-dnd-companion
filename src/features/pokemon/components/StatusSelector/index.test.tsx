@@ -294,7 +294,7 @@ describe("StatusSelector", () => {
         />,
       );
 
-      const closeButton = screen.getByRole("button", { name: "" }); // X button has no accessible name
+      const closeButton = screen.getByRole("button", { name: /close/i });
       await user.click(closeButton);
 
       expect(mockOnClose).toHaveBeenCalledTimes(1);

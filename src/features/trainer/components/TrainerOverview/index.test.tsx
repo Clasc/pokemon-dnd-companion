@@ -42,6 +42,13 @@ const mockTrainer: Trainer = {
 const mockSetTrainer = jest.fn();
 
 describe("TrainerOverview", () => {
+  const openEditModal = () => {
+    const actionsButton = screen.getByTitle("Actions");
+    fireEvent.click(actionsButton);
+    const editButton = screen.getByRole("button", { name: /edit/i });
+    fireEvent.click(editButton);
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     (useAppStore.use.trainer as jest.Mock).mockReturnValue(mockTrainer);
@@ -121,8 +128,8 @@ describe("TrainerOverview", () => {
       render(<TrainerOverview />);
 
       expect(screen.getByText("Ash Ketchum")).toBeInTheDocument();
-      expect(screen.getByText("Level 5 Pokemon Trainer")).toBeInTheDocument();
-      expect(screen.getByText("5")).toBeInTheDocument(); // Level badge
+      expect(screen.getByText(/Lv\./)).toBeInTheDocument();
+      expect(screen.getByText(/Pokemon Trainer/)).toBeInTheDocument();
     });
 
     it("should render all attribute short names", () => {
@@ -158,8 +165,7 @@ describe("TrainerOverview", () => {
     it("should open edit modal when edit button is clicked", async () => {
       render(<TrainerOverview />);
 
-      const editButton = screen.getByRole("button", { name: /edit/i });
-      fireEvent.click(editButton);
+      openEditModal();
 
       await waitFor(() => {
         expect(screen.getByText("Edit Trainer")).toBeInTheDocument();
@@ -169,8 +175,7 @@ describe("TrainerOverview", () => {
     it("should display raw attribute values in edit mode", async () => {
       render(<TrainerOverview />);
 
-      const editButton = screen.getByRole("button", { name: /edit/i });
-      fireEvent.click(editButton);
+      openEditModal();
 
       await waitFor(() => {
         // In edit mode, we should see the raw values as text, not modifiers
@@ -187,8 +192,7 @@ describe("TrainerOverview", () => {
     it("should allow editing trainer name and class", async () => {
       render(<TrainerOverview />);
 
-      const editButton = screen.getByRole("button", { name: /edit/i });
-      fireEvent.click(editButton);
+      openEditModal();
 
       await waitFor(() => {
         const nameInput = screen.getByDisplayValue("Ash Ketchum");
@@ -205,8 +209,7 @@ describe("TrainerOverview", () => {
     it("should save changes when save button is clicked", async () => {
       render(<TrainerOverview />);
 
-      const editButton = screen.getByRole("button", { name: /edit/i });
-      fireEvent.click(editButton);
+      openEditModal();
 
       await waitFor(() => {
         const nameInput = screen.getByDisplayValue("Ash Ketchum");
@@ -226,8 +229,7 @@ describe("TrainerOverview", () => {
     it("should cancel changes when cancel button is clicked", async () => {
       render(<TrainerOverview />);
 
-      const editButton = screen.getByRole("button", { name: /edit/i });
-      fireEvent.click(editButton);
+      openEditModal();
 
       await waitFor(() => {
         const nameInput = screen.getByDisplayValue("Ash Ketchum");
@@ -243,8 +245,7 @@ describe("TrainerOverview", () => {
     it("should modify attributes with + and - buttons", async () => {
       render(<TrainerOverview />);
 
-      const editButton = screen.getByRole("button", { name: /edit/i });
-      fireEvent.click(editButton);
+      openEditModal();
 
       await waitFor(() => {
         // Find all + and - buttons (there are many in the component)
@@ -275,8 +276,7 @@ describe("TrainerOverview", () => {
 
       render(<TrainerOverview />);
 
-      const editButton = screen.getByRole("button", { name: /edit/i });
-      fireEvent.click(editButton);
+      openEditModal();
 
       await waitFor(() => {
         const plusButtons = screen.getAllByText("+");
@@ -301,8 +301,7 @@ describe("TrainerOverview", () => {
     it("should handle HP changes correctly", async () => {
       render(<TrainerOverview />);
 
-      const editButton = screen.getByRole("button", { name: /edit/i });
-      fireEvent.click(editButton);
+      openEditModal();
 
       await waitFor(() => {
         // Find HP management buttons in the edit modal
