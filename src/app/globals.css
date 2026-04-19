@@ -188,7 +188,7 @@ body:not(.hydrated) .main-content {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    background: #222222;
     animation: splash-fade-out 0.3s ease-out 0.4s forwards;
 }
 

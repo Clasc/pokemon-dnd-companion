@@ -42,9 +42,9 @@ export default function RootLayout({
               viewBox="0 0 64 64"
               className="splash-logo"
             >
-              <rect width="64" height="64" rx="12" fill="#1a1a1a"/>
+              <rect width="64" height="64" rx="12" fill="#222222"/>
               <text x="8" y="48" fontFamily="Poppins, system-ui, sans-serif" fontSize="44" fontWeight="bold" fill="#EE5D20">P</text>
-              <text x="36" y="48" fontFamily="Poppins, system-ui, sans-serif" fontSize="44" fontWeight="bold" fill="#1a1a1a">D</text>
+              <text x="36" y="48" fontFamily="Poppins, system-ui, sans-serif" fontSize="44" fontWeight="bold" fill="white">D</text>
             </svg>
             <h1 className="splash-title">Pokémon D&D</h1>
             <p className="splash-subtitle">Companion</p>
