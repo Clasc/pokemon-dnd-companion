@@ -1,26 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAppStore } from "@/store";
 
 const pokemonLogo = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png";
 
 const MIN_SPLASH_DURATION = 400;
 
 const SplashScreen = () => {
-  const hasHydrated = useAppStore((s) => s._hasHydrated);
   const [showSplash, setShowSplash] = useState(true);
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    if (hasHydrated && showSplash) {
-      const timer = setTimeout(() => {
-        setIsExiting(true);
-        setTimeout(() => setShowSplash(false), 300);
-      }, MIN_SPLASH_DURATION);
-      return () => clearTimeout(timer);
-    }
-  }, [hasHydrated, showSplash]);
+    const timer = setTimeout(() => {
+      setIsExiting(true);
+      setTimeout(() => setShowSplash(false), 300);
+    }, MIN_SPLASH_DURATION);
+    return () => clearTimeout(timer);
+  }, []);
 
   if (!showSplash) return null;
 
@@ -34,7 +30,7 @@ const SplashScreen = () => {
         />
         <h1 className="splash-title">Pokémon D&D</h1>
         <p className="splash-subtitle">Companion</p>
-        {!hasHydrated && <div className="splash-spinner" />}
+        <div className="splash-spinner" />
       </div>
 
       <style jsx>{`
