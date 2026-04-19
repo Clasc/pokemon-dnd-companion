@@ -86,18 +86,16 @@
 
 /* ========================================
    Design Token Utilities - Use these instead of hardcoded colors
+   Usage: bg-interactive, bg-surface (use with hover:/focus: modifiers)
    ======================================== */
 
 /* Interactive colors */
 @utility bg-interactive { background-color: var(--color-interactive); }
-@utility bg-interactive-hover:hover { background-color: var(--color-interactive-hover); }
-@utility hover\:bg-interactive-hover:hover { background-color: var(--color-interactive-hover); }
+@utility bg-interactive-hover { background-color: var(--color-interactive-hover); }
 
 /* Surface colors */
 @utility bg-surface { background-color: var(--color-surface); }
 @utility bg-surface-hover { background-color: var(--color-surface-hover); }
-@utility bg-surface-hover:hover { background-color: var(--color-surface-hover); }
-@utility hover\:bg-surface-hover:hover { background-color: var(--color-surface-hover); }
 
 /* Text colors */
 @utility text-primary { color: var(--color-text-primary); }
@@ -105,12 +103,11 @@
 
 /* Focus ring utilities */
 @utility ring-interactive { --tw-ring-color: var(--color-interactive); }
-@utility ring-interactive\/50 { --tw-ring-color: rgb(238 93 32 / 0.5); }
-@utility focus\:ring-interactive:focus { --tw-ring-color: var(--color-interactive); }
+@utility ring-interactive-50 { --tw-ring-color: rgb(238 93 32 / 0.5); }
 
-/* Focus border utilities */
+/* Border utilities */
 @utility border-interactive { border-color: var(--color-interactive); }
-@utility focus\:border-interactive:focus { border-color: var(--color-interactive); }
+@utility border-surface { border-color: var(--color-surface); }
 
 :root {
     /* ========================================
