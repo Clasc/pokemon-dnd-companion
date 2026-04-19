@@ -207,10 +207,8 @@ body:not(.hydrated) .main-content {
 }
 
 .splash-logo {
-    width: 96px;
-    height: 96px;
-    filter: drop-shadow(0 0 20px rgba(238, 93, 32, 0.6));
-    animation: bounce 2s ease-in-out infinite;
+    width: 80px;
+    height: 80px;
 }
 
 .splash-title {
