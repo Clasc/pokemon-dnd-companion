@@ -1,4 +1,4 @@
-# Gemini Agent Instructions
+# Agent Instructions
 
 Operational guide for the AI assistant working on `pokemon-dnd-companion`.
 
@@ -54,8 +54,9 @@ docs/                  # Ancillary or user-facing conceptual docs
 ```
 
 Distinction:
-- `doc/` = living design + requirements (update first when adding/modifying features)
-- `docs/` = supplemental / gameplay / narrative / domain notes
+- `specs/` = living feature specs (status tracking for active work)
+- `doc/` = supplemental design notes (static reference)
+- `bugs/` = bug tracking (status: Open → Fixed)
 
 ### Component Pattern
 ```
@@ -101,14 +102,48 @@ Collects from `src/**/*.{js,jsx,ts,tsx}` excluding `.d.ts`. Strive to cover crit
 
 ---
 ## 6. Development Workflow (For the Agent)
-1. Requirements: Clarify ambiguous user requests. If underspecified, list assumptions explicitly before proceeding.
-2. Planning: Produce a TODO (single in‑progress item rule) before coding multi‑step changes; get user sign‑off for feature-level work.
-3. Documentation First: Update / create spec in `doc/` for new or changed features prior to implementation.
-4. Implementation: Follow structure & naming. Keep PR-sized edits cohesive (one feature or fix).
-5. Manual Verification: Summarize changes & prompt user to manually validate UI/behavior.
-6. Test Authoring: Add / adjust tests only after user confirms manual behavior is correct.
-7. Quality Gates: Run lint + tests (and coverage if relevant) before finalizing.
-8. Commit: Use clear, present-tense messages (e.g., "Add HP modifier component validation"). Reference doc updates when applicable.
+
+### Core Principle: Always Work in Specs
+All feature work starts from and returns to specs. Never implement without a spec.
+
+### Workflow Steps
+
+1. **Requirements**: Clarify ambiguous requests. List assumptions explicitly if underspecified.
+
+2. **Spec First**: Create or update a spec in `specs/` (features) or `bugs/` (issues) **before** any implementation.
+
+3. **Start Work: Create Git Worktree**
+   - When beginning work on a spec, create a new git worktree:
+     ```bash
+     git worktree add -b feature/<spec-name> .worktrees/feature-<spec-name>
+     ```
+   - Worktrees keep spec-specific changes isolated and allow parallel workstreams.
+
+4. **Implementation**
+   - Update spec status to `in_progress` when starting
+   - Follow structure & naming conventions
+   - Keep PR-sized edits cohesive (one feature or fix per worktree)
+
+5. **Manual Verification**: Summarize changes & prompt user to validate UI/behavior.
+
+6. **Test Authoring**: Add tests only after user confirms manual behavior is correct.
+
+7. **Quality Gates**: Run lint + tests before committing.
+
+8. **Commit with Status Update**
+   - Use clear, present-tense messages
+   - After commit, update spec status to `done` (features) or mark bug as `Fixed`
+
+### Spec Locations & Types
+
+| Type | Location | Status Values |
+|------|----------|--------------|
+| Feature | `specs/plan-<name>.md` | Open → In Progress → Done |
+| Bug | `bugs/bug-<number>-<title>.md` | Open → Fixed |
+
+### Bug Workflow
+- When user notes a bug → create spec in `bugs/` using bug-tracking skill
+- Mark bug as `Fixed` when user confirms resolution
 
 ---
 ## 7. Linting & Quality
@@ -119,7 +154,7 @@ Collects from `src/**/*.{js,jsx,ts,tsx}` excluding `.d.ts`. Strive to cover crit
 ---
 ## 8. Adding / Modifying Features
 When adding a feature (e.g., Attack Management, Inventory, etc.):
-1. Create / update a markdown spec under `doc/` (problem, scope, data shape, UI entry points, edge cases).
+1. Create / update a spec under `specs/` (problem, scope, data shape, UI entry points, edge cases).
 2. Define data model changes (extend types in `src/types`).
 3. Update store shape & pure helpers (ensure backward-safe hydration if existing localStorage keys are reused).
 4. Implement UI components with tests pending.
@@ -152,13 +187,15 @@ When adding a feature (e.g., Attack Management, Inventory, etc.):
 
 ---
 ## 12. Review Checklist (Pre-Commit)
-- [ ] Spec in `doc/` updated/created
+- [ ] Spec in `specs/` or `bugs/` updated/created
+- [ ] Spec status updated to `in_progress` when starting work
 - [ ] README or other docs updated if user-facing behavior changed
 - [ ] Lint passes
 - [ ] Tests added/updated (post manual confirmation)
 - [ ] No unused exports / dead code
 - [ ] Accessibility semantics preserved
 - [ ] Commit message clear & scoped
+- [ ] Spec status updated to `done` (or bug marked Fixed) after commit
 
 ---
 ## 13. Open Gaps / Future (Reference Only)
@@ -187,7 +224,7 @@ This file should be updated whenever:
 - A new domain concept is added
 - Testing strategy changes
 - Tooling / script versions change materially
-If README diverges from this guide, reconcile both (README = user/dev overview, GEMINI.md = agent operational guide).
+If README diverges from this guide, reconcile both (README = user/dev overview, AGENTS.md = agent operational guide).
 
 ---
 By following this guide the agent maintains consistency, reliability, and forward scalability without premature complexity.

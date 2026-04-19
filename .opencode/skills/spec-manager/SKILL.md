@@ -5,7 +5,7 @@ description: Skill for tracking and managing specs (specifications) in the proje
 
 ## Specs Directory
 
-All specs are stored in `/Users/christian/repos/pokemon-dnd-companion/.opencode/plans/`
+All specs are stored in `/Users/christian/repos/pokemon-dnd-companion/specs/`
 
 ## Spec Status
 
@@ -19,7 +19,7 @@ Specs have three possible statuses:
 
 When requested to create a spec:
 
-1. Create a new Markdown file in `.opencode/plans/`
+1. Create a new Markdown file in `specs/`
 2. Use the naming convention: `plan-<short-name>.md`
 3. Include front matter with title, version, date, owner, and tags
 
@@ -82,7 +82,7 @@ When asked to work on a spec that's "open":
 
 To show the user existing specs:
 
-1. List all files in `.opencode/plans/`
+1. List all files in `specs/`
 2. Read each spec to get title, status, and tags
 3. Present as a table:
 
