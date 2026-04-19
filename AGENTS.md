@@ -65,6 +65,12 @@ className="focus:ring-[var(--color-interactive)]"
 - Do NOT add ad-hoc colors without documenting them in the system
 - Keep Pokemon semantic colors (blue for XP, status colors) separate from interactive colors
 
+**Migrating Existing Code:**
+When editing files that contain hardcoded colors (`#EE5D20`, `#222222`, etc.), use the utilities and follow the migration guide:
+- Tailwind utilities: `bg-interactive`, `bg-surface`, `ring-interactive`, `focus:ring-interactive`
+- Full migration guide: `docs/color-migration-guide.md`
+- Replace patterns: `bg-[#EE5D20]` → `bg-interactive`, `bg-[#222222]` → `bg-surface`
+
 ---
 ## 5. Repository & Structure Conventions
 Feature‑centric layout + shared components:
