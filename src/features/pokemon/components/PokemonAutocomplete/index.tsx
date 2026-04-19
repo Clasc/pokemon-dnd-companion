@@ -235,7 +235,7 @@ export default function PokemonAutocomplete({
           onBlur={handleBlur}
           placeholder={placeholder}
           disabled={disabled}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#EE5D20] disabled:opacity-50"
+          className="w-full px-3 py-2 bg-[#222222] border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#EE5D20] disabled:opacity-50"
           data-testid={testIds?.input}
           autoComplete="off"
         />
@@ -255,7 +255,7 @@ export default function PokemonAutocomplete({
       {isOpen && suggestions.length > 0 && (
         <div
           ref={dropdownRef}
-          className="absolute z-50 w-full mt-1 bg-gray-800 border border-white/20 rounded-lg shadow-lg max-h-64 overflow-y-auto"
+          className="absolute z-50 w-full mt-1 bg-[#222222] border border-white/20 rounded-lg shadow-lg max-h-64 overflow-y-auto"
           data-testid={testIds?.dropdown}
         >
 {suggestions.map((pokemon, index) => (
@@ -277,7 +277,7 @@ export default function PokemonAutocomplete({
       )}
 
       {isOpen && value.trim() && suggestions.length === 0 && !isLoading && (
-        <div className="absolute z-50 w-full mt-1 bg-gray-800 border border-white/20 rounded-lg shadow-lg p-4 text-gray-400 text-center">
+        <div className="absolute z-50 w-full mt-1 bg-[#222222] border border-white/20 rounded-lg shadow-lg p-4 text-gray-400 text-center">
           No Pokemon found
         </div>
       )}

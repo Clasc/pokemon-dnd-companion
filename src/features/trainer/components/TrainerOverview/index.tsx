@@ -290,7 +290,7 @@ export default function TrainerOverview({
                   setEditedTrainer({ ...editedTrainer, name: e.target.value })
                 }
                 placeholder="Trainer Name"
-                className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-[#EE5D20] focus:outline-none"
+                className="w-full bg-[#222222] text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-[#EE5D20] focus:outline-none"
               />
               <div className="flex gap-space-4">
                 <input
@@ -303,7 +303,7 @@ export default function TrainerOverview({
                     })
                   }
                   placeholder="Class"
-                  className="w-full bg-white/10 text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-[#EE5D20] focus:outline-none"
+                  className="w-full bg-[#222222] text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-[#EE5D20] focus:outline-none"
                 />
                 <input
                   type="number"
@@ -315,7 +315,7 @@ export default function TrainerOverview({
                     })
                   }
                   placeholder="Level"
-                  className="w-24 bg-white/10 text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-[#EE5D20] focus:outline-none"
+                  className="w-24 bg-[#222222] text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-[#EE5D20] focus:outline-none"
                 />
               </div>
             </div>
