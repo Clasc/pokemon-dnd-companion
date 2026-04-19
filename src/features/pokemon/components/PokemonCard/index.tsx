@@ -250,7 +250,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                     onChange={(e) => setXpInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleAddXP()}
                     placeholder="XP"
-                    className="w-16 px-2 py-0.5 bg-white/10 border border-white/20 rounded text-white text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-16 px-2 py-0.5 bg-white/10 border border-white/20 rounded text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#EE5D20]"
                   />
                   <button
                     onClick={handleAddXP}

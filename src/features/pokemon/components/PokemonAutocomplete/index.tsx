@@ -235,13 +235,13 @@ export default function PokemonAutocomplete({
           onBlur={handleBlur}
           placeholder={placeholder}
           disabled={disabled}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 disabled:opacity-50"
+          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#EE5D20] disabled:opacity-50"
           data-testid={testIds?.input}
           autoComplete="off"
         />
         {isLoading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-[#EE5D20] border-t-transparent rounded-full animate-spin" />
           </div>
         )}
       </div>
@@ -265,7 +265,7 @@ export default function PokemonAutocomplete({
                 onClick={() => handleSelect(pokemon)}
                 className={`w-full px-4 py-2 text-left transition-colors ${
                   index === highlightedIndex
-                    ? "bg-blue-600 text-white"
+                    ? "bg-[#EE5D20] text-white"
                     : "text-white hover:bg-white/10 focus:bg-white/20"
                 }`}
                 data-testid={testIds?.option}

@@ -93,7 +93,7 @@ export default function AttackCard({
       <button
         onClick={handlePerformAttack}
         disabled={attack.currentPp === 0}
-        className="w-full mt-auto bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600/50 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-bold py-1.5 px-2 rounded-md transition-colors text-xs"
+        className="w-full mt-auto bg-[#EE5D20] hover:bg-[#d44d15] disabled:bg-gray-600/50 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-bold py-1.5 px-2 rounded-md transition-colors text-xs"
       >
         Perform Attack
       </button>

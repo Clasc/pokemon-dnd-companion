@@ -188,13 +188,13 @@ export default function ItemAutocomplete({
           onBlur={handleBlur}
           placeholder={placeholder}
           disabled={disabled}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 disabled:opacity-50"
+          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#EE5D20] disabled:opacity-50"
           data-testid={testIds?.input}
           autoComplete="off"
         />
         {isLoading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <div className="w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-[#EE5D20] border-t-transparent rounded-full animate-spin" />
           </div>
         )}
       </div>

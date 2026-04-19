@@ -98,8 +98,8 @@
     --accent-red: #EE5D20;      /* Firered */
     --accent-yellow: #FFBA08;   /* Gold */
     --accent-green: #4E9A06;    /* Leafgreen */
-    --accent-blue: #3B82F6;
-    --accent-purple: #8b5fbf;
+    --accent-blue: #3B82F6;     /* Keep for XP bar (Pokemon semantic) */
+    --accent-orange: #EE5D20;    /* Primary interactive color */
 
     /* Shadows and Effects */
     --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);

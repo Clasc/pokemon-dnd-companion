@@ -123,7 +123,7 @@ export default function PokemonOverview({
             <button
               type="button"
               onClick={() => setShowAddModal(true)}
-              className="w-full flex items-center justify-center gap-sm py-space-3 px-space-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white border-2 border-dashed border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
+              className="w-full flex items-center justify-center gap-sm py-space-3 px-space-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white border-2 border-dashed border-white/20 focus:outline-none focus:ring-2 focus:ring-[#EE5D20]/50"
             >
               <svg
                 className="w-6 h-6"

@@ -66,7 +66,7 @@ export default function ConfirmationModal({
               px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50
               ${variant === "danger" 
                 ? "bg-red-600 hover:bg-red-700 text-white" 
-                : "bg-accent-purple hover:bg-purple-700 text-white"}
+                : "bg-[#EE5D20] hover:bg-[#d44d15] text-white"}
             `}
           >
             {isLoading ? "Loading..." : confirmLabel}

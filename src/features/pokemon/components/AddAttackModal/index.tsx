@@ -112,7 +112,7 @@ export default function AddAttackModal({
                 id="maxPp"
                 value={attack.maxPp}
                 onChange={handleChange}
-                className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-[#EE5D20]"
                 required
               />
             </div>
@@ -129,7 +129,7 @@ export default function AddAttackModal({
                 id="moveBonus"
                 value={attack.moveBonus}
                 onChange={handleChange}
-                className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-[#EE5D20]"
                 required
               />
             </div>
@@ -148,7 +148,7 @@ export default function AddAttackModal({
                 id="actionType"
                 value={attack.actionType}
                 onChange={handleChange}
-                className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-[#EE5D20]"
               >
                 <option value="action">Action</option>
                 <option value="bonus action">Bonus Action</option>
@@ -166,7 +166,7 @@ export default function AddAttackModal({
                 id="damageDice"
                 value={attack.damageDice}
                 onChange={handleChange}
-                className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-[#EE5D20]"
               >
                 <option value="d4">d4</option>
                 <option value="d6">d6</option>
@@ -188,7 +188,7 @@ export default function AddAttackModal({
               id="specialEffect"
               value={attack.specialEffect}
               onChange={handleChange}
-              className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-[#EE5D20]"
               placeholder="e.g., Flinch on 19+"
             />
           </div>
@@ -206,7 +206,7 @@ export default function AddAttackModal({
               value={attack.description || ""}
               onChange={handleChange}
               rows={2}
-              className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-white/10 rounded-md border-transparent focus:ring-2 focus:ring-[#EE5D20]"
               placeholder="e.g., A powerful electric shock."
             />
           </div>
@@ -221,7 +221,7 @@ export default function AddAttackModal({
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white rounded-md bg-blue-600 hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-white rounded-md bg-[#EE5D20] hover:bg-[#d44d15] transition-colors"
             >
               Add Attack
             </button>
