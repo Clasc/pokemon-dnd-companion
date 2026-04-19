@@ -6,6 +6,8 @@ import { createSelectors } from "./utils";
 import { testFixtures } from "../fixtures";
 
 interface AppState {
+  _hasHydrated: boolean;
+  setHasHydrated: (state: boolean) => void;
   pokemonTeam: PokemonTeam;
   trainer: Trainer | null;
   addPokemon: (pokemon: Pokemon, uuid?: string) => void;
@@ -50,12 +52,14 @@ const getInitialState = () => {
     return {
       pokemonTeam: testFixtures.pokemonTeam,
       trainer: testFixtures.trainer,
+      _hasHydrated: true,
     };
   }
 
   return {
     pokemonTeam: {},
     trainer: null,
+    _hasHydrated: false,
   };
 };
 
@@ -177,18 +181,19 @@ export const useAppStore = createSelectors(
             const newExperience = pokemon.experience + xpGained;
             let newLevel = pokemon.level;
             let newExperienceToNext = pokemon.experienceToNext;
+            // Initialize xpSinceLevelUp from experience if not set (legacy data migration)
+            const xpFromLastLevel = pokemon.xpSinceLevelUp ?? pokemon.experience;
+            let newXpSinceLevelUp = xpFromLastLevel + xpGained;
 
-            if (xpGained >= pokemon.experienceToNext) {
-              // Level up
+            // Check if xpSinceLevelUp crosses the threshold (not the raw xpGained)
+            if (newXpSinceLevelUp >= pokemon.experienceToNext) {
+              // Level up occurred
               newLevel += 1;
-              const remainingXP = xpGained - pokemon.experienceToNext;
-              newExperienceToNext = 100 * newLevel - remainingXP;
-              if (newExperienceToNext <= 0) {
-                newExperienceToNext = 100;
-              }
-            } else {
-              // No level up, reduce XP needed
-              newExperienceToNext = pokemon.experienceToNext - xpGained;
+              // Carry over any overflow beyond the threshold
+              const overflow = newXpSinceLevelUp - pokemon.experienceToNext;
+              newXpSinceLevelUp = overflow;
+              // New threshold is based ONLY on the new level (100 * newLevel)
+              newExperienceToNext = 100 * newLevel;
             }
 
             return {
@@ -199,6 +204,7 @@ export const useAppStore = createSelectors(
                   experience: newExperience,
                   experienceToNext: newExperienceToNext,
                   level: newLevel,
+                  xpSinceLevelUp: newXpSinceLevelUp,
                 },
               },
             };
@@ -290,6 +296,7 @@ export const useAppStore = createSelectors(
             pokemonTeam: {},
             trainer: null,
           })),
+        setHasHydrated: (state) => set({ _hasHydrated: state }),
         isLoading: true,
       }),
       {
@@ -298,6 +305,9 @@ export const useAppStore = createSelectors(
           pokemonTeam: state.pokemonTeam,
           trainer: state.trainer,
         }),
+        onRehydrateStorage: () => (state) => {
+          state?.setHasHydrated(true);
+        },
       },
     ),
   ),

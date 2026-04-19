@@ -39,6 +39,7 @@ export interface Pokemon {
   maxHP: number;
   experience: number;
   experienceToNext: number;
+  xpSinceLevelUp?: number;
   attributes: {
     strength: number;
     dexterity: number;
