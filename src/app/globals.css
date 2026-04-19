@@ -85,7 +85,35 @@
 @utility text-center { text-align: center; }
 
 :root {
-    /* Dark Theme Colors - Solid Palette */
+    /* ========================================
+       DESIGN TOKENS - Use these for consistency
+       ======================================== */
+    
+    /* Backgrounds */
+    --color-bg: #1a1a1a;              /* Main page background */
+    --color-surface: #222222;             /* Input fields, dropdowns, cards */
+    --color-surface-hover: #2d2d2d;       /* Card hover state */
+    
+    /* Interactive (Primary) */
+    --color-interactive: #EE5D20;         /* Buttons, focus rings, links */
+    --color-interactive-hover: #d44d15;    /* Button hover */
+    
+    /* Text */
+    --color-text-primary: #f0f0f0;
+    --color-text-secondary: #a0a0a0;
+    --color-text-accent: #ffffff;
+    
+    /* Accent (Pokemon Semantic - preserve for context) */
+    --color-accent: #3B82F6;            /* XP bar, progress bars */
+    
+    /* Legacy aliases (deprecated - use above) */
+    --accent-red: #EE5D20;
+    --accent-yellow: #FFBA08;
+    --accent-green: #4E9A06;
+    --accent-blue: #3B82F6;
+    --accent-orange: #EE5D20;
+    
+    /* Backward compatibility */
     --bg-primary: #1a1a1a;
     --bg-secondary: #222222;
     --bg-card: #252525;
@@ -93,13 +121,6 @@
     --text-primary: #f0f0f0;
     --text-secondary: #a0a0a0;
     --text-accent: #ffffff;
-
-    /* Accent Colors - Pokemon 1st Gen Inspired */
-    --accent-red: #EE5D20;      /* Firered */
-    --accent-yellow: #FFBA08;   /* Gold */
-    --accent-green: #4E9A06;    /* Leafgreen */
-    --accent-blue: #3B82F6;     /* Keep for XP bar (Pokemon semantic) */
-    --accent-orange: #EE5D20;    /* Primary interactive color */
 
     /* Shadows and Effects */
     --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);

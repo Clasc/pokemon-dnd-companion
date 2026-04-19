@@ -35,7 +35,38 @@ npm run test:coverage# Coverage report
 ```
 
 ---
-## 4. Repository & Structure Conventions
+## 4. Design System - Color Tokens
+**Always use these CSS variables instead of hardcoded colors:**
+
+| Token | Usage | Example |
+|------|-------|---------|
+| `--color-bg` | Page background | `background: var(--color-bg)` |
+| `--color-surface` | Inputs, dropdowns, cards | `background: var(--color-surface)` |
+| `--color-interactive` | Primary buttons, focus rings | `background: var(--color-interactive)` |
+| `--color-interactive-hover` | Button hover state | `hover: var(--color-interactive-hover)` |
+| `--color-text-primary` | Main text | `color: var(--color-text-primary)` |
+| `--color-text-secondary` | Muted text | `color: var(--color-text-secondary)` |
+| `--color-accent` | XP bar, progress (Pokemon semantic) | Keep blue `#3B82F6` |
+
+**In className (Tailwind):**
+```tsx
+// Buttons
+className="bg-[var(--color-interactive)]"
+
+// Inputs
+className="bg-[#222222]"  // Use #222222 for surface, or --color-surface in CSS
+
+// Focus rings  
+className="focus:ring-[var(--color-interactive)]"
+```
+
+**When adding new colors:**
+- If you need a color not in the table above, propose extending the design system in `globals.css`
+- Do NOT add ad-hoc colors without documenting them in the system
+- Keep Pokemon semantic colors (blue for XP, status colors) separate from interactive colors
+
+---
+## 5. Repository & Structure Conventions
 Feature‑centric layout + shared components:
 ```
 src/
