@@ -4,7 +4,9 @@ version: 1.0
 date_created: 2026-04-19
 owner: Pokemon DnD Companion
 tags: `feature`, `reference`
-status: open
+status: done
+started: 2026-06-25
+completed: 2026-06-25
 ---
 
 # Rulebook

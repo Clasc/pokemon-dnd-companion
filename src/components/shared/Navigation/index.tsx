@@ -90,6 +90,22 @@ const IconTrainer = (props: { className?: string }) => (
   </svg>
 );
 
+const IconRulebook = (props: { className?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    fill="none"
+    strokeWidth={1.8}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={props.className ?? "w-5 h-5"}
+  >
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+    <path d="M8 7h8M8 11h6" />
+  </svg>
+);
+
 /* ---------- Utility: derive active segment ---------- */
 
 const getPrimarySegment = (pathname: string): string => {
@@ -136,6 +152,13 @@ export default function Navigation() {
         icon: <IconTrainer />,
         badge: trainerBadge,
         isActive: (p) => getPrimarySegment(p) === "trainer",
+      },
+      {
+        key: "rulebook",
+        label: "Rulebook",
+        href: "/rulebook",
+        icon: <IconRulebook />,
+        isActive: (p) => getPrimarySegment(p) === "rulebook",
       },
     ],
     [teamBadge, trainerBadge],
