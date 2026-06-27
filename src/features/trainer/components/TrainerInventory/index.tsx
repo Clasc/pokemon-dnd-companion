@@ -100,6 +100,7 @@ export default function TrainerInventory({
           <div className="flex items-center gap-space-2 mt-space-3">
             <input
               type="number"
+              inputMode="numeric"
               value={pokedollarAmount}
               onChange={(e) => setPokedollarAmount(e.target.value)}
               placeholder="Amount"
@@ -259,6 +260,7 @@ export default function TrainerInventory({
 
             <input
               type="number"
+              inputMode="numeric"
               value={newItemQuantity}
               onChange={(e) =>
                 setNewItemQuantity(Math.max(1, parseInt(e.target.value) || 1))

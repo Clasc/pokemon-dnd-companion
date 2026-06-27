@@ -220,6 +220,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                 <div className="flex items-center gap-1">
                   <input
                     type="number"
+                    inputMode="numeric"
                     min="1"
                     value={xpInput}
                     onChange={(e) => setXpInput(e.target.value)}

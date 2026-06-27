@@ -108,6 +108,7 @@ export default function AddAttackModal({
               </label>
               <input
                 type="number"
+                inputMode="numeric"
                 name="maxPp"
                 id="maxPp"
                 value={attack.maxPp}
@@ -125,6 +126,7 @@ export default function AddAttackModal({
               </label>
               <input
                 type="number"
+                inputMode="numeric"
                 name="moveBonus"
                 id="moveBonus"
                 value={attack.moveBonus}

@@ -311,7 +311,7 @@ export default function InteractiveProgress({
         aria-disabled={disabled}
         tabIndex={disabled ? -1 : 0}
         className={`
-          relative w-full h-2 bg-gray-600/50 rounded-full overflow-hidden
+          relative w-full h-3 md:h-2 bg-gray-600/50 rounded-full overflow-hidden
           ${isFocused ? "focus-visible ring-2 ring-blue-500 ring-offset-2" : ""}
           ${disabled ? "opacity-50" : ""}
         `}

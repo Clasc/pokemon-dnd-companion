@@ -12,7 +12,7 @@ import AddAttackModal from "../AddAttackModal";
 import AttackCard from "../AttackCard";
 import StatusSelector from "../StatusSelector";
 import QuickStatusDropdown from "../QuickStatusDropdown";
-import ProgressBar from "@/components/shared/ui/ProgressBar";
+import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
 
 interface PokemonExpandedModalProps {
   pokemon: Pokemon;
@@ -37,6 +37,7 @@ export default function PokemonExpandedModal({
 
   const removePokemon = useAppStore.use.removePokemon();
   const modifyPokemonHP = useAppStore.use.modifyPokemonHP();
+  const gainExperience = useAppStore.use.gainExperience();
 
   const handleDelete = () => {
     removePokemon(uuid);
@@ -47,10 +48,6 @@ export default function PokemonExpandedModal({
   const handleEditClick = () => {
     router.push(`/pokemon/${uuid}/edit`);
     onClose();
-  };
-
-  const modifyHP = (amount: number) => {
-    modifyPokemonHP(uuid, amount);
   };
 
   const getTypeColor = (type: string) =>
@@ -70,7 +67,7 @@ export default function PokemonExpandedModal({
           <QuickStatusDropdown pokemonUuid={uuid} />
         </div>
 
-        <div className="p-space-4 md:p-space-6">
+        <div>
           <div className="flex items-start gap-space-4 mb-space-6">
             <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-4xl md:text-5xl border border-white/10 overflow-hidden flex-shrink-0">
               {pokemon.spriteUrl ? (
@@ -139,48 +136,32 @@ export default function PokemonExpandedModal({
             <div>
               <div className="flex items-center justify-between mb-space-2">
                 <span className="text-sm text-gray-300 font-medium">HP</span>
-                <div className="flex items-center gap-space-2">
-                  <button
-                    onClick={() => modifyHP(-1)}
-                    className="w-7 h-7 text-sm bg-red-500/20 hover:bg-red-500/40 rounded text-white flex items-center justify-center"
-                  >
-                    -1
-                  </button>
-                  <button
-                    onClick={() => modifyHP(-5)}
-                    className="w-7 h-7 text-sm bg-red-500/20 hover:bg-red-500/40 rounded text-white flex items-center justify-center"
-                  >
-                    -5
-                  </button>
-                  <button
-                    onClick={() => modifyHP(1)}
-                    className="w-7 h-7 text-sm bg-green-500/20 hover:bg-green-500/40 rounded text-white flex items-center justify-center"
-                  >
-                    +1
-                  </button>
-                  <button
-                    onClick={() => modifyHP(5)}
-                    className="w-7 h-7 text-sm bg-green-500/20 hover:bg-green-500/40 rounded text-white flex items-center justify-center"
-                  >
-                    +5
-                  </button>
-                </div>
+                <span className="text-sm text-gray-300">
+                  {pokemon.currentHP}/{pokemon.maxHP}
+                </span>
               </div>
-              <ProgressBar
-                variant="hp"
+              <InteractiveProgress
+                type="hp"
                 current={pokemon.currentHP}
                 max={pokemon.maxHP}
+                onChange={(val) => modifyPokemonHP(uuid, val - pokemon.currentHP)}
+                label="HP"
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-space-2">
                 <span className="text-sm text-gray-300 font-medium">XP</span>
+                <span className="text-sm text-gray-300">
+                  {pokemon.experience}/{pokemon.experience + pokemon.experienceToNext}
+                </span>
               </div>
-              <ProgressBar
-                variant="xp"
+              <InteractiveProgress
+                type="xp"
                 current={pokemon.experience}
                 max={pokemon.experience + pokemon.experienceToNext}
+                onChange={(val) => gainExperience(uuid, val - pokemon.experience)}
+                label="XP"
               />
             </div>
           </div>

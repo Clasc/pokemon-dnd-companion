@@ -178,21 +178,22 @@ export default function PokemonForm({
           {/* Level */}
           <div>
             <label className="block text-sm text-gray-300 mb-1">Level</label>
-            <input
-              type="number"
-              min={1}
-              max={100}
-              value={pokemon.level}
-              onChange={(e) =>
-                handleFieldChange(
-                  "level",
-                  Number.isNaN(parseInt(e.target.value))
-                    ? 1
-                    : parseInt(e.target.value),
-                )
-              }
-              className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-interactive"
-            />
+              <input
+                type="number"
+                inputMode="numeric"
+                min={1}
+                max={100}
+                value={pokemon.level}
+                onChange={(e) =>
+                  handleFieldChange(
+                    "level",
+                    Number.isNaN(parseInt(e.target.value))
+                      ? 1
+                      : parseInt(e.target.value),
+                  )
+                }
+                className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-interactive"
+              />
           </div>
         </div>
       </div>
@@ -251,6 +252,7 @@ export default function PokemonForm({
             </label>
             <input
               type="number"
+              inputMode="numeric"
               min={0}
               max={pokemon.maxHP}
               value={pokemon.currentHP}
@@ -269,6 +271,7 @@ export default function PokemonForm({
             <label className="block text-xs text-gray-400 mb-1">Max HP</label>
             <input
               type="number"
+              inputMode="numeric"
               min={1}
               value={pokemon.maxHP}
               onChange={(e) => {
@@ -317,6 +320,7 @@ export default function PokemonForm({
             </label>
             <input
               type="number"
+              inputMode="numeric"
               min={0}
               value={pokemon.experience}
               onChange={(e) =>
@@ -336,6 +340,7 @@ export default function PokemonForm({
             </label>
             <input
               type="number"
+              inputMode="numeric"
               min={0}
               value={pokemon.experienceToNext}
               onChange={(e) =>
@@ -372,6 +377,7 @@ export default function PokemonForm({
               </label>
               <input
                 type="number"
+                inputMode="numeric"
                 min={1}
                 max={30}
                 value={pokemon.attributes[attr]}

@@ -15,6 +15,7 @@ interface PokemonOverviewProps {
 
   unstyled?: boolean;
   showAttacks?: boolean;
+  hideTeamStats?: boolean;
 }
 
 export default function PokemonOverview({
@@ -22,6 +23,7 @@ export default function PokemonOverview({
   disableCards = false,
   unstyled = false,
   showAttacks = false,
+  hideTeamStats = false,
 }: PokemonOverviewProps) {
   const [expandedUuid, setExpandedUuid] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -147,7 +149,7 @@ export default function PokemonOverview({
           </div>
         )}
 
-        {pokemonLength > 0 && (
+        {pokemonLength > 0 && !hideTeamStats && (
           <section className="pt-space-4 border-t border-white/10">
             <h3 className="text-lg font-semibold text-white mb-space-4 text-center">
               Team Stats

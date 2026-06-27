@@ -42,14 +42,13 @@ export default function DashboardPage() {
           <TrainerOverview />
         </div>
         <div className="md:pl-6">
-          <PokemonOverview pokemon={pokemon} />
+          <PokemonOverview pokemon={pokemon} hideTeamStats />
         </div>
       </section>
 
       <footer className="text-center py-4">
         <p className="text-gray-400 text-xs md:text-sm">
-          Trainer Lv.{trainer.level} • Team {Object.keys(pokemon).length}/6 •
-          Made with ❤️
+          Trainer Lv.{trainer.level}
         </p>
       </footer>
     </main>

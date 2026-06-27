@@ -7,6 +7,7 @@ import { Trainer, InventoryItem } from "@/types/trainer";
 import ActionButtons from "@/components/shared/ActionButtons";
 import TrainerInventory from "../TrainerInventory";
 import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
+import BaseModal from "@/components/shared/ui/BaseModal";
 import { ATTRIBUTE_NAMES, getAttributeShortName, getAttributeModifier, formatModifier, getAttributeDisplayName } from "@/utils/attributes";
 
 export default function TrainerOverview({
@@ -214,48 +215,32 @@ export default function TrainerOverview({
       </div>
 
       {/* Editing Modal */}
-      {isEditing && (
-        <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-space-2">
-          <div className="card rounded-lg p-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative border border-white/20">
-            <button
-              onClick={handleCancel}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-7 w-7"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+      <BaseModal
+        isOpen={isEditing}
+        onClose={handleCancel}
+        size="lg"
+        titleId="edit-trainer-title"
+      >
+        <div>
+          <div className="flex items-center justify-between mb-6">
+            <h2 id="edit-trainer-title" className="text-2xl font-bold text-white">Edit Trainer</h2>
+          </div>
 
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-white">Edit Trainer</h2>
-            </div>
-
-            {/* Trainer Name & Class - Editable */}
-            <div className="mb-6 space-y-4">
+          {/* Trainer Name & Class - Editable */}
+          <div className="mb-6 space-y-4">
+            <input
+              type="text"
+              value={editedTrainer.name}
+              onChange={(e) =>
+                setEditedTrainer({ ...editedTrainer, name: e.target.value })
+              }
+              placeholder="Trainer Name"
+              className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
+            />
+            <div className="flex gap-space-4">
               <input
                 type="text"
-                value={editedTrainer.name}
-                onChange={(e) =>
-                  setEditedTrainer({ ...editedTrainer, name: e.target.value })
-                }
-                placeholder="Trainer Name"
-                className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
-              />
-              <div className="flex gap-space-4">
-                <input
-                  type="text"
-                  value={editedTrainer.class}
+                value={editedTrainer.class}
                   onChange={(e) =>
                     setEditedTrainer({
                       ...editedTrainer,
@@ -267,6 +252,7 @@ export default function TrainerOverview({
                 />
                 <input
                   type="number"
+                  inputMode="numeric"
                   value={editedTrainer.level}
                   onChange={(e) =>
                     setEditedTrainer({
@@ -385,10 +371,9 @@ export default function TrainerOverview({
               </div>
             </div>
 
-            <EditButtons handleCancel={handleCancel} handleSave={handleSave} />
-          </div>
+          <EditButtons handleCancel={handleCancel} handleSave={handleSave} />
         </div>
-      )}
+      </BaseModal>
     </>
   );
 }

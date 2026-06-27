@@ -188,7 +188,7 @@ export default function BaseModal({
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="absolute top-3 right-3 w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center text-white z-10"
+            className="absolute top-3 right-3 w-10 h-10 md:w-8 md:h-8 rounded-lg bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center text-white z-10"
           >
             <svg
               className="w-5 h-5"

@@ -103,6 +103,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
 
             <input
               type="number"
+              inputMode="numeric"
               min="1"
               value={character.level}
               onChange={changeHandler("level")}
@@ -139,6 +140,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
 
                 <input
                   type="number"
+                  inputMode="numeric"
                   min="1"
                   max="20"
                   value={character.attributes[attr]}
@@ -165,6 +167,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
               </label>
               <input
                 type="number"
+                inputMode="numeric"
                 min="0"
                 value={character.maxHP}
                 onChange={handleMaxHPChange}

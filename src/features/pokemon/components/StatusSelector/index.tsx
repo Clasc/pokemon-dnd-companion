@@ -228,6 +228,7 @@ export default function StatusSelector({
                         <span className="text-gray-300 text-sm">Duration:</span>
                         <input
                           type="number"
+                          inputMode="numeric"
                           min="1"
                           max={condition === "asleep" ? 3 : 4}
                           value={primaryDuration || ""}
@@ -271,6 +272,7 @@ export default function StatusSelector({
                   <span className="text-gray-300 text-sm">Duration:</span>
                   <input
                     type="number"
+                    inputMode="numeric"
                     min="1"
                     max="4"
                     value={confusionDuration || ""}
