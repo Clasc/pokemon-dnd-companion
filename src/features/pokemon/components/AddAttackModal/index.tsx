@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useAppStore } from "@/store";
 import { Attack } from "@/types/pokemon";
 import BaseModal from "@/components/shared/ui/BaseModal";
+import BottomSheet from "@/components/shared/ui/BottomSheet";
+import { useMediaQuery } from "@/utils/useMediaQuery";
 import MoveAutocomplete from "@/features/pokemon/components/MoveAutocomplete";
 
 interface AddAttackModalProps {
@@ -29,6 +31,7 @@ export default function AddAttackModal({
   pokemonUuid,
   attackIndex,
 }: AddAttackModalProps) {
+  const isMobile = useMediaQuery("(max-width: 767px)");
   const addAttack = useAppStore.use.addAttack();
   const [attack, setAttack] = useState<Omit<Attack, "currentPp">>(initialState);
 
@@ -71,6 +74,169 @@ export default function AddAttackModal({
     onClose();
   };
 
+  const content = (
+    <div className="p-2">
+      <h2 id="add-attack-title" className="text-xl font-bold mb-4 text-white">
+        Add New Attack
+      </h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-300 mb-1"
+          >
+            Attack Name
+          </label>
+          <MoveAutocomplete
+            value={attack.name}
+            onSelect={handleMoveSelect}
+            onChange={(value) => setAttack((prev) => ({ ...prev, name: value }))}
+            placeholder="Search for a move..."
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              htmlFor="maxPp"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
+              Max PP
+            </label>
+            <input
+              type="number"
+              inputMode="numeric"
+              name="maxPp"
+              id="maxPp"
+              value={attack.maxPp}
+              onChange={handleChange}
+              className="w-full bg-surface rounded-md border-transparent focus:ring-2 focus:ring-interactive"
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="moveBonus"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
+              Move Bonus
+            </label>
+            <input
+              type="number"
+              inputMode="numeric"
+              name="moveBonus"
+              id="moveBonus"
+              value={attack.moveBonus}
+              onChange={handleChange}
+              className="w-full bg-surface rounded-md border-transparent focus:ring-2 focus:ring-interactive"
+              required
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              htmlFor="actionType"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
+              Action Type
+            </label>
+            <select
+              name="actionType"
+              id="actionType"
+              value={attack.actionType}
+              onChange={handleChange}
+              className="w-full bg-surface rounded-md border-transparent focus:ring-2 focus:ring-interactive"
+            >
+              <option value="action">Action</option>
+              <option value="bonus action">Bonus Action</option>
+            </select>
+          </div>
+          <div>
+            <label
+              htmlFor="damageDice"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
+              Damage Dice
+            </label>
+            <select
+              name="damageDice"
+              id="damageDice"
+              value={attack.damageDice}
+              onChange={handleChange}
+              className="w-full bg-surface rounded-md border-transparent focus:ring-2 focus:ring-interactive"
+            >
+              <option value="d4">d4</option>
+              <option value="d6">d6</option>
+              <option value="d10">d10</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label
+            htmlFor="specialEffect"
+            className="block text-sm font-medium text-gray-300 mb-1"
+          >
+            Special Effect (on d20 roll)
+          </label>
+          <input
+            type="text"
+            name="specialEffect"
+            id="specialEffect"
+            value={attack.specialEffect}
+            onChange={handleChange}
+            className="w-full bg-surface rounded-md border-transparent focus:ring-2 focus:ring-interactive"
+            placeholder="e.g., Flinch on 19+"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="description"
+            className="block text-sm font-medium text-gray-300 mb-1"
+          >
+            Description
+          </label>
+          <textarea
+            name="description"
+            id="description"
+            value={attack.description || ""}
+            onChange={handleChange}
+            rows={2}
+            className="w-full bg-surface rounded-md border-transparent focus:ring-2 focus:ring-interactive"
+            placeholder="e.g., A powerful electric shock."
+          />
+        </div>
+
+        <div className="flex justify-end gap-4 pt-4">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 text-sm font-medium rounded-md bg-white/10 hover:bg-white/20 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 text-sm font-medium text-white rounded-md bg-interactive hover:bg-interactive-hover transition-colors"
+          >
+            Add Attack
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+
+  if (isMobile) {
+    return (
+      <BottomSheet isOpen={isOpen} onClose={onClose}>
+        {content}
+      </BottomSheet>
+    );
+  }
+
   return (
     <BaseModal
       isOpen={isOpen}
@@ -78,158 +244,7 @@ export default function AddAttackModal({
       size="md"
       titleId="add-attack-title"
     >
-      <div className="p-2">
-        <h2 id="add-attack-title" className="text-xl font-bold mb-4 text-white">
-          Add New Attack
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-300 mb-1"
-            >
-              Attack Name
-            </label>
-            <MoveAutocomplete
-              value={attack.name}
-              onSelect={handleMoveSelect}
-              onChange={(value) => setAttack((prev) => ({ ...prev, name: value }))}
-              placeholder="Search for a move..."
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="maxPp"
-                className="block text-sm font-medium text-gray-300 mb-1"
-              >
-                Max PP
-              </label>
-              <input
-                type="number"
-                inputMode="numeric"
-                name="maxPp"
-                id="maxPp"
-                value={attack.maxPp}
-                onChange={handleChange}
-                className="w-full bg-surface rounded-md border-transparent focus:ring-2 focus:ring-interactive"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="moveBonus"
-                className="block text-sm font-medium text-gray-300 mb-1"
-              >
-                Move Bonus
-              </label>
-              <input
-                type="number"
-                inputMode="numeric"
-                name="moveBonus"
-                id="moveBonus"
-                value={attack.moveBonus}
-                onChange={handleChange}
-                className="w-full bg-surface rounded-md border-transparent focus:ring-2 focus:ring-interactive"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="actionType"
-                className="block text-sm font-medium text-gray-300 mb-1"
-              >
-                Action Type
-              </label>
-              <select
-                name="actionType"
-                id="actionType"
-                value={attack.actionType}
-                onChange={handleChange}
-                className="w-full bg-surface rounded-md border-transparent focus:ring-2 focus:ring-interactive"
-              >
-                <option value="action">Action</option>
-                <option value="bonus action">Bonus Action</option>
-              </select>
-            </div>
-            <div>
-              <label
-                htmlFor="damageDice"
-                className="block text-sm font-medium text-gray-300 mb-1"
-              >
-                Damage Dice
-              </label>
-              <select
-                name="damageDice"
-                id="damageDice"
-                value={attack.damageDice}
-                onChange={handleChange}
-                className="w-full bg-surface rounded-md border-transparent focus:ring-2 focus:ring-interactive"
-              >
-                <option value="d4">d4</option>
-                <option value="d6">d6</option>
-                <option value="d10">d10</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="specialEffect"
-              className="block text-sm font-medium text-gray-300 mb-1"
-            >
-              Special Effect (on d20 roll)
-            </label>
-            <input
-              type="text"
-              name="specialEffect"
-              id="specialEffect"
-              value={attack.specialEffect}
-              onChange={handleChange}
-              className="w-full bg-surface rounded-md border-transparent focus:ring-2 focus:ring-interactive"
-              placeholder="e.g., Flinch on 19+"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-300 mb-1"
-            >
-              Description
-            </label>
-            <textarea
-              name="description"
-              id="description"
-              value={attack.description || ""}
-              onChange={handleChange}
-              rows={2}
-              className="w-full bg-surface rounded-md border-transparent focus:ring-2 focus:ring-interactive"
-              placeholder="e.g., A powerful electric shock."
-            />
-          </div>
-
-          <div className="flex justify-end gap-4 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-sm font-medium rounded-md bg-white/10 hover:bg-white/20 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 text-sm font-medium text-white rounded-md bg-interactive hover:bg-interactive-hover transition-colors"
-            >
-              Add Attack
-            </button>
-          </div>
-        </form>
-      </div>
+      {content}
     </BaseModal>
   );
 }

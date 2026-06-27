@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { InventoryItem } from "@/types/trainer";
 import BaseModal from "@/components/shared/ui/BaseModal";
+import BottomSheet from "@/components/shared/ui/BottomSheet";
+import { useMediaQuery } from "@/utils/useMediaQuery";
 import ItemAutocomplete from "@/features/trainer/components/ItemAutocomplete";
 
 interface TrainerInventoryProps {
@@ -24,6 +26,7 @@ export default function TrainerInventory({
   onUpdatePokedollars,
   isEditable = true,
 }: TrainerInventoryProps) {
+  const isMobile = useMediaQuery("(max-width: 767px)");
   const [showInventory, setShowInventory] = useState(false);
   const [showAddItem, setShowAddItem] = useState(false);
   const [newItemName, setNewItemName] = useState("");
@@ -234,85 +237,101 @@ export default function TrainerInventory({
       </div>
 
       {/* Add Item Modal */}
-      <BaseModal
-        isOpen={showAddItem}
-        onClose={handleCancelAddItem}
-        size="sm"
-        titleId="add-item-title"
-      >
-        <div className="p-2">
-          <h2 id="add-item-title" className="text-xl font-bold mb-4 text-white">
-            Add New Item
-          </h2>
+      {(() => {
+        const addItemContent = (
+          <div className="p-2">
+            <h2 id="add-item-title" className="text-xl font-bold mb-4 text-white">
+              Add New Item
+            </h2>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm text-gray-300 mb-1">
-                Item Name
-              </label>
-              <ItemAutocomplete
-                value={newItemName}
-                onSelect={handleItemSelect}
-                onChange={setNewItemName}
-                placeholder="Search for an item..."
-              />
-            </div>
-
-            <input
-              type="number"
-              inputMode="numeric"
-              value={newItemQuantity}
-              onChange={(e) =>
-                setNewItemQuantity(Math.max(1, parseInt(e.target.value) || 1))
-              }
-              placeholder="Quantity"
-              min="1"
-              className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
-            />
-
-            <div>
-              <label className="block text-sm text-gray-300 mb-1">
-                Description
-              </label>
-              <textarea
-                value={newItemDescription}
-                onChange={(e) => setNewItemDescription(e.target.value)}
-                placeholder="Description (auto-filled from PokeAPI)"
-                rows={3}
-                className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none resize-none"
-              />
-            </div>
-
-            {newItemSpriteUrl && (
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <span>Preview:</span>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={newItemSpriteUrl}
-                  alt="Item preview"
-                  className="w-8 h-8 object-contain"
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-gray-300 mb-1">
+                  Item Name
+                </label>
+                <ItemAutocomplete
+                  value={newItemName}
+                  onSelect={handleItemSelect}
+                  onChange={setNewItemName}
+                  placeholder="Search for an item..."
                 />
               </div>
-            )}
-          </div>
 
-          <div className="flex gap-3 mt-6">
-            <button
-              onClick={handleCancelAddItem}
-              className="flex-1 px-4 py-2 bg-gray-500/80 hover:bg-gray-500 text-white rounded-lg transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleAddItem}
-              disabled={!newItemName.trim()}
-              className="flex-1 px-4 py-2 bg-green-500/80 hover:bg-green-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
-            >
-              Add Item
-            </button>
+              <input
+                type="number"
+                inputMode="numeric"
+                value={newItemQuantity}
+                onChange={(e) =>
+                  setNewItemQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                }
+                placeholder="Quantity"
+                min="1"
+                className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
+              />
+
+              <div>
+                <label className="block text-sm text-gray-300 mb-1">
+                  Description
+                </label>
+                <textarea
+                  value={newItemDescription}
+                  onChange={(e) => setNewItemDescription(e.target.value)}
+                  placeholder="Description (auto-filled from PokeAPI)"
+                  rows={3}
+                  className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none resize-none"
+                />
+              </div>
+
+              {newItemSpriteUrl && (
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <span>Preview:</span>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={newItemSpriteUrl}
+                    alt="Item preview"
+                    className="w-8 h-8 object-contain"
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={handleCancelAddItem}
+                className="flex-1 px-4 py-2 bg-gray-500/80 hover:bg-gray-500 text-white rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddItem}
+                disabled={!newItemName.trim()}
+                className="flex-1 px-4 py-2 bg-green-500/80 hover:bg-green-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+              >
+                Add Item
+              </button>
+            </div>
           </div>
-        </div>
-      </BaseModal>
+        );
+
+        if (isMobile) {
+          return (
+            <BottomSheet isOpen={showAddItem} onClose={handleCancelAddItem}>
+              {addItemContent}
+            </BottomSheet>
+          );
+        }
+
+        return (
+          <BaseModal
+            isOpen={showAddItem}
+            onClose={handleCancelAddItem}
+            size="sm"
+            titleId="add-item-title"
+          >
+            {addItemContent}
+          </BaseModal>
+        );
+      })()}
     </>
   );
 }

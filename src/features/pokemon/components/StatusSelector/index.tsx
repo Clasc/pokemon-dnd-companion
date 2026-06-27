@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { StatusCondition, StatusEffect, STATUS_COLORS } from "@/types/pokemon";
 import { useAppStore } from "@/store";
 import BaseModal from "@/components/shared/ui/BaseModal";
+import BottomSheet from "@/components/shared/ui/BottomSheet";
+import { useMediaQuery } from "@/utils/useMediaQuery";
 
 interface StatusSelectorProps {
   pokemonUuid: string;
@@ -48,6 +50,7 @@ export default function StatusSelector({
   isOpen,
   onClose,
 }: StatusSelectorProps) {
+  const isMobile = useMediaQuery("(max-width: 767px)");
   const pokemon = useAppStore.use.pokemonTeam()[pokemonUuid];
   const setPrimaryStatus = useAppStore.use.setPrimaryStatus();
   const setConfusion = useAppStore.use.setConfusion();
@@ -180,6 +183,156 @@ export default function StatusSelector({
 
   if (!isOpen || !pokemon) return null;
 
+  const content = (
+    <div className="p-2">
+      <h2 id="status-selector-title" className="text-xl font-bold mb-4 text-white">
+        Status Effects
+      </h2>
+
+      <div className="space-y-6">
+        <div>
+          <h4 className="text-lg font-semibold text-white mb-3">
+            Primary Status
+          </h4>
+          <div className="space-y-2">
+            {PRIMARY_STATUS_CONDITIONS.map((condition) => (
+              <label
+                key={condition}
+                className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="primaryStatus"
+                  value={condition}
+                  checked={selectedPrimaryStatus === condition}
+                  onChange={() => handlePrimaryStatusChange(condition)}
+                  className="w-4 h-4 text-blue-500"
+                />
+                <div className="flex items-center gap-2 flex-1">
+                  {condition !== "none" && (
+                    <div
+                      className="w-4 h-4 rounded-full"
+                      style={{ backgroundColor: STATUS_COLORS[condition] }}
+                    />
+                  )}
+                  <span className="text-white text-sm font-medium">
+                    {getStatusDisplayName(condition)}
+                  </span>
+                </div>
+                {selectedPrimaryStatus === condition &&
+                  DURATION_REQUIRING_CONDITIONS.includes(condition) && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-300 text-sm">Duration:</span>
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        min="1"
+                        max={condition === "asleep" ? 3 : 4}
+                        value={primaryDuration || ""}
+                        onChange={(e) =>
+                          setPrimaryDuration(
+                            e.target.value === ""
+                              ? undefined
+                              : parseInt(e.target.value),
+                          )
+                        }
+                        className="w-12 px-2 py-1 bg-white/10 border border-white/20 rounded text-white text-sm text-center"
+                      />
+                      <span className="text-gray-300 text-sm">turns</span>
+                    </div>
+                  )}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t border-white/10 pt-4">
+          <h4 className="text-lg font-semibold text-white mb-3">
+            Secondary Effects
+          </h4>
+          <label className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+            <input
+              type="checkbox"
+              checked={isConfused}
+              onChange={(e) => handleConfusionToggle(e.target.checked)}
+              className="w-4 h-4 text-blue-500"
+            />
+            <div className="flex items-center gap-2 flex-1">
+              <div
+                className="w-4 h-4 rounded-full"
+                style={{ backgroundColor: STATUS_COLORS.confused }}
+              />
+              <span className="text-white text-sm font-medium">Confused</span>
+            </div>
+            {isConfused && (
+              <div className="flex items-center gap-2">
+                <span className="text-gray-300 text-sm">Duration:</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min="1"
+                  max="4"
+                  value={confusionDuration || ""}
+                  onChange={(e) =>
+                    setConfusionDuration(
+                      e.target.value === ""
+                        ? undefined
+                        : parseInt(e.target.value),
+                    )
+                  }
+                  className="w-12 px-2 py-1 bg-white/10 border border-white/20 rounded text-white text-sm text-center"
+                />
+                <span className="text-gray-300 text-sm">turns</span>
+              </div>
+            )}
+          </label>
+
+          <label className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer mt-2">
+            <input
+              type="checkbox"
+              checked={isFlinching}
+              onChange={(e) => setIsFlinching(e.target.checked)}
+              className="w-4 h-4 text-blue-500"
+            />
+            <div className="flex items-center gap-2 flex-1">
+              <div
+                className="w-4 h-4 rounded-full"
+                style={{ backgroundColor: STATUS_COLORS.flinching }}
+              />
+              <span className="text-white text-sm font-medium">
+                Flinching
+              </span>
+            </div>
+            <span className="text-gray-300 text-xs">End of turn</span>
+          </label>
+        </div>
+      </div>
+
+      <div className="flex gap-3 mt-6">
+        <button
+          onClick={handleCancel}
+          className="flex-1 py-3 px-4 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSave}
+          className="flex-1 py-3 px-4 bg-interactive hover:bg-interactive-hover text-white rounded-lg transition-colors font-medium"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  );
+
+  if (isMobile) {
+    return (
+      <BottomSheet isOpen={isOpen} onClose={onClose}>
+        {content}
+      </BottomSheet>
+    );
+  }
+
   return (
     <BaseModal
       isOpen={isOpen}
@@ -187,145 +340,7 @@ export default function StatusSelector({
       size="sm"
       titleId="status-selector-title"
     >
-      <div className="p-2">
-        <h2 id="status-selector-title" className="text-xl font-bold mb-4 text-white">
-          Status Effects
-        </h2>
-
-        <div className="space-y-6">
-          <div>
-            <h4 className="text-lg font-semibold text-white mb-3">
-              Primary Status
-            </h4>
-            <div className="space-y-2">
-              {PRIMARY_STATUS_CONDITIONS.map((condition) => (
-                <label
-                  key={condition}
-                  className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
-                >
-                  <input
-                    type="radio"
-                    name="primaryStatus"
-                    value={condition}
-                    checked={selectedPrimaryStatus === condition}
-                    onChange={() => handlePrimaryStatusChange(condition)}
-                    className="w-4 h-4 text-blue-500"
-                  />
-                  <div className="flex items-center gap-2 flex-1">
-                    {condition !== "none" && (
-                      <div
-                        className="w-4 h-4 rounded-full"
-                        style={{ backgroundColor: STATUS_COLORS[condition] }}
-                      />
-                    )}
-                    <span className="text-white text-sm font-medium">
-                      {getStatusDisplayName(condition)}
-                    </span>
-                  </div>
-                  {selectedPrimaryStatus === condition &&
-                    DURATION_REQUIRING_CONDITIONS.includes(condition) && (
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-300 text-sm">Duration:</span>
-                        <input
-                          type="number"
-                          inputMode="numeric"
-                          min="1"
-                          max={condition === "asleep" ? 3 : 4}
-                          value={primaryDuration || ""}
-                          onChange={(e) =>
-                            setPrimaryDuration(
-                              e.target.value === ""
-                                ? undefined
-                                : parseInt(e.target.value),
-                            )
-                          }
-                          className="w-12 px-2 py-1 bg-white/10 border border-white/20 rounded text-white text-sm text-center"
-                        />
-                        <span className="text-gray-300 text-sm">turns</span>
-                      </div>
-                    )}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className="border-t border-white/10 pt-4">
-            <h4 className="text-lg font-semibold text-white mb-3">
-              Secondary Effects
-            </h4>
-            <label className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
-              <input
-                type="checkbox"
-                checked={isConfused}
-                onChange={(e) => handleConfusionToggle(e.target.checked)}
-                className="w-4 h-4 text-blue-500"
-              />
-              <div className="flex items-center gap-2 flex-1">
-                <div
-                  className="w-4 h-4 rounded-full"
-                  style={{ backgroundColor: STATUS_COLORS.confused }}
-                />
-                <span className="text-white text-sm font-medium">Confused</span>
-              </div>
-              {isConfused && (
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-300 text-sm">Duration:</span>
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    min="1"
-                    max="4"
-                    value={confusionDuration || ""}
-                    onChange={(e) =>
-                      setConfusionDuration(
-                        e.target.value === ""
-                          ? undefined
-                          : parseInt(e.target.value),
-                      )
-                    }
-                    className="w-12 px-2 py-1 bg-white/10 border border-white/20 rounded text-white text-sm text-center"
-                  />
-                  <span className="text-gray-300 text-sm">turns</span>
-                </div>
-              )}
-            </label>
-
-            <label className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer mt-2">
-              <input
-                type="checkbox"
-                checked={isFlinching}
-                onChange={(e) => setIsFlinching(e.target.checked)}
-                className="w-4 h-4 text-blue-500"
-              />
-              <div className="flex items-center gap-2 flex-1">
-                <div
-                  className="w-4 h-4 rounded-full"
-                  style={{ backgroundColor: STATUS_COLORS.flinching }}
-                />
-                <span className="text-white text-sm font-medium">
-                  Flinching
-                </span>
-              </div>
-              <span className="text-gray-300 text-xs">End of turn</span>
-            </label>
-          </div>
-        </div>
-
-        <div className="flex gap-3 mt-6">
-          <button
-            onClick={handleCancel}
-            className="flex-1 py-3 px-4 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSave}
-            className="flex-1 py-3 px-4 bg-interactive hover:bg-interactive-hover text-white rounded-lg transition-colors font-medium"
-          >
-            Save
-          </button>
-        </div>
-      </div>
+      {content}
     </BaseModal>
   );
 }
