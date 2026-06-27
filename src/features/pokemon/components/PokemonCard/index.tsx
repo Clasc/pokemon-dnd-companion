@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppStore } from "@/store";
-import { Pokemon, Attributes, TYPE_COLORS } from "@/types/pokemon";
+import { Pokemon, TYPE_COLORS } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
+import { ATTRIBUTE_NAMES, getAttributeShortName, getAttributeModifier, formatModifier } from "@/utils/attributes";
 import DeleteConfirmationModal from "@/components/shared/DeleteConfirmationModal";
 import AddAttackModal from "../AddAttackModal";
 import AttackCard from "../AttackCard";
@@ -74,32 +75,6 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
 
   const getTypeColor = (type: string) =>
     TYPE_COLORS[type as keyof typeof TYPE_COLORS] || "#A8A878";
-
-  const attributeNames: (keyof Attributes)[] = [
-    "strength",
-    "dexterity",
-    "constitution",
-    "intelligence",
-    "wisdom",
-    "charisma",
-  ];
-
-  const getAttributeShortName = (attr: keyof Attributes) => {
-    const shortNames = {
-      strength: "STR",
-      dexterity: "DEX",
-      constitution: "CON",
-      intelligence: "INT",
-      wisdom: "WIS",
-      charisma: "CHA",
-    };
-    return shortNames[attr];
-  };
-
-  const getAttributeModifier = (score: number) => Math.floor((score - 10) / 2);
-
-  const formatModifier = (modifier: number) =>
-    modifier >= 0 ? `+${modifier}` : `${modifier}`;
 
   return (
     <>
@@ -171,7 +146,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
             {/* Attribute chips */}
             <div className="mb-space-2">
               <div className="flex flex-wrap justify-start gap-tight">
-                {attributeNames.map((attr) => (
+                {ATTRIBUTE_NAMES.map((attr) => (
                   <div
                     key={attr}
                     className="bg-white/10 rounded-full px-1.5 py-0.5 text-xs font-medium text-white flex items-center gap-1"

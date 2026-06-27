@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Pokemon, Attributes, PokemonType } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
+import { ATTRIBUTE_NAMES, getAttributeShortName } from "@/utils/attributes";
 import ProgressBar from "@/components/shared/ui/ProgressBar";
 import PokemonAutocomplete from "@/features/pokemon/components/PokemonAutocomplete";
 import { PokemonAutocompleteResult } from "@/types/pokeapi";
@@ -62,7 +63,13 @@ export default function PokemonForm({
   onSpeciesLoadingChange,
   testIds,
 }: PokemonFormProps) {
-  const [spriteUrl, setSpriteUrl] = useState<string>("");
+  const [spriteUrl, setSpriteUrl] = useState<string>(pokemon.spriteUrl ?? "");
+
+  useEffect(() => {
+    if (pokemon.spriteUrl) {
+      setSpriteUrl(pokemon.spriteUrl);
+    }
+  }, [pokemon.spriteUrl]);
 
   const handlePokemonSelect = (result: PokemonAutocompleteResult) => {
     setSpriteUrl(result.spriteUrl);
@@ -95,27 +102,6 @@ export default function PokemonForm({
         [attr]: value,
       },
     });
-  };
-
-  const attributeNames: (keyof Attributes)[] = [
-    "strength",
-    "dexterity",
-    "constitution",
-    "intelligence",
-    "wisdom",
-    "charisma",
-  ];
-
-  const getAttributeShortName = (attr: keyof Attributes) => {
-    const shortNames: Record<keyof Attributes, string> = {
-      strength: "STR",
-      dexterity: "DEX",
-      constitution: "CON",
-      intelligence: "INT",
-      wisdom: "WIS",
-      charisma: "CHA",
-    };
-    return shortNames[attr];
   };
 
   const pokemonTypes: PokemonType[] = [
@@ -378,7 +364,7 @@ export default function PokemonForm({
       <div>
         <label className="block text-sm text-gray-300 mb-3">Attributes</label>
         <div className="grid grid-cols-2 gap-3">
-          {attributeNames.map((attr) => (
+          {ATTRIBUTE_NAMES.map((attr) => (
             <div key={attr}>
               <label className="block text-xs text-gray-400 mb-1">
                 {getAttributeShortName(attr)} (

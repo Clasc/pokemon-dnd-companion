@@ -7,6 +7,7 @@ import { Trainer, InventoryItem } from "@/types/trainer";
 import ActionButtons from "@/components/shared/ActionButtons";
 import TrainerInventory from "../TrainerInventory";
 import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
+import { ATTRIBUTE_NAMES, getAttributeShortName, getAttributeModifier, formatModifier, getAttributeDisplayName } from "@/utils/attributes";
 
 export default function TrainerOverview({
   unstyled = false,
@@ -144,47 +145,6 @@ export default function TrainerOverview({
     }
   };
 
-  const attributeNames: (keyof Trainer["attributes"])[] = [
-    "strength",
-    "dexterity",
-    "constitution",
-    "intelligence",
-    "wisdom",
-    "charisma",
-  ];
-
-  const getAttributeDisplayName = (attr: string) => {
-    const names: { [key: string]: string } = {
-      strength: "Strength",
-      dexterity: "Dexterity",
-      constitution: "Constitution",
-      intelligence: "Intelligence",
-      wisdom: "Wisdom",
-      charisma: "Charisma",
-    };
-    return names[attr] || attr;
-  };
-
-  const getAttributeShortName = (attr: keyof Trainer["attributes"]) => {
-    const shortNames = {
-      strength: "STR",
-      dexterity: "DEX",
-      constitution: "CON",
-      intelligence: "INT",
-      wisdom: "WIS",
-      charisma: "CHA",
-    };
-    return shortNames[attr];
-  };
-
-  const getAttributeModifier = (score: number) => {
-    return Math.floor((score - 10) / 2);
-  };
-
-  const formatModifier = (modifier: number) => {
-    return modifier >= 0 ? `+${modifier}` : `${modifier}`;
-  };
-
   return (
     <>
       <div
@@ -207,7 +167,7 @@ export default function TrainerOverview({
         </div>
 
         <div className="flex flex-wrap justify-center gap-sm">
-          {attributeNames.map((attr) => (
+          {ATTRIBUTE_NAMES.map((attr) => (
             <div
               key={attr}
               className="bg-white/10 rounded-full px-space-3 py-space-1 text-sm font-medium text-white flex items-center gap-sm"
@@ -290,7 +250,7 @@ export default function TrainerOverview({
                   setEditedTrainer({ ...editedTrainer, name: e.target.value })
                 }
                 placeholder="Trainer Name"
-                className="w-full bg-[#222222] text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-[#EE5D20] focus:outline-none"
+                className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
               />
               <div className="flex gap-space-4">
                 <input
@@ -303,7 +263,7 @@ export default function TrainerOverview({
                     })
                   }
                   placeholder="Class"
-                  className="w-full bg-[#222222] text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-[#EE5D20] focus:outline-none"
+                  className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
                 />
                 <input
                   type="number"
@@ -326,7 +286,7 @@ export default function TrainerOverview({
                 Attributes
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-space-4">
-                {attributeNames.map((attr) => (
+                {ATTRIBUTE_NAMES.map((attr) => (
                   <div
                     key={attr}
                     className="flex items-center justify-between p-space-3 bg-white/5 rounded-lg border border-white/10"

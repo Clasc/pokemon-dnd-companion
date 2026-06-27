@@ -10,6 +10,7 @@ export const testPokemon: PokemonTeam = {
     maxHP: 42,
     experience: 850,
     experienceToNext: 350,
+    spriteUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
     attributes: {
       strength: 8,
       dexterity: 16,
@@ -60,6 +61,7 @@ export const testPokemon: PokemonTeam = {
     maxHP: 85,
     experience: 2100,
     experienceToNext: 700,
+    spriteUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
     attributes: {
       strength: 18,
       dexterity: 14,
@@ -119,6 +121,7 @@ export const testPokemon: PokemonTeam = {
     maxHP: 32,
     experience: 420,
     experienceToNext: 380,
+    spriteUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
     attributes: {
       strength: 10,
       dexterity: 10,

@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppStore } from "@/store";
-import { Pokemon, Attributes, TYPE_COLORS } from "@/types/pokemon";
+import { Pokemon, TYPE_COLORS } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
+import { ATTRIBUTE_NAMES, getAttributeShortName, getAttributeModifier, formatModifier } from "@/utils/attributes";
 import BaseModal from "@/components/shared/ui/BaseModal";
 import DeleteConfirmationModal from "@/components/shared/DeleteConfirmationModal";
 import AddAttackModal from "../AddAttackModal";
@@ -54,32 +55,6 @@ export default function PokemonExpandedModal({
 
   const getTypeColor = (type: string) =>
     TYPE_COLORS[type as keyof typeof TYPE_COLORS] || "#A8A878";
-
-  const attributeNames: (keyof Attributes)[] = [
-    "strength",
-    "dexterity",
-    "constitution",
-    "intelligence",
-    "wisdom",
-    "charisma",
-  ];
-
-  const getAttributeShortName = (attr: keyof Attributes) => {
-    const shortNames = {
-      strength: "STR",
-      dexterity: "DEX",
-      constitution: "CON",
-      intelligence: "INT",
-      wisdom: "WIS",
-      charisma: "CHA",
-    };
-    return shortNames[attr];
-  };
-
-  const getAttributeModifier = (score: number) => Math.floor((score - 10) / 2);
-
-  const formatModifier = (modifier: number) =>
-    modifier >= 0 ? `+${modifier}` : `${modifier}`;
 
   if (!isOpen) return null;
 
@@ -141,7 +116,7 @@ export default function PokemonExpandedModal({
               </div>
 
               <div className="flex flex-wrap gap-tight">
-                {attributeNames.map((attr) => (
+                {ATTRIBUTE_NAMES.map((attr) => (
                   <div
                     key={attr}
                     className="bg-white/10 rounded-full px-space-2 py-space-1 text-xs font-medium text-white flex items-center gap-tight"
