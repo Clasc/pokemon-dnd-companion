@@ -14,6 +14,7 @@ import AttackCard from "../AttackCard";
 import StatusSelector from "../StatusSelector";
 import QuickStatusDropdown from "../QuickStatusDropdown";
 import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
+import PokemonForm from "../PokemonForm";
 import { useMediaQuery } from "@/utils/useMediaQuery";
 
 interface PokemonExpandedModalProps {
@@ -36,10 +37,13 @@ export default function PokemonExpandedModal({
   const [showAddAttackModal, setShowAddAttackModal] = useState(false);
   const [showStatusSelector, setShowStatusSelector] = useState(false);
   const [selectedAttackIndex, setSelectedAttackIndex] = useState<number | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormState, setEditFormState] = useState<Pokemon>(pokemon);
 
   const removePokemon = useAppStore.use.removePokemon();
   const modifyPokemonHP = useAppStore.use.modifyPokemonHP();
   const gainExperience = useAppStore.use.gainExperience();
+  const updatePokemon = useAppStore.use.updatePokemon();
 
   const handleDelete = () => {
     removePokemon(uuid);
@@ -48,8 +52,23 @@ export default function PokemonExpandedModal({
   };
 
   const handleEditClick = () => {
-    router.push(`/pokemon/${uuid}/edit`);
-    onClose();
+    if (isMobile) {
+      setEditFormState({ ...pokemon });
+      setIsEditing(true);
+    } else {
+      router.push(`/pokemon/${uuid}/edit`);
+      onClose();
+    }
+  };
+
+  const handleSave = () => {
+    updatePokemon(editFormState, uuid);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditFormState({ ...pokemon });
+    setIsEditing(false);
   };
 
   const getTypeColor = (type: string) =>
@@ -59,7 +78,7 @@ export default function PokemonExpandedModal({
 
   if (!isOpen) return null;
 
-  const content = (
+  const detailView = (
     <div className="p-space-4 md:p-space-6">
       <div className="flex items-start gap-space-4 mb-space-6">
         <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-4xl md:text-5xl border border-white/10 overflow-hidden flex-shrink-0">
@@ -253,15 +272,37 @@ export default function PokemonExpandedModal({
     </div>
   );
 
+  const editView = (
+    <div className="p-space-4 md:p-space-6">
+      <PokemonForm pokemon={editFormState} onChange={setEditFormState} />
+      <div className="flex gap-3 mt-6">
+        <button
+          onClick={handleSave}
+          className="flex-1 py-3 px-4 rounded-lg bg-interactive hover:bg-interactive-hover transition-colors text-white font-medium"
+        >
+          Save
+        </button>
+        <button
+          onClick={handleCancel}
+          className="flex-1 py-3 px-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white font-medium"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <>
       {isMobile ? (
-        <BottomSheet isOpen={isOpen} onClose={onClose}>
+        <BottomSheet isOpen={isOpen} onClose={isEditing ? handleCancel : onClose}>
           <div className="space-y-4">
-            <div className="absolute top-3 right-10 z-10">
-              <QuickStatusDropdown pokemonUuid={uuid} />
-            </div>
-            {content}
+            {!isEditing && (
+              <div className="absolute top-3 right-10 z-10">
+                <QuickStatusDropdown pokemonUuid={uuid} />
+              </div>
+            )}
+            {isEditing ? editView : detailView}
           </div>
         </BottomSheet>
       ) : (
@@ -274,7 +315,7 @@ export default function PokemonExpandedModal({
           <div className="absolute top-3 right-10 z-10">
             <QuickStatusDropdown pokemonUuid={uuid} />
           </div>
-          {content}
+          {isEditing ? editView : detailView}
         </BaseModal>
       )}
 
