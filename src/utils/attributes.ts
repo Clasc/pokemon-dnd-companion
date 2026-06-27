@@ -42,3 +42,8 @@ export function getAttributeModifier(score: number): number {
 export function formatModifier(modifier: number): string {
   return modifier >= 0 ? `+${modifier}` : `${modifier}`;
 }
+
+/** Default D&D unarmored AC: 10 + DEX modifier */
+export function calculateDefaultAC(dexterity: number): number {
+  return 10 + Math.floor((dexterity - 10) / 2);
+}

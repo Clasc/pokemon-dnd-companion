@@ -143,6 +143,13 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
               </div>
             </div>
 
+            {/* AC badge */}
+            <div className="mb-space-1">
+              <span className="inline-flex items-center gap-1 bg-white/10 rounded-full px-2 py-0.5 text-xs font-medium text-white">
+                🛡️ {pokemon.armorClass}
+              </span>
+            </div>
+
             {/* Attribute chips */}
             <div className="mb-space-2">
               <div className="flex flex-wrap justify-start gap-tight">

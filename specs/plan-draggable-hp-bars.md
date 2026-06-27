@@ -3,7 +3,7 @@ title: Add Draggable HP Bars Everywhere
 version: 1.0
 date_created: 2026-04-15
 owner: Pokemon D&D Companion
-status: open
+status: done
 tags: `feature`, `hp`, `drag`, `ui`, `pokemon`
 ---
 

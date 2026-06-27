@@ -81,6 +81,10 @@ export default function PokemonCompactCard({
             )}
           </div>
 
+          <div className="text-[10px] text-gray-400 mb-space-1">
+            🛡️ {pokemon.armorClass} AC
+          </div>
+
           <div className="space-y-1">
             <div className="flex items-center justify-between">
               <span className="text-[10px] text-gray-400">HP</span>

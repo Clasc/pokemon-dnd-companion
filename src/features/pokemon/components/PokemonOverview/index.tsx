@@ -57,6 +57,12 @@ export default function PokemonOverview({
           ) / pokemonLength,
         );
 
+  const totalAC = Object.values(pokemon).reduce(
+    (sum, p) => sum + p.armorClass,
+
+    0,
+  );
+
   return (
     <>
       <div
@@ -155,7 +161,7 @@ export default function PokemonOverview({
               Team Stats
             </h3>
 
-            <div className="grid grid-cols-3 gap-space-4 md:gap-space-6 text-center">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-space-3 md:gap-space-4 text-center">
               <div className="p-space-3 md:p-space-4 bg-white/5 rounded-lg border border-white/10">
                 <div className="text-lg md:text-2xl font-bold text-white mb-1">
                   {totalLevels}
@@ -173,6 +179,15 @@ export default function PokemonOverview({
 
                 <div className="text-xs md:text-sm text-gray-400">Total HP</div>
               </div>
+
+              <div className="p-space-3 md:p-space-4 bg-white/5 rounded-lg border border-white/10">
+                <div className="text-lg md:text-2xl font-bold text-white mb-1">
+                  🛡️ {totalAC}
+                </div>
+
+                <div className="text-xs md:text-sm text-gray-400">Total AC</div>
+              </div>
+
               <div className="p-space-3 md:p-space-4 bg-white/5 rounded-lg border border-white/10">
                 <div className="text-lg md:text-2xl font-bold text-white mb-1">
                   {avgHealthPercent}%

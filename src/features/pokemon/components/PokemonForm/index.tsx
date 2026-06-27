@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Pokemon, Attributes, PokemonType } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
-import { ATTRIBUTE_NAMES, getAttributeShortName } from "@/utils/attributes";
+import { ATTRIBUTE_NAMES, getAttributeShortName, calculateDefaultAC } from "@/utils/attributes";
 import ProgressBar from "@/components/shared/ui/ProgressBar";
 import PokemonAutocomplete from "@/features/pokemon/components/PokemonAutocomplete";
 import { PokemonAutocompleteResult } from "@/types/pokeapi";
@@ -363,6 +363,41 @@ export default function PokemonForm({
           showValue={false}
           className="mt-2"
         />
+      </div>
+
+      {/* Armor Class */}
+      <div>
+        <label className="block text-sm text-gray-300 mb-2">
+          Armor Class (AC)
+        </label>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Current AC</label>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={0}
+              value={pokemon.armorClass}
+              onChange={(e) =>
+                handleFieldChange(
+                  "armorClass",
+                  Number.isNaN(parseInt(e.target.value))
+                    ? 0
+                    : parseInt(e.target.value),
+                )
+              }
+              className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-interactive"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">
+              Auto-Calc (10 + DEX mod)
+            </label>
+            <div className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-gray-300 text-sm">
+              {calculateDefaultAC(pokemon.attributes.dexterity)}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Attributes */}

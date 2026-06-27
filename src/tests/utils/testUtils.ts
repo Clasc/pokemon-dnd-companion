@@ -37,6 +37,7 @@ export const mockPokemon: Pokemon = {
       description: "A fast attack that always goes first.",
     },
   ],
+  armorClass: 13, // 10 + DEX mod (+3)
   attributes: {
     strength: 12,
     dexterity: 16,
@@ -58,6 +59,7 @@ export const mockPokemonWithSecondType: Pokemon = {
   experience: 2100,
   experienceToNext: 400,
   attacks: [],
+  armorClass: 12, // 10 + DEX mod (+2)
   attributes: {
     strength: 18,
     dexterity: 14,
@@ -103,6 +105,7 @@ export const mockPokemonLowHP: Pokemon = {
       description: "Lowers the target's defense.",
     },
   ],
+  armorClass: 11, // 10 + DEX mod (+1)
   attributes: {
     strength: 10,
     dexterity: 12,

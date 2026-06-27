@@ -52,6 +52,7 @@ const baseTemplate: Pokemon = {
     wisdom: 10,
     charisma: 10,
   },
+  armorClass: 10, // 10 + DEX mod (+0)
   attacks: [],
 };
 

@@ -54,6 +54,7 @@ export interface Pokemon {
   confusion?: StatusEffect; // Special case - can coexist with primary
   temporaryEffects?: StatusEffect[]; // Flinching, etc.
 
+  armorClass: number; // D&D Armor Class (10 + DEX modifier by default)
   spriteUrl?: string; // Pokemon sprite from PokeAPI
 }
 

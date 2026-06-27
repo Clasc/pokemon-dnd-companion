@@ -3,7 +3,7 @@ title: Add AC (Armor Class) to Pokemon
 version: 1.0
 date_created: 2026-04-12
 owner: Pokemon D&D Companion
-status: open
+status: done
 tags: `design`, `dnd`, `pokemon`, `armor-class`
 ---
 
@@ -63,12 +63,12 @@ defaultAC = 10 + Math.floor((pokemon.attributes.dexterity - 10) / 2)
 
 ## 5. Acceptance Criteria
 
-- **AC-001**: Given a user creates a new Pokemon with DEX 14, When they view the form, Then AC defaults to 12
-- **AC-002**: Given a user creates a new Pokemon, When they manually set AC to 15, Then the saved Pokemon has AC 15
-- **AC-003**: Given a Pokemon with AC exists, When viewing the Dashboard, Then the PokemonCard displays "🛡️ {AC}" 
-- **AC-004**: Given Pokemon exist in team, When viewing Team Overview, Then "Total AC" appears in Team Stats
-- **AC-005**: Given a user edits an existing Pokemon, When they change AC, Then the change is persisted
-- **AC-006**: Given a user attempts to create a Pokemon with negative AC, Then validation error prevents save
+- [x] **AC-001**: Given a user creates a new Pokemon with DEX 14, When they view the form, Then AC defaults to 12
+- [x] **AC-002**: Given a user creates a new Pokemon, When they manually set AC to 15, Then the saved Pokemon has AC 15
+- [x] **AC-003**: Given a Pokemon with AC exists, When viewing the Dashboard, Then the PokemonCard displays "🛡️ {AC}" 
+- [x] **AC-004**: Given Pokemon exist in team, When viewing Team Overview, Then "Total AC" appears in Team Stats
+- [x] **AC-005**: Given a user edits an existing Pokemon, When they change AC, Then the change is persisted
+- [x] **AC-006**: Given a user attempts to create a Pokemon with negative AC, Then validation error prevents save
 
 ## 6. Test Automation Strategy
 

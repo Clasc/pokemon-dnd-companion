@@ -74,6 +74,7 @@ describe("Store - gainExperience logic", () => {
       wisdom: 11,
       charisma: 13,
     },
+    armorClass: 12, // 10 + DEX mod (+2)
     attacks: [],
   };
 

@@ -51,6 +51,7 @@ describe("Test Fixtures", () => {
       expect(pikachu.maxHP).toBe(42);
       expect(pikachu.attacks).toHaveLength(3);
       expect(pikachu.attacks[0].name).toBe("Thunder Shock");
+      expect(pikachu.armorClass).toBe(13);
     });
 
     it("should have valid Charizard data", () => {
@@ -62,6 +63,7 @@ describe("Test Fixtures", () => {
       expect(charizard.level).toBe(18);
       expect(charizard.attacks).toHaveLength(4);
       expect(charizard.primaryStatus).toBeUndefined();
+      expect(charizard.armorClass).toBe(12);
     });
 
     it("should have valid Bulbasaur data with status condition", () => {
@@ -76,6 +78,7 @@ describe("Test Fixtures", () => {
       expect(bulbasaur.attacks).toHaveLength(3);
       expect(bulbasaur.primaryStatus?.condition).toBe("poisoned");
       expect(bulbasaur.primaryStatus?.duration).toBe(3);
+      expect(bulbasaur.armorClass).toBe(10);
     });
 
     it("should have valid attack data for all pokemon", () => {

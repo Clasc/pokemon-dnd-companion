@@ -117,6 +117,7 @@ const seedPokemon = (): Pokemon => ({
   maxHP: 25,
   experience: 120,
   experienceToNext: 80,
+  armorClass: 10, // 10 + DEX mod (+0)
   attributes: {
     strength: 12,
     dexterity: 11,

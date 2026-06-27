@@ -4,7 +4,7 @@ version: 1.0
 date_created: 2026-06-27
 owner: Pokemon DnD Companion
 tags: feature, mobile, ux, flow
-status: in_progress
+status: done
 ---
 
 # Tap Flow Optimizations
@@ -18,11 +18,11 @@ Common actions require too many taps on mobile. Each extra tap adds friction dur
 |---|--------|--------|-------|--------|
 | 1 | Adjust HP | 3 clicks (card→modal→button) | 0 clicks (drag bar) | ✅ Done |
 | 2 | Add XP | 2 clicks (type→add) | 0 clicks (drag bar) | ✅ Done |
-| 3 | Execute attack | 4 clicks (modal→manage→card→button) | 1 tap (attack button on compact card) | ❌ To Do |
-| 4 | Set status | 2 clicks (dropdown→select) | 1 tap (status badge cycles) | ❌ To Do |
-| 5 | View details | 1 click (opens modal) | Pull up bottom sheet | ❌ To Do |
-| 6 | Edit Pokemon | 3 clicks + route change | 1 tap → inline edit in bottom sheet | ❌ To Do |
-| 7 | Add Pokemon | 2 clicks + form page | 1 tap → bottom sheet form | ❌ To Do |
+| 3 | Execute attack | 4 clicks (modal→manage→card→button) | 1 tap (attack button on compact card) | ✅ Done |
+| 4 | Set status | 2 clicks (dropdown→select) | 1 tap (status badge cycles) | ✅ Done |
+| 5 | View details | 1 click (opens modal) | Pull up bottom sheet | ✅ Done |
+| 6 | Edit Pokemon | 3 clicks + route change | 1 tap → inline edit in bottom sheet | ✅ Done |
+| 7 | Add Pokemon | 2 clicks + form page | 1 tap → bottom sheet form | ✅ Done |
 
 ## Detailed Changes
 
@@ -90,15 +90,15 @@ Common actions require too many taps on mobile. Each extra tap adds friction dur
 - The `/pokemon/new` route remains for desktop/fallback access
 
 ## Acceptance Criteria
-- [ ] Item 3: Attack badges on compact card are tappable and decrement PP on tap
-- [ ] Item 3: Tapping an attack with 0 PP is a no-op (button disabled/greyed)
-- [ ] Item 4: Tapping the status indicator cycles through `none → burned → poisoned → paralyzed → asleep → frozen → none`
-- [ ] Item 5: BottomSheet slides up from bottom with drag handle
-- [ ] Item 5: Dragging down dismisses the sheet
-- [ ] Item 5: Pokemon detail uses BottomSheet on mobile, centered modal on desktop
-- [ ] Item 6: Edit button in PokemonExpandedModal switches to inline form
-- [ ] Item 6: Save/Cancel toggle back to view mode
-- [ ] Item 7: Add Pokemon button opens bottom sheet with PokemonForm
-- [ ] Item 7: Save commits to store and closes sheet
-- [ ] All tests pass
-- [ ] Lint passes
+- [x] Item 3: Attack badges on compact card are tappable and decrement PP on tap
+- [x] Item 3: Tapping an attack with 0 PP is a no-op (button disabled/greyed)
+- [x] Item 4: Tapping the status indicator cycles through `none → burned → poisoned → paralyzed → asleep → frozen → none`
+- [x] Item 5: BottomSheet slides up from bottom with drag handle
+- [x] Item 5: Dragging down dismisses the sheet
+- [x] Item 5: Pokemon detail uses BottomSheet on mobile, centered modal on desktop
+- [x] Item 6: Edit button in PokemonExpandedModal switches to inline form
+- [x] Item 6: Save/Cancel toggle back to view mode
+- [x] Item 7: Add Pokemon button opens bottom sheet with PokemonForm
+- [x] Item 7: Save commits to store and closes sheet
+- [x] All tests pass
+- [x] Lint passes

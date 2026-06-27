@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatPokemonName } from "@/types/pokeapi";
 import { Pokemon } from "@/types/pokemon";
+import { calculateDefaultAC } from "@/utils/attributes";
 import { useAppStore } from "@/store";
 import PokemonForm from "@/features/pokemon/components/PokemonForm";
 
@@ -33,6 +34,7 @@ const initialPokemon: Pokemon = {
     charisma: 10,
   },
   attacks: [],
+  armorClass: calculateDefaultAC(10),
 };
 
 export default function NewPokemonPage() {

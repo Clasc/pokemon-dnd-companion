@@ -21,6 +21,7 @@ const initialPokemon: Pokemon = {
   maxHP: 10,
   experience: 0,
   experienceToNext: 100,
+  armorClass: 10,
   attributes: {
     strength: 10,
     dexterity: 10,

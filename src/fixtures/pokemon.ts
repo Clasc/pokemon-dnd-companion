@@ -10,6 +10,7 @@ export const testPokemon: PokemonTeam = {
     maxHP: 42,
     experience: 850,
     experienceToNext: 350,
+    armorClass: 13, // 10 + DEX mod (+3)
     spriteUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
     attributes: {
       strength: 8,
@@ -61,6 +62,7 @@ export const testPokemon: PokemonTeam = {
     maxHP: 85,
     experience: 2100,
     experienceToNext: 700,
+    armorClass: 12, // 10 + DEX mod (+2)
     spriteUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
     attributes: {
       strength: 18,
@@ -121,6 +123,7 @@ export const testPokemon: PokemonTeam = {
     maxHP: 32,
     experience: 420,
     experienceToNext: 380,
+    armorClass: 10, // 10 + DEX mod (+0)
     spriteUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
     attributes: {
       strength: 10,
