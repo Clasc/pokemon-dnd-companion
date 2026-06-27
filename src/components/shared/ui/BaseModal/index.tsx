@@ -29,6 +29,30 @@ const sizeClassMap: Record<Required<BaseModalProps>["size"], string> = {
   fullscreen: "max-w-full h-full",
 };
 
+let bodyScrollLockCount = 0;
+let previousOverflow = "";
+let previousPaddingRight = "";
+
+function lockBodyScroll() {
+  if (bodyScrollLockCount === 0) {
+    previousOverflow = document.body.style.overflow;
+    previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.overflow = "hidden";
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
+  }
+  bodyScrollLockCount++;
+}
+
+function unlockBodyScroll() {
+  bodyScrollLockCount--;
+  if (bodyScrollLockCount <= 0) {
+    bodyScrollLockCount = 0;
+    document.body.style.overflow = previousOverflow;
+    document.body.style.paddingRight = previousPaddingRight;
+  }
+}
+
 export default function BaseModal({
   isOpen,
   onClose,
@@ -104,20 +128,19 @@ export default function BaseModal({
 
   useEffect(() => {
     if (isOpen) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.overflow = "hidden";
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
+      previousActiveElement.current = document.activeElement as HTMLElement;
+      lockBodyScroll();
     } else {
-      document.body.style.overflow = "";
-      document.body.style.paddingRight = "";
+      unlockBodyScroll();
       if (previousActiveElement.current) {
         previousActiveElement.current.focus();
       }
     }
 
     return () => {
-      document.body.style.overflow = "";
-      document.body.style.paddingRight = "";
+      if (isOpen) {
+        unlockBodyScroll();
+      }
     };
   }, [isOpen]);
 
