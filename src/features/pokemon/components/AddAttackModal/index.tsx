@@ -75,8 +75,8 @@ export default function AddAttackModal({
   };
 
   const content = (
-    <div className="p-2">
-      <h2 id="add-attack-title" className="text-xl font-bold mb-4 text-white">
+    <div className="p-space-2">
+      <h2 id="add-attack-title" className="text-xl font-bold mb-space-4 text-white">
         Add New Attack
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">

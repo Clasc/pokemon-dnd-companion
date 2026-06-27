@@ -173,7 +173,7 @@ export default function Navigation() {
           bg-primary border-r border-white/10
           text-sm z-40"
       >
-        <div className="px-2 mb-4">
+        <div className="px-2 mb-space-4">
           <span className="text-xs font-semibold tracking-wide text-white/40">
             NAVIGATION
           </span>

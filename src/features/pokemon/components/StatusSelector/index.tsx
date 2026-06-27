@@ -184,8 +184,8 @@ export default function StatusSelector({
   if (!isOpen || !pokemon) return null;
 
   const content = (
-    <div className="p-2">
-      <h2 id="status-selector-title" className="text-xl font-bold mb-4 text-white">
+    <div className="p-space-2">
+      <h2 id="status-selector-title" className="text-xl font-bold mb-space-4 text-white">
         Status Effects
       </h2>
 
@@ -198,7 +198,7 @@ export default function StatusSelector({
             {PRIMARY_STATUS_CONDITIONS.map((condition) => (
               <label
                 key={condition}
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+                className="flex items-center gap-3 p-space-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
               >
                 <input
                   type="radio"
@@ -250,7 +250,7 @@ export default function StatusSelector({
           <h4 className="text-lg font-semibold text-white mb-3">
             Secondary Effects
           </h4>
-          <label className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+          <label className="flex items-center gap-3 p-space-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
             <input
               type="checkbox"
               checked={isConfused}
@@ -287,7 +287,7 @@ export default function StatusSelector({
             )}
           </label>
 
-          <label className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer mt-2">
+          <label className="flex items-center gap-3 p-space-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer mt-2">
             <input
               type="checkbox"
               checked={isFlinching}
@@ -308,16 +308,16 @@ export default function StatusSelector({
         </div>
       </div>
 
-      <div className="flex gap-3 mt-6">
+      <div className="flex gap-3 mt-space-6">
         <button
           onClick={handleCancel}
-          className="flex-1 py-3 px-4 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
+          className="flex-1 py-space-3 px-space-4 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
         >
           Cancel
         </button>
         <button
           onClick={handleSave}
-          className="flex-1 py-3 px-4 bg-interactive hover:bg-interactive-hover text-white rounded-lg transition-colors font-medium"
+          className="flex-1 py-space-3 px-space-4 bg-interactive hover:bg-interactive-hover text-white rounded-lg transition-colors font-medium"
         >
           Save
         </button>

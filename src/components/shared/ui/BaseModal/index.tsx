@@ -156,7 +156,7 @@ export default function BaseModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-space-4"
       aria-hidden={!isOpen}
     >
       <div
@@ -206,7 +206,7 @@ export default function BaseModal({
         )}
 
         {(title || description) && (
-          <div className="px-6 pt-6 pb-4">
+          <div className="px-space-6 pt-space-6 pb-space-4">
             {title && (
               <h2
                 id={titleId}
@@ -223,14 +223,14 @@ export default function BaseModal({
                 {description}
               </p>
             )}
-            <div className="h-px bg-gradient-to-r from-white/20 via-white/10 to-transparent mt-4" />
+            <div className="h-px bg-gradient-to-r from-white/20 via-white/10 to-transparent mt-space-4" />
           </div>
         )}
 
-        <div className="px-6 pb-6">{children}</div>
+        <div className="px-space-6 pb-space-6">{children}</div>
 
         {footer && (
-          <div className="px-6 pb-6 pt-4 border-t border-white/10">
+          <div className="px-space-6 pb-space-6 pt-space-4 border-t border-white/10">
             {footer}
           </div>
         )}

@@ -27,8 +27,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen px-4 md:px-6 lg:px-8 py-4 space-y-6">
-      <header className="w-full text-center py-4 md:py-6">
+    <main className="min-h-screen px-4 md:px-space-6 lg:px-8 py-4 space-y-6">
+      <header className="w-full text-center py-4 md:py-space-6">
         <h1 className="text-responsive-xl font-bold text-white mb-1 font-['Poppins']">
           Pokémon D&D Companion
         </h1>

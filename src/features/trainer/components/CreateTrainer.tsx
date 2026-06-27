@@ -72,7 +72,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
   ];
 
   return (
-    <div className="max-w-md mx-auto p-6 sm:p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+    <div className="max-w-md mx-auto p-space-6 sm:p-space-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
           Trainer
@@ -90,7 +90,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
             type="text"
             value={character.name}
             onChange={changeHandler("name")}
-            className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full p-space-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Enter character name"
           />
         </div>
@@ -107,7 +107,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
               min="1"
               value={character.level}
               onChange={changeHandler("level")}
-              className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-space-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
@@ -120,7 +120,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
               type="text"
               value={character.class}
               onChange={changeHandler("class")}
-              className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-space-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter class"
             />
           </div>
@@ -128,7 +128,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
 
         {/* Attributes */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-space-6">
             D&D Attributes
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -147,7 +147,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
                   onChange={(e) =>
                     handleAttributeChange(attr, parseInt(e.target.value) || 0)
                   }
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-center focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full p-space-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-center focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             ))}
@@ -156,7 +156,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
 
         {/* Hit Points */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-space-6">
             Hit Points
           </h3>
 
@@ -171,7 +171,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
                 min="0"
                 value={character.maxHP}
                 onChange={handleMaxHPChange}
-                className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-space-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter max HP"
               />
             </div>
@@ -183,7 +183,7 @@ export default function CreateTrainer({ onTrainerUpdate }: TrainerFormProps) {
                 max={character.maxHP}
                 label="HP"
                 showValue={false}
-                className="mt-4"
+                className="mt-space-4"
               />
               {character.maxHP > 0 && (
                 <div className="text-sm text-gray-600 dark:text-gray-400 mt-3 text-center font-medium">

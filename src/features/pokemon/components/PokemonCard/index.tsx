@@ -307,7 +307,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                     setSelectedAttackIndex(0);
                     setShowAddAttackModal(true);
                   }}
-                  className="bg-white/5 hover:bg-white/10 rounded-lg px-3 py-2 text-xs font-medium text-white/50 hover:text-white transition-colors border border-dashed border-white/20"
+                  className="bg-white/5 hover:bg-white/10 rounded-lg px-space-3 py-space-2 text-xs font-medium text-white/50 hover:text-white transition-colors border border-dashed border-white/20"
                 >
                   + Add First Attack
                 </button>
@@ -323,7 +323,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
 
         {/* Expanded Attacks Management */}
         {isAttacksVisible && (
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-white/10 pt-4">
+          <div className="mt-space-4 grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-white/10 pt-space-4">
             {[...Array(4)].map((_, i) => {
               const attack = pokemon.attacks?.[i];
               return attack ? (
@@ -340,7 +340,7 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                     setSelectedAttackIndex(i);
                     setShowAddAttackModal(true);
                   }}
-                  className="bg-white/5 rounded-lg flex items-center justify-center p-4 h-full border-2 border-dashed border-white/10 hover:bg-white/10 transition-colors cursor-pointer min-h-[120px]"
+                  className="bg-white/5 rounded-lg flex items-center justify-center p-space-4 h-full border-2 border-dashed border-white/10 hover:bg-white/10 transition-colors cursor-pointer min-h-[120px]"
                   role="button"
                 >
                   <span className="text-white/50 font-semibold">

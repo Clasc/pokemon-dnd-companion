@@ -129,7 +129,7 @@ export default function TrainerInventory({
       </div>
 
       {/* Inventory Section */}
-      <div className="p-4 bg-white/5 rounded-lg border border-white/10">
+      <div className="p-space-4 bg-white/5 rounded-lg border border-white/10">
         <button
           onClick={() => setShowInventory(!showInventory)}
           className="w-full flex items-center justify-between text-lg font-semibold text-white hover:text-gray-300 transition-colors"
@@ -151,7 +151,7 @@ export default function TrainerInventory({
         </button>
 
         {showInventory && (
-          <div className="mt-4 space-y-2">
+          <div className="mt-space-4 space-y-2">
             {!inventory || inventory.length === 0 ? (
               <p className="text-gray-400 text-center py-4">
                 No items in inventory
@@ -214,7 +214,7 @@ export default function TrainerInventory({
             {isEditable && (
               <button
                 onClick={() => setShowAddItem(true)}
-                className="w-full p-3 bg-green-500/20 hover:bg-green-500/30 border border-green-500/50 text-green-400 rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="w-full p-space-3 bg-green-500/20 hover:bg-green-500/30 border border-green-500/50 text-green-400 rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 <svg
                   className="w-4 h-4"
@@ -239,8 +239,8 @@ export default function TrainerInventory({
       {/* Add Item Modal */}
       {(() => {
         const addItemContent = (
-          <div className="p-2">
-            <h2 id="add-item-title" className="text-xl font-bold mb-4 text-white">
+          <div className="p-space-2">
+            <h2 id="add-item-title" className="text-xl font-bold mb-space-4 text-white">
               Add New Item
             </h2>
 
@@ -266,7 +266,7 @@ export default function TrainerInventory({
                 }
                 placeholder="Quantity"
                 min="1"
-                className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
+                className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
               />
 
               <div>
@@ -295,17 +295,17 @@ export default function TrainerInventory({
               )}
             </div>
 
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-3 mt-space-6">
               <button
                 onClick={handleCancelAddItem}
-                className="flex-1 px-4 py-2 bg-gray-500/80 hover:bg-gray-500 text-white rounded-lg transition-colors"
+                className="flex-1 px-space-4 py-space-2 bg-gray-500/80 hover:bg-gray-500 text-white rounded-lg transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleAddItem}
                 disabled={!newItemName.trim()}
-                className="flex-1 px-4 py-2 bg-green-500/80 hover:bg-green-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+                className="flex-1 px-space-4 py-space-2 bg-green-500/80 hover:bg-green-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
               >
                 Add Item
               </button>

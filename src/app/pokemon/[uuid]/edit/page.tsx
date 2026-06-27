@@ -107,7 +107,7 @@ export default function EditPokemonPage() {
 
   if (isNotFound) {
     return (
-      <main className="max-w-xl mx-auto px-4 py-12 space-y-8">
+      <main className="max-w-xl mx-auto px-4 py-space-12 space-y-8">
         <header className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white">Pokémon Not Found</h1>
           <Link
@@ -117,7 +117,7 @@ export default function EditPokemonPage() {
             Team
           </Link>
         </header>
-        <section className="card rounded-lg p-4 border border-white/10 space-y-4">
+        <section className="card rounded-lg p-space-4 border border-white/10 space-y-4">
           <p className="text-gray-300">
             The Pokémon you are trying to edit no longer exists or the link is
             invalid.
@@ -125,7 +125,7 @@ export default function EditPokemonPage() {
           <div>
             <Link
               href="/pokemon"
-              className="inline-block px-5 py-2 rounded-lg bg-interactive hover:bg-interactive-hover text-white font-semibold transition-colors"
+              className="inline-block px-space-5 py-space-2 rounded-lg bg-interactive hover:bg-interactive-hover text-white font-semibold transition-colors"
             >
               Back to Team
             </Link>
@@ -138,14 +138,14 @@ export default function EditPokemonPage() {
   if (!pokemon) {
     // Loading placeholder (very brief; mainly covers hydration edge cases).
     return (
-      <main className="max-w-xl mx-auto px-4 py-12">
+      <main className="max-w-xl mx-auto px-4 py-space-12">
         <p className="text-gray-400">Loading Pokémon...</p>
       </main>
     );
   }
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-6 space-y-8">
+    <main className="max-w-2xl mx-auto px-4 py-space-6 space-y-8">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-white">Edit Pokémon</h1>
         <button
@@ -157,7 +157,7 @@ export default function EditPokemonPage() {
         </button>
       </header>
 
-      <section className="glass rounded-2xl p-6 border border-white/10 space-y-6">
+      <section className="glass rounded-2xl p-space-6 border border-white/10 space-y-6">
         <PokemonForm
           pokemon={pokemon}
           onChange={(next) => setPokemon(next)}
@@ -174,7 +174,7 @@ export default function EditPokemonPage() {
             type="button"
             onClick={handleCancel}
             disabled={submitting || speciesLoading}
-            className="px-5 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-50"
+            className="px-space-5 py-space-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
@@ -183,7 +183,7 @@ export default function EditPokemonPage() {
             data-testid="save-pokemon-button"
             onClick={handleSave}
             disabled={submitting || speciesLoading}
-            className="px-5 py-2 rounded-lg bg-interactive hover:bg-interactive-hover text-white font-semibold transition-colors disabled:opacity-50"
+            className="px-space-5 py-space-2 rounded-lg bg-interactive hover:bg-interactive-hover text-white font-semibold transition-colors disabled:opacity-50"
           >
             {submitting ? "Saving..." : "Save Changes"}
           </button>
@@ -191,7 +191,7 @@ export default function EditPokemonPage() {
       </section>
 
       {/* Danger Zone */}
-      <section className="glass rounded-2xl p-6 border border-red-500/30 space-y-4">
+      <section className="glass rounded-2xl p-space-6 border border-red-500/30 space-y-4">
         <h2 className="text-lg font-semibold text-red-300">Danger Zone</h2>
         <p className="text-sm text-gray-400">
           Deleting this Pokémon removes it permanently from your local team. This

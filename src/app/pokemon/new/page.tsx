@@ -95,7 +95,7 @@ export default function NewPokemonPage() {
   }, [submitting, speciesLoading, handleSave]);
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+    <main className="max-w-2xl mx-auto px-4 py-space-6 space-y-6">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-white">Add Pokémon</h1>
         <button
@@ -107,7 +107,7 @@ export default function NewPokemonPage() {
         </button>
       </header>
 
-      <section className="card rounded-lg p-4 border border-white/10 space-y-6">
+      <section className="card rounded-lg p-space-4 border border-white/10 space-y-6">
         <PokemonForm
           pokemon={pokemon}
           onChange={setPokemon}
@@ -124,7 +124,7 @@ export default function NewPokemonPage() {
             type="button"
             onClick={handleCancel}
             disabled={submitting || speciesLoading}
-            className="px-5 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-50"
+            className="px-space-5 py-space-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
@@ -133,7 +133,7 @@ export default function NewPokemonPage() {
             data-testid="save-pokemon-button"
             onClick={handleSave}
             disabled={submitting || speciesLoading}
-            className="px-5 py-2 rounded-lg bg-interactive hover:bg-interactive-hover text-white font-semibold transition-colors disabled:opacity-50"
+            className="px-space-5 py-space-2 rounded-lg bg-interactive hover:bg-interactive-hover text-white font-semibold transition-colors disabled:opacity-50"
           >
             {submitting ? "Saving..." : "Save Pokémon"}
           </button>

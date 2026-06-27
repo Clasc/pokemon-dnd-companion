@@ -151,7 +151,7 @@ export default function AddPokemonBottomSheet({
       size="lg"
       titleId="add-pokemon-title"
     >
-      <div className="p-2">
+      <div className="p-space-2">
         {formContent}
       </div>
     </BaseModal>

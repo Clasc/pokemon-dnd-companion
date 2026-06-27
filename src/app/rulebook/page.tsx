@@ -101,12 +101,12 @@ function TypeChartSection() {
 
   return (
     <div>
-      <p className="text-secondary mb-4 text-sm">
+      <p className="text-secondary mb-space-4 text-sm">
         Select an attacking type to see its effectiveness against each defending type.
       </p>
 
       {/* Attacker picker */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-space-6">
         {ALL_TYPES.map((t) => {
           const active = attacker === t;
           const color = typeColor(t);
@@ -131,7 +131,7 @@ function TypeChartSection() {
 
       {/* Results */}
       {attacker ? (
-        <div className="bg-surface rounded-xl border border-white/10 p-4">
+        <div className="bg-surface rounded-xl border border-white/10 p-space-4">
           <h3 className="text-sm font-semibold text-white mb-3">
             <span className="text-secondary">Attacking with</span>{" "}
             <TypeBadge type={attacker} size="md" />
@@ -159,7 +159,7 @@ function TypeChartSection() {
           </div>
         </div>
       ) : (
-        <div className="text-center py-10 text-secondary text-sm">
+        <div className="text-center py-space-10 text-secondary text-sm">
           Click a type above to see its matchups
         </div>
       )}
@@ -185,7 +185,7 @@ function AbilityScoresSection() {
       </p>
 
       {/* Modifier calculator */}
-      <div className="bg-surface rounded-xl border border-white/10 p-4 flex items-center gap-4 flex-wrap">
+      <div className="bg-surface rounded-xl border border-white/10 p-space-4 flex items-center gap-4 flex-wrap">
         <label className="text-sm text-white font-medium">Ability Score:</label>
         <div className="flex items-center gap-2">
           <button
@@ -237,7 +237,7 @@ function AbilityScoresSection() {
         <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-white hover:text-interactive transition-colors select-none">
           Full Modifier Table (1–30)
         </summary>
-        <div className="px-4 pb-4 overflow-x-auto">
+        <div className="px-space-4 pb-space-4 overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/10 text-secondary text-xs uppercase tracking-wider">
@@ -360,7 +360,7 @@ export default function RulebookPage() {
   const [activeTab, setActiveTab] = useState<TabKey>("type-chart");
 
   return (
-    <main className="min-h-screen px-4 py-6 max-w-4xl mx-auto space-y-6">
+    <main className="min-h-screen px-4 py-space-6 max-w-4xl mx-auto space-y-6">
       <header>
         <h1 className="text-responsive-xl font-bold text-white font-['Poppins'] mb-1">
           Rulebook

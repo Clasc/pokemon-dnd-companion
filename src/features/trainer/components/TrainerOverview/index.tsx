@@ -221,12 +221,12 @@ export default function TrainerOverview({
       {(() => {
         const editContent = (
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-space-6">
               <h2 id="edit-trainer-title" className="text-2xl font-bold text-white">Edit Trainer</h2>
             </div>
 
             {/* Trainer Name & Class - Editable */}
-            <div className="mb-6 space-y-4">
+            <div className="mb-space-6 space-y-4">
               <input
                 type="text"
                 value={editedTrainer.name}
@@ -260,14 +260,14 @@ export default function TrainerOverview({
                       })
                     }
                     placeholder="Level"
-                    className="w-24 bg-surface text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
+                    className="w-24 bg-surface text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* Attributes */}
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-white mb-4">
+              <div className="mb-space-6">
+                <h3 className="text-lg font-semibold text-white mb-space-4">
                   Attributes
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-space-4">
@@ -314,8 +314,8 @@ export default function TrainerOverview({
               </div>
 
               {/* Hit Points */}
-              <div className="p-4 bg-white/5 rounded-lg border border-white/10 mb-8">
-                <div className="flex items-center justify-between mb-4">
+              <div className="p-space-4 bg-white/5 rounded-lg border border-white/10 mb-8">
+                <div className="flex items-center justify-between mb-space-4">
                   <h3 className="text-lg font-semibold text-white">Hit Points</h3>
                   <div className="flex items-center gap-2">
                     <button

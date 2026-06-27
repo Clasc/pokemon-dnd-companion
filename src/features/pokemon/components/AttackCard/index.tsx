@@ -36,7 +36,7 @@ export default function AttackCard({
     return (
       <>
         <div
-          className="bg-white/5 rounded-lg flex items-center justify-center p-4 h-full border-2 border-dashed border-white/10 hover:bg-white/10 transition-colors cursor-pointer"
+          className="bg-white/5 rounded-lg flex items-center justify-center p-space-4 h-full border-2 border-dashed border-white/10 hover:bg-white/10 transition-colors cursor-pointer"
           onClick={handleAddAttackClick}
           role="button"
           tabIndex={0}
@@ -55,7 +55,7 @@ export default function AttackCard({
   }
 
   return (
-    <div className="bg-white/10 rounded-lg p-3 text-white text-sm h-full flex flex-col justify-between">
+    <div className="bg-white/10 rounded-lg p-space-3 text-white text-sm h-full flex flex-col justify-between">
       <div>
         <div className="flex justify-between items-start mb-2">
           <h4 className="font-bold text-base">{attack.name}</h4>
@@ -93,7 +93,7 @@ export default function AttackCard({
       <button
         onClick={handlePerformAttack}
         disabled={attack.currentPp === 0}
-        className="w-full mt-auto bg-interactive hover:bg-interactive-hover disabled:bg-gray-600/50 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-bold py-2 px-3 md:py-1.5 md:px-2 rounded-md transition-colors text-sm md:text-xs"
+        className="w-full mt-auto bg-interactive hover:bg-interactive-hover disabled:bg-gray-600/50 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-bold py-space-2 px-space-3 md:py-1.5 md:px-2 rounded-md transition-colors text-sm md:text-xs"
       >
         Perform Attack
       </button>

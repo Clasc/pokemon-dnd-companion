@@ -226,7 +226,7 @@ export default function MoveAutocomplete({
       )}
 
       {isOpen && value.trim() && suggestions.length === 0 && !isLoading && (
-        <div className="absolute z-50 w-full mt-1 bg-gray-800 border border-white/20 rounded-lg shadow-lg p-4 text-gray-400 text-center">
+        <div className="absolute z-50 w-full mt-1 bg-gray-800 border border-white/20 rounded-lg shadow-lg p-space-4 text-gray-400 text-center">
           No moves found
         </div>
       )}

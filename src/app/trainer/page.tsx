@@ -16,15 +16,15 @@ export default function TrainerPage() {
   const setTrainer = useAppStore.use.setTrainer();
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-6 md:py-10 overflow-x-hidden">
-      <header className="flex items-center justify-between pb-4 border-b border-white/10">
+    <main className="max-w-7xl mx-auto px-4 py-space-6 md:py-space-10 overflow-x-hidden">
+      <header className="flex items-center justify-between pb-space-4 border-b border-white/10">
         <h1 className="text-2xl md:text-3xl font-bold text-white">Trainer</h1>
       </header>
 
       {!trainer ? (
         <CreateTrainer onTrainerUpdate={setTrainer} />
       ) : (
-        <section className="mt-6">
+        <section className="mt-space-6">
           <TrainerOverview unstyled />
         </section>
       )}

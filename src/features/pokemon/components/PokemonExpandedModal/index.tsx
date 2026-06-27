@@ -178,7 +178,7 @@ export default function PokemonExpandedModal({
         </div>
       </div>
 
-      <div className="mb-6">
+      <div className="mb-space-6">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-semibold text-white">Attacks</h3>
           {(pokemon.attacks?.length ?? 0) > 0 && (
@@ -197,7 +197,7 @@ export default function PokemonExpandedModal({
               setSelectedAttackIndex(0);
               setShowAddAttackModal(true);
             }}
-            className="w-full bg-white/5 hover:bg-white/10 rounded-lg p-4 text-sm font-medium text-white/50 hover:text-white transition-colors border border-dashed border-white/20"
+            className="w-full bg-white/5 hover:bg-white/10 rounded-lg p-space-4 text-sm font-medium text-white/50 hover:text-white transition-colors border border-dashed border-white/20"
           >
             + Add First Attack
           </button>
@@ -219,7 +219,7 @@ export default function PokemonExpandedModal({
                     setSelectedAttackIndex(i);
                     setShowAddAttackModal(true);
                   }}
-                  className="bg-white/5 rounded-lg flex items-center justify-center p-4 h-full border-2 border-dashed border-white/10 hover:bg-white/10 transition-colors cursor-pointer min-h-[100px]"
+                  className="bg-white/5 rounded-lg flex items-center justify-center p-space-4 h-full border-2 border-dashed border-white/10 hover:bg-white/10 transition-colors cursor-pointer min-h-[100px]"
                   role="button"
                 >
                   <span className="text-white/50 font-semibold">+ Add</span>
@@ -258,13 +258,13 @@ export default function PokemonExpandedModal({
       <div className="flex gap-3">
         <button
           onClick={handleEditClick}
-          className="flex-1 py-3 px-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white font-medium"
-        >
-          Edit
+className="flex-1 py-space-3 px-space-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white font-medium"
+          >
+            Edit
         </button>
         <button
           onClick={() => setShowDeleteModal(true)}
-          className="flex-1 py-3 px-4 rounded-lg bg-red-500/20 hover:bg-red-500/40 transition-colors text-red-300 font-medium"
+          className="flex-1 py-space-3 px-space-4 rounded-lg bg-red-500/20 hover:bg-red-500/40 transition-colors text-red-300 font-medium"
         >
           Delete
         </button>
@@ -275,18 +275,18 @@ export default function PokemonExpandedModal({
   const editView = (
     <div className="p-space-4 md:p-space-6">
       <PokemonForm pokemon={editFormState} onChange={setEditFormState} />
-      <div className="flex gap-3 mt-6">
+      <div className="flex gap-3 mt-space-6">
         <button
           onClick={handleSave}
-          className="flex-1 py-3 px-4 rounded-lg bg-interactive hover:bg-interactive-hover transition-colors text-white font-medium"
-        >
-          Save
+className="flex-1 py-space-3 px-space-4 rounded-lg bg-interactive hover:bg-interactive-hover transition-colors text-white font-medium"
+          >
+            Save
         </button>
         <button
           onClick={handleCancel}
-          className="flex-1 py-3 px-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white font-medium"
-        >
-          Cancel
+className="flex-1 py-space-3 px-space-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white font-medium"
+          >
+            Cancel
         </button>
       </div>
     </div>

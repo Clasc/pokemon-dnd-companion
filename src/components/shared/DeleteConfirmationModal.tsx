@@ -23,7 +23,7 @@ export default function DeleteConfirmationModal({
   const descId = "delete-modal-desc";
 
   const content = (
-    <div className="p-2">
+    <div className="p-space-2">
       <h2
         id={titleId}
         className="text-xl font-bold text-white mb-3 text-center"
@@ -32,12 +32,12 @@ export default function DeleteConfirmationModal({
       </h2>
       <p
         id={descId}
-        className="text-gray-300 mb-6 leading-relaxed text-center"
+        className="text-gray-300 mb-space-6 leading-relaxed text-center"
       >
         Are you sure you want to delete &quot;{pokemonName}&quot;? This action cannot be undone.
       </p>
       <div className="flex flex-col items-center text-center mb-2">
-        <div className="w-16 h-16 mb-5 rounded-full bg-red-500/20 flex items-center justify-center">
+        <div className="w-16 h-16 mb-space-5 rounded-full bg-red-500/20 flex items-center justify-center">
           <svg
             className="w-8 h-8 text-red-400"
             viewBox="0 0 24 24"
@@ -58,7 +58,7 @@ export default function DeleteConfirmationModal({
           permanently remove it from your team.
         </p>
       </div>
-      <div className="flex gap-3 mt-4">
+      <div className="flex gap-3 mt-space-4">
         <button
           type="button"
           onClick={onCancel}

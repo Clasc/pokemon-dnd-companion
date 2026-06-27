@@ -6,7 +6,7 @@ export default function EditButtons({
   handleCancel: () => void;
 }) {
   return (
-    <div className="flex gap-3 mt-6">
+    <div className="flex gap-3 mt-space-6">
       <button
         onClick={handleSave}
         className="flex-1 btn-primary btn-responsive rounded-2xl font-semibold"

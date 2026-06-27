@@ -230,7 +230,7 @@ export default function QuickStatusDropdown({
               right: window.innerWidth - (buttonRef.current?.getBoundingClientRect().right || 0)
             }}
           >
-            <div className="p-2 border-b border-white/10">
+            <div className="p-space-2 border-b border-white/10">
               <div className="text-xs text-gray-400 mb-1 px-2">Status</div>
               {PRIMARY_STATUS_CONDITIONS.map((condition) => (
                 <button
@@ -254,7 +254,7 @@ export default function QuickStatusDropdown({
               ))}
             </div>
 
-            <div className="p-2">
+            <div className="p-space-2">
               <div className="text-xs text-gray-400 mb-1 px-2">Confused</div>
               {CONFUSED_STATUS_CONDITIONS.map((condition) => (
                 <button

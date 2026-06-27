@@ -109,8 +109,8 @@ export default function AddPokemonModal({
       size="lg"
       titleId="add-pokemon-title"
     >
-      <div className="p-2">
-        <h2 id="add-pokemon-title" className="text-xl font-bold mb-4 text-white">
+      <div className="p-space-2">
+        <h2 id="add-pokemon-title" className="text-xl font-bold mb-space-4 text-white">
           Add Pokémon
         </h2>
         
@@ -121,12 +121,12 @@ export default function AddPokemonModal({
           onSpeciesLoadingChange={setSpeciesLoading}
         />
 
-        <div className="flex justify-end gap-4 pt-4 mt-4 border-t border-white/10">
+        <div className="flex justify-end gap-4 pt-space-4 mt-space-4 border-t border-white/10">
           <button
             type="button"
             onClick={handleCancel}
             disabled={submitting || speciesLoading}
-            className="px-5 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-50"
+            className="px-space-5 py-space-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
@@ -135,7 +135,7 @@ export default function AddPokemonModal({
             data-testid="save-pokemon-button"
             onClick={handleSave}
             disabled={submitting || speciesLoading}
-            className="px-5 py-2 rounded-lg bg-interactive hover:bg-interactive-hover text-white font-semibold transition-colors disabled:opacity-50"
+            className="px-space-5 py-space-2 rounded-lg bg-interactive hover:bg-interactive-hover text-white font-semibold transition-colors disabled:opacity-50"
           >
             {submitting ? "Saving..." : "Save Pokémon"}
           </button>

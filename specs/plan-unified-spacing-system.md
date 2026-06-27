@@ -3,7 +3,7 @@ title: Unified Spacing Design System
 version: 1.0
 date_created: 2026-04-12
 owner: Pokemon DnD Companion
-status: open
+status: done
 tags: `design-system`, `tailwind`, `spacing`, `css`
 ---
 
@@ -108,7 +108,7 @@ This inconsistency makes maintenance difficult and creates visual incoherence.
 
 ## Success Criteria
 
-- [ ] All components use consistent spacing tokens
-- [ ] No more `p-3`, `p-5`, `p-6` used inconsistently
-- [ ] Gap values unified to `gap-tight`, `gap-sm`, `gap-md`, `gap-lg`
-- [ ] Visual consistency maintained across all pages
+- [x] All components use consistent spacing tokens
+- [x] No more `p-3`, `p-5`, `p-6` used inconsistently
+- [x] Gap values unified to `gap-tight`, `gap-sm`, `gap-md`, `gap-lg`
+- [x] Visual consistency maintained across all pages
