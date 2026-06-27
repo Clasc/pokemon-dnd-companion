@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { Pokemon, TYPE_COLORS } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
-import ProgressBar from "@/components/shared/ui/ProgressBar";
+import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
 import QuickStatusDropdown from "../QuickStatusDropdown";
 import { useAppStore } from "@/store";
 
@@ -20,16 +19,9 @@ export default function PokemonCompactCard({
   onClick,
   showAttacks = false,
 }: PokemonCompactCardProps) {
-  const [xpInput, setXpInput] = useState("");
   const gainExperience = useAppStore.use.gainExperience();
-
-  const handleAddXP = () => {
-    const amount = parseInt(xpInput);
-    if (amount > 0) {
-      gainExperience(uuid, amount);
-      setXpInput("");
-    }
-  };
+  const modifyPokemonHP = useAppStore.use.modifyPokemonHP();
+  const decreaseAttackPP = useAppStore.use.decreaseAttackPP();
 
   const getTypeColor = (type: string) =>
     TYPE_COLORS[type as keyof typeof TYPE_COLORS] || "#A8A878";
@@ -96,57 +88,50 @@ export default function PokemonCompactCard({
                 {pokemon.currentHP}/{pokemon.maxHP}
               </span>
             </div>
-            <ProgressBar
-              variant="hp"
+            <InteractiveProgress
+              type="hp"
               current={pokemon.currentHP}
               max={pokemon.maxHP}
-              showValue={false}
+              onChange={(val) => modifyPokemonHP(uuid, val - pokemon.currentHP)}
+              label="HP"
             />
 
             <div className="flex items-center justify-between">
               <span className="text-[10px] text-gray-400">XP</span>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  min="1"
-                  value={xpInput}
-                  onChange={(e) => setXpInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleAddXP()}
-                  placeholder="+XP"
-                  className="w-14 px-2 py-0.5 bg-white/10 border border-white/20 rounded text-[10px] text-white focus:outline-none focus:ring-1 focus:ring-interactive"
-                  onClick={(e) => e.stopPropagation()}
-                />
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleAddXP();
-                  }}
-                  className="px-2 py-0.5 bg-interactive hover:bg-interactive-hover rounded text-[10px] text-white"
-                >
-                  +
-                </button>
-                <span className="text-[10px] text-gray-300">
-                  {pokemon.experience}/{pokemon.experience + pokemon.experienceToNext}
-                </span>
-              </div>
+              <span className="text-[10px] text-gray-300">
+                {pokemon.experience}/{pokemon.experience + pokemon.experienceToNext}
+              </span>
             </div>
-            <ProgressBar
-              variant="xp"
+            <InteractiveProgress
+              type="xp"
               current={pokemon.experience}
               max={pokemon.experience + pokemon.experienceToNext}
-              showValue={false}
+              onChange={(val) => gainExperience(uuid, val - pokemon.experience)}
+              label="XP"
             />
           </div>
 
           {showAttacks && pokemon.attacks && pokemon.attacks.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-1.5">
               {pokemon.attacks.map((attack, i) => (
-                <span
+                <button
                   key={i}
-                  className="text-[10px] bg-white/10 rounded-full px-1.5 py-0.5 text-gray-300"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (attack.currentPp > 0) {
+                      decreaseAttackPP(uuid, i);
+                    }
+                  }}
+                  disabled={attack.currentPp === 0}
+                  className={`text-[10px] rounded-full px-1.5 py-0.5 transition-colors ${
+                    attack.currentPp === 0
+                      ? "bg-white/5 text-gray-500 cursor-not-allowed"
+                      : "bg-white/10 text-gray-300 hover:bg-white/20 active:bg-interactive active:text-white"
+                  }`}
                 >
                   {attack.name} ({attack.currentPp}/{attack.maxPp})
-                </span>
+                </button>
               ))}
             </div>
           )}
