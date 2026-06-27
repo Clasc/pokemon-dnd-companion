@@ -6,7 +6,7 @@ import { PokemonTeam, Pokemon } from "@/types/pokemon";
 
 import PokemonCompactCard from "./PokemonCompactCard";
 import PokemonExpandedModal from "../PokemonExpandedModal";
-import AddPokemonModal from "../AddPokemonModal";
+import AddPokemonBottomSheet from "../AddPokemonBottomSheet";
 
 interface PokemonOverviewProps {
   pokemon: PokemonTeam;
@@ -196,7 +196,7 @@ export default function PokemonOverview({
         />
       )}
 
-      <AddPokemonModal
+      <AddPokemonBottomSheet
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
       />
