@@ -24,7 +24,7 @@ export default function PokemonTeamPage() {
         </div>
       </header>
 
-      <PokemonOverview pokemon={pokemonTeam} unstyled />
+      <PokemonOverview pokemon={pokemonTeam} unstyled showAttacks />
     </main>
   );
 }

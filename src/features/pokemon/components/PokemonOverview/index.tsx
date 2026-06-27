@@ -14,12 +14,14 @@ interface PokemonOverviewProps {
   disableCards?: boolean;
 
   unstyled?: boolean;
+  showAttacks?: boolean;
 }
 
 export default function PokemonOverview({
   pokemon,
   disableCards = false,
   unstyled = false,
+  showAttacks = false,
 }: PokemonOverviewProps) {
   const [expandedUuid, setExpandedUuid] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -69,7 +71,7 @@ export default function PokemonOverview({
           </h2>
 
           <div className="flex items-center gap-sm">
-            <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#EE5D20] flex items-center justify-center">
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-interactive flex items-center justify-center">
               <span className="text-white text-sm md:text-base font-bold">
                 {pokemonLength}
               </span>
@@ -112,6 +114,7 @@ export default function PokemonOverview({
                   pokemon={poke}
                   uuid={uuid}
                   onClick={() => setExpandedUuid(uuid)}
+                  showAttacks={showAttacks}
                 />
               ),
             )
@@ -123,7 +126,7 @@ export default function PokemonOverview({
             <button
               type="button"
               onClick={() => setShowAddModal(true)}
-              className="w-full flex items-center justify-center gap-sm py-space-3 px-space-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white border-2 border-dashed border-white/20 focus:outline-none focus:ring-2 focus:ring-[#EE5D20]/50"
+              className="w-full flex items-center justify-center gap-sm py-space-3 px-space-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white border-2 border-dashed border-white/20 focus:outline-none focus:ring-2 focus:ring-interactive"
             >
               <svg
                 className="w-6 h-6"

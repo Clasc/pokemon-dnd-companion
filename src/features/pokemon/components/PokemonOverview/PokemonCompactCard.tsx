@@ -11,12 +11,14 @@ interface PokemonCompactCardProps {
   pokemon: Pokemon;
   uuid: string;
   onClick: () => void;
+  showAttacks?: boolean;
 }
 
 export default function PokemonCompactCard({
   pokemon,
   uuid,
   onClick,
+  showAttacks = false,
 }: PokemonCompactCardProps) {
   const [xpInput, setXpInput] = useState("");
   const gainExperience = useAppStore.use.gainExperience();
@@ -135,6 +137,19 @@ export default function PokemonCompactCard({
               showValue={false}
             />
           </div>
+
+          {showAttacks && pokemon.attacks && pokemon.attacks.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-1.5">
+              {pokemon.attacks.map((attack, i) => (
+                <span
+                  key={i}
+                  className="text-[10px] bg-white/10 rounded-full px-1.5 py-0.5 text-gray-300"
+                >
+                  {attack.name} ({attack.currentPp}/{attack.maxPp})
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
