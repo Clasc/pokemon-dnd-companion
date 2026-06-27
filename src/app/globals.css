@@ -94,6 +94,7 @@
 @utility bg-interactive-hover { background-color: var(--color-interactive-hover); }
 
 /* Surface colors */
+@utility bg-primary { background-color: var(--color-bg); }
 @utility bg-surface { background-color: var(--color-surface); }
 @utility bg-surface-hover { background-color: var(--color-surface-hover); }
 

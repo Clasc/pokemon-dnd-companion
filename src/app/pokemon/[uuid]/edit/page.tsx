@@ -125,7 +125,7 @@ export default function EditPokemonPage() {
           <div>
             <Link
               href="/pokemon"
-              className="inline-block px-5 py-2 rounded-lg bg-[#EE5D20] hover:bg-[#d44d15] text-white font-semibold transition-colors"
+              className="inline-block px-5 py-2 rounded-lg bg-interactive hover:bg-interactive-hover text-white font-semibold transition-colors"
             >
               Back to Team
             </Link>
@@ -183,7 +183,7 @@ export default function EditPokemonPage() {
             data-testid="save-pokemon-button"
             onClick={handleSave}
             disabled={submitting || speciesLoading}
-            className="px-5 py-2 rounded-lg bg-[#EE5D20] hover:bg-[#d44d15] text-white font-semibold transition-colors disabled:opacity-50"
+            className="px-5 py-2 rounded-lg bg-interactive hover:bg-interactive-hover text-white font-semibold transition-colors disabled:opacity-50"
           >
             {submitting ? "Saving..." : "Save Changes"}
           </button>

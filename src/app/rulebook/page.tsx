@@ -117,7 +117,7 @@ function TypeChartSection() {
               className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all border
                 ${active ? "ring-2 ring-white/40 scale-105" : "hover:scale-105"}`}
               style={{
-                background: active ? color + "40" : "#222",
+                background: active ? color + "40" : "var(--color-surface)",
                 color: active ? "#fff" : color,
                 borderColor: active ? color : color + "50",
               }}

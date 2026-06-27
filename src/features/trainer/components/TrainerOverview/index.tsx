@@ -275,7 +275,7 @@ export default function TrainerOverview({
                     })
                   }
                   placeholder="Level"
-                  className="w-24 bg-[#222222] text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-[#EE5D20] focus:outline-none"
+                  className="w-24 bg-surface text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
                 />
               </div>
             </div>

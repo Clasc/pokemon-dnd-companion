@@ -111,7 +111,7 @@ export default function PokemonCompactCard({
                   onChange={(e) => setXpInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleAddXP()}
                   placeholder="+XP"
-                  className="w-14 px-2 py-0.5 bg-white/10 border border-white/20 rounded text-[10px] text-white focus:outline-none focus:ring-1 focus:ring-[#EE5D20]"
+                  className="w-14 px-2 py-0.5 bg-white/10 border border-white/20 rounded text-[10px] text-white focus:outline-none focus:ring-1 focus:ring-interactive"
                   onClick={(e) => e.stopPropagation()}
                 />
                 <button
@@ -119,7 +119,7 @@ export default function PokemonCompactCard({
                     e.stopPropagation();
                     handleAddXP();
                   }}
-                  className="px-2 py-0.5 bg-[#EE5D20] hover:bg-[#ff6e35] rounded text-[10px] text-white"
+                  className="px-2 py-0.5 bg-interactive hover:bg-interactive-hover rounded text-[10px] text-white"
                 >
                   +
                 </button>

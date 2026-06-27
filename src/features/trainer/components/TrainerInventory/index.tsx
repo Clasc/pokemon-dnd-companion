@@ -104,7 +104,7 @@ export default function TrainerInventory({
               onChange={(e) => setPokedollarAmount(e.target.value)}
               placeholder="Amount"
               min="1"
-              className="flex-1 bg-white/10 text-white placeholder-gray-400 rounded-lg p-space-2 border border-white/20 focus:ring-2 focus:ring-yellow-500 focus:outline-none"
+              className="flex-1 bg-white/10 text-white placeholder-gray-400 rounded-lg p-space-2 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
             />
             <button
               onClick={() => handlePokedollarChange("add")}
@@ -265,7 +265,7 @@ export default function TrainerInventory({
               }
               placeholder="Quantity"
               min="1"
-              className="w-full bg-[#222222] text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-[#EE5D20] focus:outline-none"
+              className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
             />
 
             <div>
@@ -277,7 +277,7 @@ export default function TrainerInventory({
                 onChange={(e) => setNewItemDescription(e.target.value)}
                 placeholder="Description (auto-filled from PokeAPI)"
                 rows={3}
-                className="w-full bg-[#222222] text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-[#EE5D20] focus:outline-none resize-none"
+                className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none resize-none"
               />
             </div>
 

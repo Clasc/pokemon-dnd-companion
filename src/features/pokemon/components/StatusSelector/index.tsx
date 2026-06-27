@@ -318,7 +318,7 @@ export default function StatusSelector({
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 py-3 px-4 bg-[#EE5D20] hover:bg-[#d44d15] text-white rounded-lg transition-colors font-medium"
+            className="flex-1 py-3 px-4 bg-interactive hover:bg-interactive-hover text-white rounded-lg transition-colors font-medium"
           >
             Save
           </button>

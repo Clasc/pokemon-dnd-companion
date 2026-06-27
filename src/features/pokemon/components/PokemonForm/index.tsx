@@ -169,7 +169,7 @@ export default function PokemonForm({
               type="text"
               value={pokemon.name}
               onChange={(e) => handleFieldChange("name", e.target.value)}
-              className="w-full px-3 py-2 bg-[#222222] border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#EE5D20]"
+              className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-interactive"
               placeholder="Custom name for your Pokémon"
               data-testid={testIds?.nickname}
             />
@@ -191,7 +191,7 @@ export default function PokemonForm({
                     : parseInt(e.target.value),
                 )
               }
-              className="w-full px-3 py-2 bg-[#222222] border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#EE5D20]"
+              className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-interactive"
             />
           </div>
         </div>
@@ -208,7 +208,7 @@ export default function PokemonForm({
               onChange={(e) =>
                 handleFieldChange("type1", e.target.value as PokemonType)
               }
-              className="w-full px-3 py-2 bg-[#222222] border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#EE5D20]"
+              className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white focus:outline-none focus:border-interactive"
             >
               {pokemonTypes.map((type) => (
                 <option key={type} value={type} className="bg-gray-800">
@@ -226,7 +226,7 @@ export default function PokemonForm({
               onChange={(e) =>
                 handleFieldChange("type2", e.target.value || null)
               }
-              className="w-full px-3 py-2 bg-[#222222] border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#EE5D20]"
+              className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white focus:outline-none focus:border-interactive"
             >
               <option value="" className="bg-gray-800">
                 None
@@ -262,7 +262,7 @@ export default function PokemonForm({
                     : parseInt(e.target.value),
                 )
               }
-              className="w-full px-3 py-2 bg-[#222222] border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#EE5D20]"
+              className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-interactive"
             />
           </div>
           <div>
@@ -293,7 +293,7 @@ export default function PokemonForm({
                   currentHP: nextCurrent,
                 });
               }}
-              className="w-full px-3 py-2 bg-[#222222] border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#EE5D20]"
+              className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-interactive"
             />
           </div>
         </div>
@@ -327,7 +327,7 @@ export default function PokemonForm({
                     : parseInt(e.target.value),
                 )
               }
-              className="w-full px-3 py-2 bg-[#222222] border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#EE5D20]"
+              className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-interactive"
             />
           </div>
           <div>
@@ -346,7 +346,7 @@ export default function PokemonForm({
                     : parseInt(e.target.value),
                 )
               }
-              className="w-full px-3 py-2 bg-[#222222] border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#EE5D20]"
+              className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-interactive"
             />
           </div>
         </div>
@@ -383,7 +383,7 @@ export default function PokemonForm({
                       : parseInt(e.target.value),
                   )
                 }
-                className="w-full px-3 py-2 bg-[#222222] border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#EE5D20]"
+                className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-interactive"
               />
             </div>
           ))}

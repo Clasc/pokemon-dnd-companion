@@ -235,13 +235,13 @@ export default function PokemonAutocomplete({
           onBlur={handleBlur}
           placeholder={placeholder}
           disabled={disabled}
-          className="w-full px-3 py-2 bg-[#222222] border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#EE5D20] disabled:opacity-50"
+          className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-interactive disabled:opacity-50"
           data-testid={testIds?.input}
           autoComplete="off"
         />
         {isLoading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <div className="w-4 h-4 border-2 border-[#EE5D20] border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-interactive border-t-transparent rounded-full animate-spin" />
           </div>
         )}
       </div>
@@ -255,7 +255,7 @@ export default function PokemonAutocomplete({
       {isOpen && suggestions.length > 0 && (
         <div
           ref={dropdownRef}
-          className="absolute z-50 w-full mt-1 bg-[#222222] border border-white/20 rounded-lg shadow-lg max-h-64 overflow-y-auto"
+          className="absolute z-50 w-full mt-1 bg-surface border border-white/20 rounded-lg shadow-lg max-h-64 overflow-y-auto"
           data-testid={testIds?.dropdown}
         >
 {suggestions.map((pokemon, index) => (
@@ -265,7 +265,7 @@ export default function PokemonAutocomplete({
                 onClick={() => handleSelect(pokemon)}
                 className={`w-full px-4 py-2 text-left transition-colors ${
                   index === highlightedIndex
-                    ? "bg-[#EE5D20] text-white"
+                    ? "bg-interactive text-white"
                     : "text-white hover:bg-white/10 focus:bg-white/20"
                 }`}
                 data-testid={testIds?.option}
@@ -277,7 +277,7 @@ export default function PokemonAutocomplete({
       )}
 
       {isOpen && value.trim() && suggestions.length === 0 && !isLoading && (
-        <div className="absolute z-50 w-full mt-1 bg-[#222222] border border-white/20 rounded-lg shadow-lg p-4 text-gray-400 text-center">
+        <div className="absolute z-50 w-full mt-1 bg-surface border border-white/20 rounded-lg shadow-lg p-4 text-gray-400 text-center">
           No Pokemon found
         </div>
       )}

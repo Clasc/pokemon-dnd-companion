@@ -170,7 +170,7 @@ export default function Navigation() {
       <nav
         aria-label="Main"
         className="hidden md:flex fixed left-0 top-0 h-screen w-44 flex-col gap-1 px-2 py-3
-          bg-[#1a1a1a] border-r border-white/10
+          bg-primary border-r border-white/10
           text-sm z-40"
       >
         <div className="px-2 mb-4">
@@ -198,7 +198,7 @@ export default function Navigation() {
                     className={`absolute left-0 top-0 h-full w-1 rounded-tr rounded-br transition-opacity
                       ${
                         active
-                          ? "bg-[#EE5D20] opacity-100"
+                          ? "bg-interactive opacity-100"
                           : "bg-transparent opacity-0 group-hover:opacity-40"
                       }`}
                     aria-hidden="true"
@@ -218,7 +218,7 @@ export default function Navigation() {
                       className={`ml-auto inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold
                         ${
                           active
-                            ? "bg-[#EE5D20]/30 text-white"
+                            ? "bg-interactive text-white"
                             : "bg-white/10 text-gray-300 group-hover:bg-white/20"
                         }`}
                     >
@@ -239,7 +239,7 @@ export default function Navigation() {
       <nav
         aria-label="Main"
         className="md:hidden fixed bottom-0 left-0 right-0 z-40
-          bg-[#1a1a1a]
+          bg-primary
           border-t border-white/10"
       >
         <ul className="flex justify-around items-stretch">
@@ -270,7 +270,7 @@ export default function Navigation() {
                       className={`text-[10px] leading-none font-semibold mt-0.5 px-1.5 py-0.5 rounded
                         ${
                           active
-                            ? "bg-[#EE5D20]/30 text-white"
+                            ? "bg-interactive text-white"
                             : "bg-white/10 text-gray-300"
                         }`}
                     >
