@@ -1,0 +1,10 @@
+{
+  "component_exists": true,
+  "test_exists": true,
+  "uses_getByRole": true,
+  "exports_default": true,
+  "project_pattern": true,
+  "design_system_colors": false,
+  "body_scroll_lock": false,
+  "_notes": "Uses hardcoded bg-[#252525] instead of bg-surface, bg-white/10 instead of bg-interactive. Body scroll lock doesn't fully handle open→close→open cycle. Test coverage more extensive (6 tests)."
+}

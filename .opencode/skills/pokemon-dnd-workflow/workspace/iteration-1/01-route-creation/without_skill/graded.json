@@ -1,0 +1,9 @@
+{
+  "page_exists": true,
+  "page_content": true,
+  "nav_link": true,
+  "nav_icon": true,
+  "nav_config": false,
+  "color_usage": false,
+  "_notes": "Uses hardcoded text-white and text-gray-300. Placed Inventory after Trainer instead of between Team and Trainer."
+}

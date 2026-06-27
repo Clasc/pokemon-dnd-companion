@@ -1,0 +1,8 @@
+{
+  "no_hardcoded_interactive": true,
+  "no_hardcoded_hover": true,
+  "uses_bg_interactive": true,
+  "uses_bg_interactive_hover": true,
+  "uses_disabled_states": true,
+  "_notes": "Read migration guide before making changes. Correctly used bg-interactive and hover:bg-interactive-hover."
+}

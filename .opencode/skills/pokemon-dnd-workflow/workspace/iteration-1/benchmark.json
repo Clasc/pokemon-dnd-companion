@@ -1,0 +1,108 @@
+{
+  "skill_name": "pokemon-dnd-workflow",
+  "iteration": 1,
+  "results": {
+    "01-route-creation": {
+      "with_skill": {
+        "passed": true,
+        "assertions": {
+          "page_exists": true,
+          "page_content": true,
+          "nav_link": true,
+          "nav_icon": true,
+          "nav_config": true,
+          "color_usage": true
+        },
+        "pass_count": 6,
+        "total_count": 6,
+        "notes": "Uses CSS variables for text colors, correct nav placement between Team and Trainer, follows project icon pattern."
+      },
+      "without_skill": {
+        "passed": false,
+        "assertions": {
+          "page_exists": true,
+          "page_content": true,
+          "nav_link": true,
+          "nav_icon": true,
+          "nav_config": false,
+          "color_usage": false
+        },
+        "pass_count": 4,
+        "total_count": 6,
+        "notes": "Hardcoded text-white/text-gray-300 instead of CSS variables. Nav placement after Trainer instead of between Team and Trainer."
+      }
+    },
+    "02-color-migration": {
+      "with_skill": {
+        "passed": true,
+        "assertions": {
+          "no_hardcoded_interactive": true,
+          "no_hardcoded_hover": true,
+          "uses_bg_interactive": true,
+          "uses_bg_interactive_hover": true,
+          "uses_disabled_states": true
+        },
+        "pass_count": 5,
+        "total_count": 5,
+        "notes": "Read migration guide before making changes. Correctly migrated all hardcoded colors."
+      },
+      "without_skill": {
+        "passed": true,
+        "assertions": {
+          "no_hardcoded_interactive": true,
+          "no_hardcoded_hover": true,
+          "uses_bg_interactive": true,
+          "uses_bg_interactive_hover": true,
+          "uses_disabled_states": true
+        },
+        "pass_count": 5,
+        "total_count": 5,
+        "notes": "Made correct changes despite not reading migration guide. Simple task — no significant difference."
+      }
+    },
+    "03-modal-component": {
+      "with_skill": {
+        "passed": true,
+        "assertions": {
+          "component_exists": true,
+          "test_exists": true,
+          "uses_getByRole": true,
+          "exports_default": true,
+          "project_pattern": true,
+          "design_system_colors": true,
+          "body_scroll_lock": true
+        },
+        "pass_count": 7,
+        "total_count": 7,
+        "notes": "Uses bg-surface, bg-interactive, hover:bg-interactive-hover, text-primary from design system. Body scroll lock handles both directions. 3 tests covering render/hide/close."
+      },
+      "without_skill": {
+        "passed": false,
+        "assertions": {
+          "component_exists": true,
+          "test_exists": true,
+          "uses_getByRole": true,
+          "exports_default": true,
+          "project_pattern": true,
+          "design_system_colors": false,
+          "body_scroll_lock": false
+        },
+        "pass_count": 5,
+        "total_count": 7,
+        "notes": "Uses hardcoded bg-[#252525] instead of bg-surface, bg-white/10 instead of bg-interactive. Body scroll lock has edge case issues. More tests (6) but worse design system compliance."
+      }
+    }
+  },
+  "summary": {
+    "with_skill": {
+      "total_assertions_passed": 18,
+      "total_assertions": 18,
+      "all_passed": true
+    },
+    "without_skill": {
+      "total_assertions_passed": 14,
+      "total_assertions": 18,
+      "all_passed": false
+    }
+  }
+}

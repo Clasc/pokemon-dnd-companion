@@ -1,0 +1,11 @@
+{
+  "name": "route-creation",
+  "evals_id": 1,
+  "assertions": {
+    "page_exists": "src/app/inventory/page.tsx exists",
+    "page_content": "page.tsx contains 'Inventory' heading",
+    "nav_link": "Navigation/index.tsx contains link with href='/inventory'",
+    "nav_icon": "Navigation has an SVG icon for the inventory route",
+    "nav_config": "Navigation items array includes inventory config with isActive"
+  }
+}

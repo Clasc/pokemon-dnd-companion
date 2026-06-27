@@ -1,0 +1,10 @@
+{
+  "component_exists": true,
+  "test_exists": true,
+  "uses_getByRole": true,
+  "exports_default": true,
+  "project_pattern": true,
+  "design_system_colors": true,
+  "body_scroll_lock": true,
+  "_notes": "Uses bg-surface, bg-interactive, hover:bg-interactive-hover, text-primary from design system. Body scroll lock handles both directions. Tests use queryByText/getByText/getByRole."
+}

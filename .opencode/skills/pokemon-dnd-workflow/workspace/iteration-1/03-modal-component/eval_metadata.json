@@ -1,0 +1,11 @@
+{
+  "name": "modal-component",
+  "evals_id": 3,
+  "assertions": {
+    "component_exists": "src/components/shared/Modal/index.tsx exists",
+    "test_exists": "src/components/shared/Modal/index.test.tsx exists",
+    "uses_getByRole": "Test uses getByRole or getByText (not getByTestId)",
+    "exports_default": "Component has export default",
+    "project_pattern": "Follows ComponentName/index.tsx pattern"
+  }
+}

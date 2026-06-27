@@ -1,0 +1,23 @@
+{
+  "skill_name": "pokemon-dnd-workflow",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add a /inventory route that shows a simple page with the heading 'Inventory' and a paragraph 'Coming soon.' Then add a nav link for it in the sidebar.",
+      "expected_output": "New route at src/app/inventory/page.tsx, nav link added to Navigation component",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Migrate the hardcoded colors in src/features/pokemon/components/AttackCard/index.tsx to use the project's design system tokens (bg-interactive, bg-surface, ring-interactive, etc.) instead of hardcoded hex values like #EE5D20 and #222222.",
+      "expected_output": "AttackCard/index.tsx updated with design system utilities, no hardcoded interactive/surface colors",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Create a reusable Modal component in src/components/shared/Modal/ that renders its children in an overlay with a close button. Include a co-located test file at Modal/index.test.tsx that covers rendering, opening, and closing behavior.",
+      "expected_output": "Modal/index.tsx and Modal/index.test.tsx following project conventions",
+      "files": []
+    }
+  ]
+}

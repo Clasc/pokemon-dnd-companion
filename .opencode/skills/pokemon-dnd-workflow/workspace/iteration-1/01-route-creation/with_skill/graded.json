@@ -1,0 +1,9 @@
+{
+  "page_exists": true,
+  "page_content": true,
+  "nav_link": true,
+  "nav_icon": true,
+  "nav_config": true,
+  "color_usage": true,
+  "_notes": "Uses CSS variables (var(--color-text-primary), var(--color-text-secondary)). Correct placement between Team and Trainer."
+}

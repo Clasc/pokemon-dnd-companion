@@ -1,0 +1,11 @@
+{
+  "name": "color-migration",
+  "evals_id": 2,
+  "assertions": {
+    "no_hardcoded_interactive": "AttackCard/index.tsx does not contain #EE5D20",
+    "no_hardcoded_hover": "AttackCard/index.tsx does not contain #d44d15",
+    "uses_bg_interactive": "AttackCard/index.tsx uses bg-interactive utility",
+    "uses_bg_interactive_hover": "AttackCard/index.tsx uses bg-interactive-hover or similar hover utility",
+    "uses_disabled_states": "AttackCard/index.tsx still has disabled state styling"
+  }
+}
