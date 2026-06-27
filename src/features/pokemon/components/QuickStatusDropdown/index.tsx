@@ -7,7 +7,10 @@ import { useAppStore } from "@/store";
 
 interface QuickStatusDropdownProps {
   pokemonUuid: string;
+  compact?: boolean;
 }
+
+const CYCLE_ORDER: StatusCondition[] = ["none", "burned", "poisoned", "paralyzed", "asleep", "frozen"];
 
 const PRIMARY_STATUS_CONDITIONS: StatusCondition[] = [
   "none",
@@ -46,6 +49,7 @@ const getDefaultDuration = (condition: StatusCondition): number | undefined => {
 
 export default function QuickStatusDropdown({
   pokemonUuid,
+  compact = false,
 }: QuickStatusDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -76,6 +80,21 @@ export default function QuickStatusDropdown({
   }, [isOpen]);
 
   if (!pokemon) return null;
+
+  const handleCycle = () => {
+    const currentCondition = pokemon.primaryStatus?.condition || "none";
+    const nextIndex = CYCLE_ORDER.indexOf(currentCondition) + 1;
+    const nextCondition = nextIndex >= CYCLE_ORDER.length ? CYCLE_ORDER[0] : CYCLE_ORDER[nextIndex];
+    if (nextCondition === "none") {
+      setPrimaryStatus(pokemonUuid, null);
+    } else {
+      const statusEffect: StatusEffect = {
+        condition: nextCondition,
+        duration: getDefaultDuration(nextCondition),
+      };
+      setPrimaryStatus(pokemonUuid, statusEffect);
+    }
+  };
 
   const handlePrimaryStatusChange = (condition: StatusCondition) => {
     if (condition === "none") {
@@ -115,37 +134,80 @@ export default function QuickStatusDropdown({
 
   return (
     <div className="relative z-[1000]" ref={dropdownRef}>
-      <button
-        ref={buttonRef}
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen(!isOpen);
-        }}
-        className="flex items-center gap-1 px-3 py-2 md:px-2 md:py-1 text-sm md:text-xs bg-surface-hover hover:bg-[#3d3d3d] rounded-md border border-white/10 transition-colors"
-      >
-        <span
-          className="w-2 h-2 rounded-full"
-          style={{ backgroundColor: STATUS_COLORS[currentPrimaryStatus] }}
-        />
-        <span className="text-white">
-          {getButtonLabel()}
-        </span>
-        <svg
-          className={`w-3 h-3 text-gray-300 transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+      {compact ? (
+        <div className="flex items-center gap-0.5">
+          <button
+            ref={buttonRef}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCycle();
+            }}
+            className="flex items-center gap-1 px-2 py-1.5 text-xs bg-surface-hover hover:bg-[#3d3d3d] rounded-l-md border border-white/10 transition-colors"
+          >
+            <span
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: STATUS_COLORS[currentPrimaryStatus] }}
+            />
+            <span className="text-white">{getButtonLabel()}</span>
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(!isOpen);
+            }}
+            className="px-1 py-1.5 text-xs bg-surface-hover hover:bg-[#3d3d3d] rounded-r-md border border-l-0 border-white/10 transition-colors"
+            aria-label="More statuses"
+          >
+            <svg
+              className={`w-3 h-3 text-gray-300 transition-transform ${
+                isOpen ? "rotate-180" : ""
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+        </div>
+      ) : (
+        <button
+          ref={buttonRef}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen(!isOpen);
+          }}
+          className="flex items-center gap-1 px-3 py-2 md:px-2 md:py-1 text-sm md:text-xs bg-surface-hover hover:bg-[#3d3d3d] rounded-md border border-white/10 transition-colors"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
+          <span
+            className="w-2 h-2 rounded-full"
+            style={{ backgroundColor: STATUS_COLORS[currentPrimaryStatus] }}
           />
-        </svg>
-      </button>
+          <span className="text-white">
+            {getButtonLabel()}
+          </span>
+          <svg
+            className={`w-3 h-3 text-gray-300 transition-transform ${
+              isOpen ? "rotate-180" : ""
+            }`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+      )}
 
       {showConfusedBadge && (
         <div className="absolute top-full right-0 mt-1">

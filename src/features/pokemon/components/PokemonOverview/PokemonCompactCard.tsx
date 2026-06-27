@@ -32,7 +32,7 @@ export default function PokemonCompactCard({
       className="p-space-2 cursor-pointer hover:bg-white/5 transition-all duration-200 relative z-0 border-b border-white/10 last:border-b-0"
     >
       <div className="absolute top-1 right-1 z-10">
-        <QuickStatusDropdown pokemonUuid={uuid} />
+        <QuickStatusDropdown pokemonUuid={uuid} compact />
       </div>
       <div className="flex items-center gap-sm">
         <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg bg-[#4a4a4a] flex items-center justify-center text-xl md:text-2xl border border-white/10 overflow-hidden flex-shrink-0">
