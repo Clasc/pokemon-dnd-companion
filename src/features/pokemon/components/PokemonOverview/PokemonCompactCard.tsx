@@ -39,7 +39,7 @@ export default function PokemonCompactCard({
   return (
     <div
       onClick={!onEditStat ? onClick : undefined}
-      className={`p-space-2 transition-all duration-200 relative z-0 border-b border-white/10 last:border-b-0 ${
+      className={`p-space-3 transition-all duration-200 relative z-0 border-b border-white/10 last:border-b-0 ${
         !onEditStat ? "cursor-pointer hover:bg-white/5" : ""
       }`}
     >
@@ -61,8 +61,8 @@ export default function PokemonCompactCard({
           <QuickStatusDropdown pokemonUuid={uuid} compact />
         )}
       </div>
-      <div className="flex items-center gap-sm">
-        <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg bg-[#4a4a4a] flex items-center justify-center text-xl md:text-2xl border border-white/10 overflow-hidden flex-shrink-0">
+      <div className="flex items-center gap-space-3">
+        <div className="w-14 h-14 md:w-16 md:h-16 rounded-lg bg-[#4a4a4a] flex items-center justify-center text-2xl md:text-3xl border border-white/10 overflow-hidden flex-shrink-0">
           {pokemon.spriteUrl ? (
             <img
               src={pokemon.spriteUrl}
@@ -84,18 +84,18 @@ export default function PokemonCompactCard({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-sm mb-0.5">
-            <h3 className="font-semibold text-white text-sm md:text-base truncate">
+            <h3 className="font-semibold text-white text-base md:text-lg truncate">
               {pokemon.name}
             </h3>
-            <span className="text-xs md:text-sm text-gray-300 bg-white/10 px-1.5 py-0.5 rounded">
+            <span className="text-sm md:text-base text-gray-300 bg-white/10 px-2 py-0.5 rounded">
               Lv.{pokemon.level}
             </span>
           </div>
 
-          <div className="flex items-center gap-tight mb-1 flex-wrap">
+          <div className="flex items-center gap-1.5 mb-1 flex-wrap">
             {pokemon.type1 && (
               <span
-                className="text-[10px] px-1 py-0.5 rounded text-white font-medium"
+                className="text-xs px-2 py-1 rounded text-white font-medium"
                 style={{ backgroundColor: getTypeColor(pokemon.type1) }}
               >
                 {pokemon.type1.toUpperCase()}
@@ -103,13 +103,13 @@ export default function PokemonCompactCard({
             )}
             {pokemon.type2 && (
               <span
-                className="text-[10px] px-1 py-0.5 rounded text-white font-medium"
+                className="text-xs px-2 py-1 rounded text-white font-medium"
                 style={{ backgroundColor: getTypeColor(pokemon.type2) }}
               >
                 {pokemon.type2.toUpperCase()}
               </span>
             )}
-            <span className="text-[10px] text-gray-400">🛡️{pokemon.armorClass}</span>
+            <span className="text-xs text-gray-400">🛡️{pokemon.armorClass}</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -120,13 +120,13 @@ export default function PokemonCompactCard({
                   e.stopPropagation();
                   onEditStat(pokemon, uuid);
                 }}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-500/10 text-red-300 hover:bg-red-500/20 active:bg-red-500/30 transition-colors text-xs font-medium focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-500/10 text-red-300 hover:bg-red-500/20 active:bg-red-500/30 transition-colors text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-red-500"
               >
                 <span>❤️</span>
                 <span>{pokemon.currentHP}/{pokemon.maxHP}</span>
               </button>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-500/10 text-red-300 text-xs font-medium">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-500/10 text-red-300 text-sm font-semibold">
                 <span>❤️</span>
                 <span>{pokemon.currentHP}/{pokemon.maxHP}</span>
               </span>
@@ -139,13 +139,13 @@ export default function PokemonCompactCard({
                   e.stopPropagation();
                   onEditStat(pokemon, uuid);
                 }}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-300 hover:bg-blue-500/20 active:bg-blue-500/30 transition-colors text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-300 hover:bg-blue-500/20 active:bg-blue-500/30 transition-colors text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <span>⭐</span>
                 <span>{pokemon.experience}/{xpProgress + xpToNext}</span>
               </button>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-300 text-sm font-semibold">
                 <span>⭐</span>
                 <span>{pokemon.experience}/{xpProgress + xpToNext}</span>
               </span>
@@ -153,7 +153,7 @@ export default function PokemonCompactCard({
           </div>
 
           {showAttacks && pokemon.attacks && pokemon.attacks.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-1.5">
+            <div className="flex flex-wrap gap-2 mt-2">
               {pokemon.attacks.map((attack, i) => (
                 <button
                   key={i}
@@ -165,7 +165,7 @@ export default function PokemonCompactCard({
                     }
                   }}
                   disabled={attack.currentPp === 0}
-                  className={`text-[10px] rounded-full px-1.5 py-0.5 transition-colors ${
+                  className={`text-sm rounded-full px-3.5 py-1.5 transition-colors font-medium ${
                     attack.currentPp === 0
                       ? "bg-white/5 text-gray-500 cursor-not-allowed"
                       : "bg-white/10 text-gray-300 hover:bg-white/20 active:bg-interactive active:text-white"
