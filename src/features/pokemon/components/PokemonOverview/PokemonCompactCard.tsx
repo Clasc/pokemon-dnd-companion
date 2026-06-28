@@ -113,7 +113,7 @@ export default function PokemonCompactCard({
           </div>
 
           <div className="flex justify-between items-start gap-2">
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex flex-col gap-1.5 flex-shrink-0">
               {onEditStat ? (
                 <button
                   type="button"
