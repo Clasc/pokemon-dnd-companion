@@ -112,7 +112,7 @@ export default function PokemonCompactCard({
             <span className="text-[10px] text-gray-400">🛡️{pokemon.armorClass}</span>
           </div>
 
-          <div className="flex items-center gap-space-3 text-xs">
+          <div className="flex items-center gap-2">
             {onEditStat ? (
               <button
                 type="button"
@@ -120,15 +120,15 @@ export default function PokemonCompactCard({
                   e.stopPropagation();
                   onEditStat(pokemon, uuid);
                 }}
-                className="text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-1 focus:ring-interactive rounded px-0.5"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-500/10 text-red-300 hover:bg-red-500/20 active:bg-red-500/30 transition-colors text-xs font-medium focus:outline-none focus:ring-2 focus:ring-red-500"
               >
-                <span className="text-gray-400">HP</span> {pokemon.currentHP}/
-                {pokemon.maxHP}
+                <span>❤️</span>
+                <span>{pokemon.currentHP}/{pokemon.maxHP}</span>
               </button>
             ) : (
-              <span className="text-gray-300">
-                <span className="text-gray-400">HP</span> {pokemon.currentHP}/
-                {pokemon.maxHP}
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-500/10 text-red-300 text-xs font-medium">
+                <span>❤️</span>
+                <span>{pokemon.currentHP}/{pokemon.maxHP}</span>
               </span>
             )}
 
@@ -139,15 +139,15 @@ export default function PokemonCompactCard({
                   e.stopPropagation();
                   onEditStat(pokemon, uuid);
                 }}
-                className="text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-1 focus:ring-interactive rounded px-0.5"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-300 hover:bg-blue-500/20 active:bg-blue-500/30 transition-colors text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <span className="text-gray-400">XP</span> {pokemon.experience}/
-                {xpProgress + xpToNext}
+                <span>⭐</span>
+                <span>{pokemon.experience}/{xpProgress + xpToNext}</span>
               </button>
             ) : (
-              <span className="text-gray-300">
-                <span className="text-gray-400">XP</span> {pokemon.experience}/
-                {xpProgress + xpToNext}
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium">
+                <span>⭐</span>
+                <span>{pokemon.experience}/{xpProgress + xpToNext}</span>
               </span>
             )}
           </div>
