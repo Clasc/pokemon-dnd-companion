@@ -2,8 +2,6 @@
 
 import { Pokemon, TYPE_COLORS, STATUS_COLORS } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
-import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
-import ProgressBar from "@/components/shared/ui/ProgressBar";
 import QuickStatusDropdown from "../QuickStatusDropdown";
 import { useAppStore } from "@/store";
 
@@ -13,7 +11,7 @@ interface PokemonCompactCardProps {
   onClick: () => void;
   showAttacks?: boolean;
   readOnly?: boolean;
-  onEditHP?: (pokemon: Pokemon, uuid: string) => void;
+  onEditStat?: (pokemon: Pokemon, uuid: string) => void;
 }
 
 export default function PokemonCompactCard({
@@ -22,27 +20,41 @@ export default function PokemonCompactCard({
   onClick,
   showAttacks = false,
   readOnly = false,
-  onEditHP,
+  onEditStat,
 }: PokemonCompactCardProps) {
-  const gainExperience = useAppStore.use.gainExperience();
-  const modifyPokemonHP = useAppStore.use.modifyPokemonHP();
   const decreaseAttackPP = useAppStore.use.decreaseAttackPP();
 
   const getTypeColor = (type: string) =>
     TYPE_COLORS[type as keyof typeof TYPE_COLORS] || "#A8A878";
 
+  const xpToNext = pokemon.experienceToNext;
+  const xpProgress =
+    pokemon.xpSinceLevelUp != null
+      ? pokemon.xpSinceLevelUp
+      : pokemon.experience;
+
+  const hasStatus =
+    pokemon.primaryStatus && pokemon.primaryStatus.condition !== "none";
+
   return (
     <div
-      onClick={onClick}
-      className="p-space-2 cursor-pointer hover:bg-white/5 transition-all duration-200 relative z-0 border-b border-white/10 last:border-b-0"
+      onClick={!onEditStat ? onClick : undefined}
+      className={`p-space-2 transition-all duration-200 relative z-0 border-b border-white/10 last:border-b-0 ${
+        !onEditStat ? "cursor-pointer hover:bg-white/5" : ""
+      }`}
     >
       <div className="absolute top-1 right-1 z-10">
         {readOnly ? (
-          pokemon.primaryStatus && pokemon.primaryStatus.condition !== "none" && (
+          hasStatus && (
             <div
               className="w-5 h-5 rounded-full border border-white/20"
-              style={{ backgroundColor: STATUS_COLORS[pokemon.primaryStatus.condition as keyof typeof STATUS_COLORS] || "#888" }}
-              title={pokemon.primaryStatus.condition}
+              style={{
+                backgroundColor:
+                  STATUS_COLORS[
+                    pokemon.primaryStatus!.condition as keyof typeof STATUS_COLORS
+                  ] || "#888",
+              }}
+              title={pokemon.primaryStatus!.condition}
             />
           )
         ) : (
@@ -57,7 +69,10 @@ export default function PokemonCompactCard({
               alt={pokemon.name}
               className="w-full h-full object-contain"
               style={{
-                filter: pokemon.primaryStatus?.condition === "fainted" ? "grayscale(100%)" : undefined,
+                filter:
+                  pokemon.primaryStatus?.condition === "fainted"
+                    ? "grayscale(100%)"
+                    : undefined,
               }}
             />
           ) : pokemon.type1 ? (
@@ -68,7 +83,7 @@ export default function PokemonCompactCard({
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-sm mb-space-1">
+          <div className="flex items-center gap-sm mb-0.5">
             <h3 className="font-semibold text-white text-sm md:text-base truncate">
               {pokemon.name}
             </h3>
@@ -77,7 +92,7 @@ export default function PokemonCompactCard({
             </span>
           </div>
 
-          <div className="flex items-center gap-tight mb-space-1">
+          <div className="flex items-center gap-tight mb-1 flex-wrap">
             {pokemon.type1 && (
               <span
                 className="text-[10px] px-1 py-0.5 rounded text-white font-medium"
@@ -94,81 +109,46 @@ export default function PokemonCompactCard({
                 {pokemon.type2.toUpperCase()}
               </span>
             )}
+            <span className="text-[10px] text-gray-400">🛡️{pokemon.armorClass}</span>
           </div>
 
-          <div className="text-[10px] text-gray-400 mb-space-1">
-            🛡️ {pokemon.armorClass} AC
-          </div>
-
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] text-gray-400">HP</span>
-              <span className="text-[10px] text-gray-300">
-                {pokemon.currentHP}/{pokemon.maxHP}
-              </span>
-            </div>
-            {onEditHP ? (
-              <div
-                role="button"
-                tabIndex={0}
-                aria-label={`Edit HP for ${pokemon.name}`}
-                className="cursor-pointer"
+          <div className="flex items-center gap-space-3 text-xs">
+            {onEditStat ? (
+              <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onEditHP(pokemon, uuid);
+                  onEditStat(pokemon, uuid);
                 }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.stopPropagation();
-                    onEditHP(pokemon, uuid);
-                  }
-                }}
+                className="text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-1 focus:ring-interactive rounded px-0.5"
               >
-                <ProgressBar
-                  variant="hp"
-                  current={pokemon.currentHP}
-                  max={pokemon.maxHP}
-                  showValue={false}
-                />
-              </div>
-            ) : readOnly ? (
-              <ProgressBar
-                variant="hp"
-                current={pokemon.currentHP}
-                max={pokemon.maxHP}
-                showValue={false}
-              />
+                <span className="text-gray-400">HP</span> {pokemon.currentHP}/
+                {pokemon.maxHP}
+              </button>
             ) : (
-              <InteractiveProgress
-                type="hp"
-                current={pokemon.currentHP}
-                max={pokemon.maxHP}
-                onChange={(val) => modifyPokemonHP(uuid, val - pokemon.currentHP)}
-                label="HP"
-              />
+              <span className="text-gray-300">
+                <span className="text-gray-400">HP</span> {pokemon.currentHP}/
+                {pokemon.maxHP}
+              </span>
             )}
 
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] text-gray-400">XP</span>
-              <span className="text-[10px] text-gray-300">
-                {pokemon.experience}/{pokemon.experience + pokemon.experienceToNext}
-              </span>
-            </div>
-            {readOnly || onEditHP ? (
-              <ProgressBar
-                variant="xp"
-                current={pokemon.experience}
-                max={pokemon.experience + pokemon.experienceToNext}
-                showValue={false}
-              />
+            {onEditStat ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEditStat(pokemon, uuid);
+                }}
+                className="text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-1 focus:ring-interactive rounded px-0.5"
+              >
+                <span className="text-gray-400">XP</span> {pokemon.experience}/
+                {xpProgress + xpToNext}
+              </button>
             ) : (
-              <InteractiveProgress
-                type="xp"
-                current={pokemon.experience}
-                max={pokemon.experience + pokemon.experienceToNext}
-                onChange={(val) => gainExperience(uuid, val - pokemon.experience)}
-                label="XP"
-              />
+              <span className="text-gray-300">
+                <span className="text-gray-400">XP</span> {pokemon.experience}/
+                {xpProgress + xpToNext}
+              </span>
             )}
           </div>
 

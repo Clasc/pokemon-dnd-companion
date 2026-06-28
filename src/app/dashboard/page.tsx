@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import PokemonOverview from "@/features/pokemon/components/PokemonOverview";
-import HPBottomSheet from "@/features/pokemon/components/HPBottomSheet";
+import StatAdjustSheet from "@/features/pokemon/components/StatAdjustSheet";
 import TrainerStrip from "@/features/trainer/components/TrainerStrip";
 import CreateTrainer from "@/features/trainer/components/CreateTrainer";
 import { useAppStore } from "@/store";
@@ -14,10 +14,10 @@ export default function DashboardPage() {
   const trainer = useAppStore.use.trainer();
   const setTrainer = useAppStore.use.setTrainer();
 
-  const [hpEditUuid, setHpEditUuid] = useState<string | null>(null);
+  const [statEditUuid, setStatEditUuid] = useState<string | null>(null);
 
-  const hpEditPokemon: Pokemon | null = hpEditUuid
-    ? pokemon[hpEditUuid] ?? null
+  const statEditPokemon: Pokemon | null = statEditUuid
+    ? pokemon[statEditUuid] ?? null
     : null;
 
   if (!trainer) {
@@ -45,15 +45,15 @@ export default function DashboardPage() {
         pokemon={pokemon}
         showAttacks
         hideTeamStats
-        onEditHP={(_, uuid) => setHpEditUuid(uuid)}
+        onEditStat={(_, uuid) => setStatEditUuid(uuid)}
       />
 
-      {hpEditPokemon && hpEditUuid && (
-        <HPBottomSheet
-          pokemon={hpEditPokemon}
-          pokemonUuid={hpEditUuid}
-          isOpen={hpEditUuid !== null}
-          onClose={() => setHpEditUuid(null)}
+      {statEditPokemon && statEditUuid && (
+        <StatAdjustSheet
+          pokemon={statEditPokemon}
+          pokemonUuid={statEditUuid}
+          isOpen={statEditUuid !== null}
+          onClose={() => setStatEditUuid(null)}
         />
       )}
     </main>
