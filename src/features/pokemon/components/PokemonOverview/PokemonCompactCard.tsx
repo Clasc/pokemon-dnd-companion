@@ -112,70 +112,75 @@ export default function PokemonCompactCard({
             <span className="text-xs text-gray-400">🛡️{pokemon.armorClass}</span>
           </div>
 
-          <div className="flex items-center gap-2">
-            {onEditStat ? (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onEditStat(pokemon, uuid);
-                }}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-500/10 text-red-300 hover:bg-red-500/20 active:bg-red-500/30 transition-colors text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-                <span>❤️</span>
-                <span>{pokemon.currentHP}/{pokemon.maxHP}</span>
-              </button>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-500/10 text-red-300 text-sm font-semibold">
-                <span>❤️</span>
-                <span>{pokemon.currentHP}/{pokemon.maxHP}</span>
-              </span>
-            )}
-
-            {onEditStat ? (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onEditStat(pokemon, uuid);
-                }}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-300 hover:bg-blue-500/20 active:bg-blue-500/30 transition-colors text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <span>⭐</span>
-                <span>{pokemon.experience}/{xpProgress + xpToNext}</span>
-              </button>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-300 text-sm font-semibold">
-                <span>⭐</span>
-                <span>{pokemon.experience}/{xpProgress + xpToNext}</span>
-              </span>
-            )}
-          </div>
-
-          {showAttacks && pokemon.attacks && pokemon.attacks.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-2">
-              {pokemon.attacks.map((attack, i) => (
+          <div className="flex justify-between items-start gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {onEditStat ? (
                 <button
-                  key={i}
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (attack.currentPp > 0) {
-                      decreaseAttackPP(uuid, i);
-                    }
+                    onEditStat(pokemon, uuid);
                   }}
-                  disabled={attack.currentPp === 0}
-                  className={`text-sm rounded-full px-3.5 py-1.5 transition-colors font-medium ${
-                    attack.currentPp === 0
-                      ? "bg-white/5 text-gray-500 cursor-not-allowed"
-                      : "bg-white/10 text-gray-300 hover:bg-white/20 active:bg-interactive active:text-white"
-                  }`}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-500/10 text-red-300 hover:bg-red-500/20 active:bg-red-500/30 transition-colors text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
-                  {attack.name} ({attack.currentPp}/{attack.maxPp})
+                  <span>❤️</span>
+                  <span>{pokemon.currentHP}/{pokemon.maxHP}</span>
                 </button>
-              ))}
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-500/10 text-red-300 text-sm font-semibold">
+                  <span>❤️</span>
+                  <span>{pokemon.currentHP}/{pokemon.maxHP}</span>
+                </span>
+              )}
+
+              {onEditStat ? (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEditStat(pokemon, uuid);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-300 hover:bg-blue-500/20 active:bg-blue-500/30 transition-colors text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <span>⭐</span>
+                  <span>{pokemon.experience}/{xpProgress + xpToNext}</span>
+                </button>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-300 text-sm font-semibold">
+                  <span>⭐</span>
+                  <span>{pokemon.experience}/{xpProgress + xpToNext}</span>
+                </span>
+              )}
             </div>
-          )}
+
+            {showAttacks && pokemon.attacks && pokemon.attacks.length > 0 && (
+              <div className="grid grid-cols-2 gap-1.5">
+                {pokemon.attacks.map((attack, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (attack.currentPp > 0) {
+                        decreaseAttackPP(uuid, i);
+                      }
+                    }}
+                    disabled={attack.currentPp === 0}
+                    className={`text-xs rounded-md border px-2 py-1.5 transition-colors font-medium text-left leading-tight ${
+                      attack.currentPp === 0
+                        ? "border-white/5 bg-white/5 text-gray-500 cursor-not-allowed"
+                        : "border-white/10 bg-white/5 text-gray-300 hover:bg-white/10 hover:border-white/20 active:bg-interactive active:text-white active:border-interactive"
+                    }`}
+                  >
+                    <div>{attack.name}</div>
+                    <div className="text-gray-500 text-[10px] mt-0.5">
+                      PP {attack.currentPp}/{attack.maxPp}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
