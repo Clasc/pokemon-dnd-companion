@@ -23,8 +23,9 @@ const initialPokemon: Pokemon = {
   type1: "normal",
   currentHP: 10,
   maxHP: 10,
-  experience: 0,
-  experienceToNext: 100,
+  experience: 1,
+  experienceToNext: 7,
+  xpSinceLevelUp: 0,
   attributes: {
     strength: 10,
     dexterity: 10,

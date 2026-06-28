@@ -190,22 +190,22 @@ export default function PokemonExpandedModal({
           <div className="flex items-center justify-between mb-space-2">
             <span className="text-sm text-gray-300 font-medium">XP</span>
             <span className="text-sm text-gray-300">
-              {pokemon.experience}/{pokemon.experience + pokemon.experienceToNext}
+              {(pokemon.xpSinceLevelUp ?? 0)}/{pokemon.experienceToNext}
             </span>
           </div>
           {readOnly ? (
             <ProgressBar
               variant="xp"
-              current={pokemon.experience}
-              max={pokemon.experience + pokemon.experienceToNext}
+              current={pokemon.xpSinceLevelUp ?? 0}
+              max={pokemon.experienceToNext}
               showValue={false}
             />
           ) : (
             <InteractiveProgress
               type="xp"
-              current={pokemon.experience}
-              max={pokemon.experience + pokemon.experienceToNext}
-              onChange={(val) => gainExperience(uuid, val - pokemon.experience)}
+              current={pokemon.xpSinceLevelUp ?? 0}
+              max={pokemon.experienceToNext}
+              onChange={(val) => gainExperience(uuid, val - (pokemon.xpSinceLevelUp ?? 0))}
               label="XP"
             />
           )}

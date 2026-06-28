@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import BottomSheet from "@/components/shared/ui/BottomSheet";
 import { Pokemon, STATUS_COLORS } from "@/types/pokemon";
 import { useAppStore } from "@/store";
+import { xpRemaining } from "@/utils/xp";
 
 interface StatAdjustSheetProps {
   pokemon: Pokemon;
@@ -119,12 +120,10 @@ export default function StatAdjustSheet({
   const isFainted =
     pokemon.primaryStatus?.condition === "fainted" || pokemon.currentHP === 0;
 
-  const xpToNext = pokemon.experienceToNext;
-  const xpProgress =
-    pokemon.xpSinceLevelUp != null
-      ? pokemon.xpSinceLevelUp
-      : pokemon.experience;
-  const xpRemaining = Math.max(0, xpToNext - xpProgress);
+  const remaining = xpRemaining(
+    pokemon.level,
+    pokemon.xpSinceLevelUp ?? 0,
+  );
 
   return (
     <BottomSheet isOpen={isOpen} onClose={onClose}>
@@ -297,7 +296,7 @@ export default function StatAdjustSheet({
           <div className="flex items-center justify-between mb-space-2">
             <span className="text-sm text-gray-400 font-medium">XP</span>
             <span className="text-sm text-gray-300 font-mono">
-              {pokemon.experience} (+{xpRemaining} to next)
+              {pokemon.experience} (+{remaining} to next)
             </span>
           </div>
 

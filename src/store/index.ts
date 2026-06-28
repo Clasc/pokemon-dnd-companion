@@ -4,6 +4,7 @@ import { Attack, Pokemon, PokemonTeam, StatusEffect } from "../types/pokemon";
 import { Trainer } from "../types/trainer";
 import { createSelectors } from "./utils";
 import { testFixtures } from "../fixtures";
+import { totalXpForLevel, xpToNextLevel } from "../utils/xp";
 
 interface AppState {
   _hasHydrated: boolean;
@@ -172,28 +173,30 @@ export const useAppStore = createSelectors(
           }),
         gainExperience: (pokemonUuid, xpGained) =>
           set((state) => {
-            const pokemon = state.pokemonTeam[pokemonUuid];
+            let pokemon = state.pokemonTeam[pokemonUuid];
             if (!pokemon) return state;
 
-            // XP can only be gained (positive values only)
             if (xpGained <= 0) return state;
 
-            const newExperience = pokemon.experience + xpGained;
-            let newLevel = pokemon.level;
-            let newExperienceToNext = pokemon.experienceToNext;
-            // Initialize xpSinceLevelUp from experience if not set (legacy data migration)
-            const xpFromLastLevel = pokemon.xpSinceLevelUp ?? pokemon.experience;
-            let newXpSinceLevelUp = xpFromLastLevel + xpGained;
+            // Migration: if xpSinceLevelUp is undefined, this is legacy data.
+            // Recalculate XP fields to match the n³ curve.
+            if (pokemon.xpSinceLevelUp === undefined) {
+              pokemon = {
+                ...pokemon,
+                experience: totalXpForLevel(pokemon.level),
+                experienceToNext: xpToNextLevel(pokemon.level),
+                xpSinceLevelUp: 0,
+              };
+            }
 
-            // Check if xpSinceLevelUp crosses the threshold (not the raw xpGained)
-            if (newXpSinceLevelUp >= pokemon.experienceToNext) {
-              // Level up occurred
+            let newLevel = pokemon.level;
+            let newXpSinceLevelUp = pokemon.xpSinceLevelUp! + xpGained;
+            let newExperienceToNext = pokemon.experienceToNext;
+
+            while (newXpSinceLevelUp >= newExperienceToNext) {
+              newXpSinceLevelUp -= newExperienceToNext;
               newLevel += 1;
-              // Carry over any overflow beyond the threshold
-              const overflow = newXpSinceLevelUp - pokemon.experienceToNext;
-              newXpSinceLevelUp = overflow;
-              // New threshold is based ONLY on the new level (100 * newLevel)
-              newExperienceToNext = 100 * newLevel;
+              newExperienceToNext = xpToNextLevel(newLevel);
             }
 
             return {
@@ -201,7 +204,7 @@ export const useAppStore = createSelectors(
                 ...state.pokemonTeam,
                 [pokemonUuid]: {
                   ...pokemon,
-                  experience: newExperience,
+                  experience: totalXpForLevel(newLevel) + newXpSinceLevelUp,
                   experienceToNext: newExperienceToNext,
                   level: newLevel,
                   xpSinceLevelUp: newXpSinceLevelUp,

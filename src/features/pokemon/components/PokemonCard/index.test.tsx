@@ -76,8 +76,9 @@ describe("PokemonCard", () => {
       level: 25,
       currentHP: 60,
       maxHP: 100,
-      experience: 1500,
-      experienceToNext: 500,
+      experience: 15625,
+      experienceToNext: 1951,
+      xpSinceLevelUp: 1463,
       attributes: {
         strength: 10,
         dexterity: 15,
@@ -103,7 +104,7 @@ describe("PokemonCard", () => {
     expect(screen.getByText("Lv.25")).toBeInTheDocument();
     expect(screen.getByText("ELECTRIC")).toBeInTheDocument();
     expect(screen.getByText("60/100")).toBeInTheDocument();
-    expect(screen.getByText("1500/2000")).toBeInTheDocument();
+    expect(screen.getByText("1463/1951")).toBeInTheDocument();
   });
 
   it("renders inline HP control buttons", () => {
@@ -176,7 +177,7 @@ describe("PokemonCard", () => {
     fireEvent.click(addButton);
 
     const state = useAppStore.getState();
-    expect(state.pokemonTeam[testUuid]?.experience).toBe(1550);
+    expect(state.pokemonTeam[testUuid]?.experience).toBe(17138);
   });
 
   it("opens status selector when status is clicked", () => {
@@ -465,11 +466,10 @@ describe("PokemonCard", () => {
   it("calculates XP percentage correctly for styling", () => {
     render(<PokemonCard pokemon={mockPokemon} uuid="test-uuid" />);
 
-    // XP: 1500, Total: 2000, Percentage: 75%
-    // Find the XP progress bar by looking for the second DraggableProgressBar's progress bar fill
+    // XP: 1463/1951, Percentage: ~75%
     const progressBars = document.querySelectorAll('[role="progressbar"]');
     const xpBar = progressBars[1]; // Second progress bar is XP
-    expect(xpBar).toHaveStyle({ width: "75%" });
+    expect(xpBar!.getAttribute("style")).toMatch(/width:\s*7[45]/);
   });
 
   it("handles zero max HP gracefully", () => {
@@ -488,11 +488,12 @@ describe("PokemonCard", () => {
     const zeroXPToNextPokemon = {
       ...mockPokemon,
       experienceToNext: 0,
+      xpSinceLevelUp: 0,
     };
 
     render(<PokemonCard pokemon={zeroXPToNextPokemon} uuid="test-uuid" />);
 
-    expect(screen.getByText("1500/1500")).toBeInTheDocument();
+    expect(screen.getByText("0/0")).toBeInTheDocument();
   });
 
   it("handles pokemon with undefined type1 gracefully", () => {

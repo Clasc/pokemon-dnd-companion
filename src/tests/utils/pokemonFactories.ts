@@ -42,8 +42,9 @@ const baseTemplate: Pokemon = {
   level: 5,
   currentHP: 20,
   maxHP: 30,
-  experience: 100,
-  experienceToNext: 200,
+  experience: 125,
+  experienceToNext: 91,
+  xpSinceLevelUp: 0,
   attributes: {
     strength: 10,
     dexterity: 10,

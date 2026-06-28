@@ -244,17 +244,15 @@ export default function PokemonCard({ pokemon, uuid }: PokemonCardProps) {
                   </button>
                 </div>
                 <span className="text-xs text-gray-300 font-medium">
-                  {pokemon.experience}/
-                  {pokemon.experience + pokemon.experienceToNext}
+                  {(pokemon.xpSinceLevelUp ?? 0)}/{pokemon.experienceToNext}
                 </span>
               </div>
               <InteractiveProgress
                 type="xp"
-                current={pokemon.experience}
-                max={pokemon.experience + pokemon.experienceToNext}
+                current={pokemon.xpSinceLevelUp ?? 0}
+                max={pokemon.experienceToNext}
                 label="Experience Points"
                 step={10}
-                showLevelUpIndicator={pokemon.experienceToNext <= 10}
               />
             </div>
 

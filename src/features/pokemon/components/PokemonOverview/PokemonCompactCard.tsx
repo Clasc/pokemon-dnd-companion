@@ -2,6 +2,7 @@
 
 import { Pokemon, TYPE_COLORS, STATUS_COLORS } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
+import { xpRemaining } from "@/utils/xp";
 import QuickStatusDropdown from "../QuickStatusDropdown";
 import { useAppStore } from "@/store";
 
@@ -27,11 +28,10 @@ export default function PokemonCompactCard({
   const getTypeColor = (type: string) =>
     TYPE_COLORS[type as keyof typeof TYPE_COLORS] || "#A8A878";
 
-  const xpToNext = pokemon.experienceToNext;
-  const xpProgress =
-    pokemon.xpSinceLevelUp != null
-      ? pokemon.xpSinceLevelUp
-      : pokemon.experience;
+  const remaining = xpRemaining(
+    pokemon.level,
+    pokemon.xpSinceLevelUp ?? 0,
+  );
 
   const hasStatus =
     pokemon.primaryStatus && pokemon.primaryStatus.condition !== "none";
@@ -143,12 +143,12 @@ export default function PokemonCompactCard({
                   className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-300 hover:bg-blue-500/20 active:bg-blue-500/30 transition-colors text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <span>⭐</span>
-                  <span>{pokemon.experience}/{xpProgress + xpToNext}</span>
+                  <span>{remaining} XP</span>
                 </button>
               ) : (
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-300 text-sm font-semibold">
                   <span>⭐</span>
-                  <span>{pokemon.experience}/{xpProgress + xpToNext}</span>
+                  <span>{remaining} XP</span>
                 </span>
               )}
             </div>

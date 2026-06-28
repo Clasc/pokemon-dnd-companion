@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Pokemon, Attributes, PokemonType } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
 import { ATTRIBUTE_NAMES, getAttributeShortName, calculateDefaultAC } from "@/utils/attributes";
+import { totalXpForLevel, xpToNextLevel } from "@/utils/xp";
 import ProgressBar from "@/components/shared/ui/ProgressBar";
 import PokemonAutocomplete from "@/features/pokemon/components/PokemonAutocomplete";
 import { PokemonAutocompleteResult } from "@/types/pokeapi";
@@ -184,14 +185,18 @@ export default function PokemonForm({
                 min={1}
                 max={100}
                 value={pokemon.level}
-                onChange={(e) =>
-                  handleFieldChange(
-                    "level",
-                    Number.isNaN(parseInt(e.target.value))
-                      ? 1
-                      : parseInt(e.target.value),
-                  )
-                }
+                onChange={(e) => {
+                  const newLevel = Number.isNaN(parseInt(e.target.value))
+                    ? 1
+                    : parseInt(e.target.value);
+                  onChange({
+                    ...pokemon,
+                    level: newLevel,
+                    experience: totalXpForLevel(newLevel),
+                    experienceToNext: xpToNextLevel(newLevel),
+                    xpSinceLevelUp: 0,
+                  });
+                }}
                 className="w-full px-3 py-2 bg-surface border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-interactive"
               />
           </div>
@@ -357,8 +362,8 @@ export default function PokemonForm({
         </div>
         <ProgressBar
           variant="xp"
-          current={pokemon.experience}
-          max={pokemon.experience + pokemon.experienceToNext}
+          current={pokemon.xpSinceLevelUp ?? 0}
+          max={pokemon.experienceToNext}
           label="XP"
           showValue={false}
           className="mt-2"

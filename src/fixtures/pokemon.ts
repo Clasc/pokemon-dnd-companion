@@ -8,8 +8,9 @@ export const testPokemon: PokemonTeam = {
     level: 12,
     currentHP: 42,
     maxHP: 42,
-    experience: 850,
-    experienceToNext: 350,
+    experience: 1848,
+    experienceToNext: 469,
+    xpSinceLevelUp: 120,
     armorClass: 13, // 10 + DEX mod (+3)
     spriteUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
     attributes: {
@@ -60,8 +61,9 @@ export const testPokemon: PokemonTeam = {
     level: 18,
     currentHP: 78,
     maxHP: 85,
-    experience: 2100,
-    experienceToNext: 700,
+    experience: 6132,
+    experienceToNext: 1027,
+    xpSinceLevelUp: 300,
     armorClass: 12, // 10 + DEX mod (+2)
     spriteUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
     attributes: {
@@ -121,8 +123,9 @@ export const testPokemon: PokemonTeam = {
     level: 8,
     currentHP: 15,
     maxHP: 32,
-    experience: 420,
-    experienceToNext: 380,
+    experience: 512,
+    experienceToNext: 217,
+    xpSinceLevelUp: 0,
     armorClass: 10, // 10 + DEX mod (+0)
     spriteUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
     attributes: {

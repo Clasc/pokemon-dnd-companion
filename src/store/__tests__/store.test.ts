@@ -1,15 +1,32 @@
-import { Pokemon } from "../../types/pokemon";
 import { testFixtures } from "../../fixtures";
 import { shouldLoadTestData } from "../index";
+import { useAppStore } from "../index";
+import { totalXpForLevel, xpToNextLevel } from "../../utils/xp";
 
 // Mock crypto.randomUUID for consistent testing
-Object.defineProperty(global, "crypto", {
-  value: {
-    randomUUID: jest.fn(() => "mock-uuid"),
-  },
+const mockUuid = "test-pokemon-uuid";
+let originalRandomUUID: typeof crypto.randomUUID;
+
+beforeAll(() => {
+  originalRandomUUID = crypto.randomUUID;
+  Object.defineProperty(global, "crypto", {
+    value: {
+      randomUUID: jest.fn(() => mockUuid),
+    },
+  });
 });
 
-// Environment-dependent tests adjusted: we avoid mutating process.env.NODE_ENV (read-only in this setup)
+afterAll(() => {
+  Object.defineProperty(global, "crypto", {
+    value: { randomUUID: originalRandomUUID },
+  });
+});
+
+beforeEach(() => {
+  // Reset the store before each test
+  useAppStore.getState().reset();
+  localStorage.removeItem("app-store");
+});
 
 // Mock localStorage
 const localStorageMock = {
@@ -23,193 +40,211 @@ Object.defineProperty(window, "localStorage", {
   writable: true,
 });
 
-// Extracted logic from the store for unit testing
-function gainExperienceLogic(
-  pokemon: Pokemon,
-  xpGained: number,
-): Pokemon | null {
-  if (!pokemon || xpGained <= 0) return null;
+describe("Store - gainExperience", () => {
+  it("adds XP without leveling up when progress stays under threshold", () => {
+    useAppStore.getState().addPokemon({
+      type: "Pikachu",
+      name: "Testmon",
+      type1: "electric",
+      level: 5,
+      currentHP: 20,
+      maxHP: 30,
+      experience: 125,
+      experienceToNext: 91,
+      xpSinceLevelUp: 0,
+      attributes: { strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 },
+      armorClass: 10,
+      attacks: [],
+    }, mockUuid);
 
-  const newExperience = pokemon.experience + xpGained;
-  let newLevel = pokemon.level;
-  let newExperienceToNext = pokemon.experienceToNext;
+    useAppStore.getState().gainExperience(mockUuid, 50);
 
-  // Simple level up logic: if gained XP exceeds experienceToNext, level up
-  if (xpGained >= pokemon.experienceToNext) {
-    newLevel += 1;
-    const remainingXP = xpGained - pokemon.experienceToNext;
-    // Reset experience to remaining XP after level up
-    // For simplicity, assume each level requires 100 more XP than the previous
-    newExperienceToNext = 100 * newLevel - remainingXP;
-    if (newExperienceToNext <= 0) {
-      newExperienceToNext = 100; // Minimum XP needed for next level
-    }
-  } else {
-    newExperienceToNext = pokemon.experienceToNext - xpGained;
-  }
-
-  return {
-    ...pokemon,
-    experience: newExperience,
-    experienceToNext: newExperienceToNext,
-    level: newLevel,
-  };
-}
-
-describe("Store - gainExperience logic", () => {
-  const mockPokemon: Pokemon = {
-    name: "Pikachu",
-    type: "Pikachu",
-    type1: "electric",
-    level: 25,
-    currentHP: 60,
-    maxHP: 100,
-    experience: 1500,
-    experienceToNext: 500,
-    attributes: {
-      strength: 10,
-      dexterity: 15,
-      constitution: 12,
-      intelligence: 14,
-      wisdom: 11,
-      charisma: 13,
-    },
-    armorClass: 12, // 10 + DEX mod (+2)
-    attacks: [],
-  };
-
-  it("adds experience without leveling up when XP is less than experienceToNext", () => {
-    const result = gainExperienceLogic(mockPokemon, 200);
-
-    expect(result).not.toBeNull();
-    expect(result!.experience).toBe(1700); // 1500 + 200
-    expect(result!.experienceToNext).toBe(300); // 500 - 200
-    expect(result!.level).toBe(25); // No level up
+    const result = useAppStore.getState().pokemonTeam[mockUuid];
+    expect(result!.level).toBe(5);
+    expect(result!.xpSinceLevelUp).toBe(50);
+    expect(result!.experience).toBe(125 + 50);
+    expect(result!.experienceToNext).toBe(91);
   });
 
-  it("levels up pokemon when XP gained equals experienceToNext", () => {
-    const result = gainExperienceLogic(mockPokemon, 500);
+  it("levels up when XP progress crosses the threshold", () => {
+    useAppStore.getState().addPokemon({
+      type: "Pikachu",
+      name: "Testmon",
+      type1: "electric",
+      level: 5,
+      currentHP: 20,
+      maxHP: 30,
+      experience: 125,
+      experienceToNext: 91,
+      xpSinceLevelUp: 80,
+      attributes: { strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 },
+      armorClass: 10,
+      attacks: [],
+    }, mockUuid);
 
-    expect(result).not.toBeNull();
-    expect(result!.experience).toBe(2000); // 1500 + 500
-    expect(result!.level).toBe(26); // Level up from 25 to 26
-    expect(result!.experienceToNext).toBe(2600); // 100 * 26 (new level)
+    useAppStore.getState().gainExperience(mockUuid, 20);
+    // 80 + 20 = 100, threshold is 91, so level up with overflow 9
+
+    const result = useAppStore.getState().pokemonTeam[mockUuid];
+    expect(result!.level).toBe(6);
+    expect(result!.xpSinceLevelUp).toBe(9);
+    expect(result!.experienceToNext).toBe(xpToNextLevel(6));
+    expect(result!.experience).toBe(totalXpForLevel(6) + 9);
   });
 
-  it("levels up pokemon when XP gained exceeds experienceToNext", () => {
-    const result = gainExperienceLogic(mockPokemon, 700);
-
-    expect(result).not.toBeNull();
-    expect(result!.experience).toBe(2200); // 1500 + 700
-    expect(result!.level).toBe(26); // Level up from 25 to 26
-    expect(result!.experienceToNext).toBe(2400); // 100 * 26 - remaining XP (200)
-  });
-
-  it("handles large XP gains that would cause multiple level ups", () => {
-    const result = gainExperienceLogic(mockPokemon, 1500);
-
-    expect(result).not.toBeNull();
-    expect(result!.experience).toBe(3000); // 1500 + 1500
-    expect(result!.level).toBe(26); // Only levels up once in current implementation
-    expect(result!.experienceToNext).toBe(1600); // 100 * 26 - remaining XP (1000)
-  });
-
-  it("returns null when XP gained is zero", () => {
-    const result = gainExperienceLogic(mockPokemon, 0);
-
-    expect(result).toBeNull();
-  });
-
-  it("returns null when XP gained is negative", () => {
-    const result = gainExperienceLogic(mockPokemon, -100);
-
-    expect(result).toBeNull();
-  });
-
-  it("sets minimum experienceToNext when calculation results in zero or negative", () => {
-    const testPokemon = {
-      ...mockPokemon,
-      experience: 2400,
-      experienceToNext: 100,
-      level: 24,
-    };
-
-    const result = gainExperienceLogic(testPokemon, 100);
-
-    expect(result).not.toBeNull();
-    expect(result!.level).toBe(25);
-    expect(result!.experienceToNext).toBe(2500); // 100 * 25 (new level)
-  });
-
-  it("maintains other pokemon properties unchanged", () => {
-    const result = gainExperienceLogic(mockPokemon, 200);
-
-    expect(result).not.toBeNull();
-    // Check that only XP-related properties changed
-    expect(result!.name).toBe(mockPokemon.name);
-    expect(result!.type).toBe(mockPokemon.type);
-    expect(result!.type1).toBe(mockPokemon.type1);
-    expect(result!.currentHP).toBe(mockPokemon.currentHP);
-    expect(result!.maxHP).toBe(mockPokemon.maxHP);
-    expect(result!.attributes).toEqual(mockPokemon.attributes);
-    expect(result!.attacks).toEqual(mockPokemon.attacks);
-  });
-
-  it("handles edge case with very low experienceToNext", () => {
-    const testPokemon = {
-      ...mockPokemon,
-      experience: 1999,
-      experienceToNext: 1,
-      level: 20,
-    };
-
-    const result = gainExperienceLogic(testPokemon, 1);
-
-    expect(result).not.toBeNull();
-    expect(result!.experience).toBe(2000);
-    expect(result!.level).toBe(21);
-    expect(result!.experienceToNext).toBe(2100); // 100 * 21
-  });
-
-  it("works with pokemon at level 1", () => {
-    const level1Pokemon = {
-      ...mockPokemon,
-      experience: 50,
-      experienceToNext: 50,
+  it("handles multi-level-up from a large XP gain", () => {
+    useAppStore.getState().addPokemon({
+      type: "Pikachu",
+      name: "Testmon",
+      type1: "electric",
       level: 1,
-    };
+      currentHP: 20,
+      maxHP: 30,
+      experience: 1,
+      experienceToNext: 7,
+      xpSinceLevelUp: 0,
+      attributes: { strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 },
+      armorClass: 10,
+      attacks: [],
+    }, mockUuid);
 
-    const result = gainExperienceLogic(level1Pokemon, 75);
+    // Gain enough XP to go from level 1 to level 3
+    // Level 1→2: need 7, Level 2→3: need 19, total needed = 7 + 19 = 26
+    useAppStore.getState().gainExperience(mockUuid, 30);
 
-    expect(result).not.toBeNull();
-    expect(result!.experience).toBe(125);
-    expect(result!.level).toBe(2);
-    expect(result!.experienceToNext).toBe(175); // 100 * 2 - remaining XP (25)
+    const result = useAppStore.getState().pokemonTeam[mockUuid];
+    expect(result!.level).toBe(3);
+    // overflow: 0 + 30 - 7 - 19 = 4
+    expect(result!.xpSinceLevelUp).toBe(4);
+    expect(result!.experienceToNext).toBe(xpToNextLevel(3));
+    expect(result!.experience).toBe(totalXpForLevel(3) + 4);
   });
 
-  it("handles exact level up threshold", () => {
-    const result = gainExperienceLogic(mockPokemon, 500);
+  it("does nothing when XP gained is zero", () => {
+    useAppStore.getState().addPokemon({
+      type: "Pikachu",
+      name: "Testmon",
+      type1: "electric",
+      level: 5,
+      currentHP: 20,
+      maxHP: 30,
+      experience: 125,
+      experienceToNext: 91,
+      xpSinceLevelUp: 0,
+      attributes: { strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 },
+      armorClass: 10,
+      attacks: [],
+    }, mockUuid);
 
-    expect(result).not.toBeNull();
-    expect(result!.level).toBe(26);
-    expect(result!.experience).toBe(2000);
-    expect(result!.experienceToNext).toBe(2600);
+    useAppStore.getState().gainExperience(mockUuid, 0);
+
+    const result = useAppStore.getState().pokemonTeam[mockUuid];
+    expect(result!.level).toBe(5);
+    expect(result!.xpSinceLevelUp).toBe(0);
   });
 
-  it("handles fractional calculations correctly", () => {
-    const testPokemon = {
-      ...mockPokemon,
-      experience: 1000,
-      experienceToNext: 250,
+  it("does nothing when XP gained is negative", () => {
+    useAppStore.getState().addPokemon({
+      type: "Pikachu",
+      name: "Testmon",
+      type1: "electric",
+      level: 5,
+      currentHP: 20,
+      maxHP: 30,
+      experience: 125,
+      experienceToNext: 91,
+      xpSinceLevelUp: 0,
+      attributes: { strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 },
+      armorClass: 10,
+      attacks: [],
+    }, mockUuid);
+
+    useAppStore.getState().gainExperience(mockUuid, -50);
+
+    const result = useAppStore.getState().pokemonTeam[mockUuid];
+    expect(result!.level).toBe(5);
+    expect(result!.xpSinceLevelUp).toBe(0);
+  });
+
+  it("preserves other pokemon properties on XP gain", () => {
+    useAppStore.getState().addPokemon({
+      type: "Pikachu",
+      name: "Testmon",
+      type1: "electric",
+      level: 5,
+      currentHP: 20,
+      maxHP: 30,
+      experience: 125,
+      experienceToNext: 91,
+      xpSinceLevelUp: 0,
+      attributes: { strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 },
+      armorClass: 10,
+      attacks: [],
+    }, mockUuid);
+
+    useAppStore.getState().gainExperience(mockUuid, 30);
+
+    const result = useAppStore.getState().pokemonTeam[mockUuid];
+    expect(result!.name).toBe("Testmon");
+    expect(result!.type).toBe("Pikachu");
+    expect(result!.type1).toBe("electric");
+    expect(result!.currentHP).toBe(20);
+    expect(result!.maxHP).toBe(30);
+    expect(result!.attributes).toEqual({ strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 });
+  });
+
+  it("migrates legacy data (xpSinceLevelUp undefined) on first gainExperience", () => {
+    // Add a Pokemon without xpSinceLevelUp (legacy data)
+    useAppStore.getState().addPokemon({
+      type: "Pikachu",
+      name: "Legacy",
+      type1: "electric",
       level: 10,
-    };
+      currentHP: 50,
+      maxHP: 50,
+      experience: 500,
+      experienceToNext: 300,
+      attributes: { strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 },
+      armorClass: 10,
+      attacks: [],
+    }, mockUuid);
 
-    const result = gainExperienceLogic(testPokemon, 300);
+    const before = useAppStore.getState().pokemonTeam[mockUuid];
+    expect(before!.xpSinceLevelUp).toBeUndefined();
 
-    expect(result).not.toBeNull();
-    expect(result!.level).toBe(11);
-    expect(result!.experience).toBe(1300);
-    expect(result!.experienceToNext).toBe(1050); // 100 * 11 - remaining XP (50)
+    useAppStore.getState().gainExperience(mockUuid, 50);
+
+    const result = useAppStore.getState().pokemonTeam[mockUuid];
+    // Should be migrated and have new XP
+    expect(result!.xpSinceLevelUp).toBe(50);
+    expect(result!.level).toBe(10);
+    expect(result!.experience).toBe(totalXpForLevel(10) + 50);
+    expect(result!.experienceToNext).toBe(xpToNextLevel(10));
+  });
+
+  it("handles exact level up (progress exactly equals threshold)", () => {
+    useAppStore.getState().addPokemon({
+      type: "Pikachu",
+      name: "Testmon",
+      type1: "electric",
+      level: 5,
+      currentHP: 20,
+      maxHP: 30,
+      experience: 125,
+      experienceToNext: 91,
+      xpSinceLevelUp: 41,
+      attributes: { strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 },
+      armorClass: 10,
+      attacks: [],
+    }, mockUuid);
+
+    // 41 + 50 = 91, exactly the threshold
+    useAppStore.getState().gainExperience(mockUuid, 50);
+
+    const result = useAppStore.getState().pokemonTeam[mockUuid];
+    expect(result!.level).toBe(6);
+    expect(result!.xpSinceLevelUp).toBe(0); // exactly at threshold, no overflow
+    expect(result!.experience).toBe(totalXpForLevel(6));
   });
 });
 

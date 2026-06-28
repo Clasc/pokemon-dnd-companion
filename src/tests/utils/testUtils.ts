@@ -13,8 +13,9 @@ export const mockPokemon: Pokemon = {
   level: 25,
   currentHP: 78,
   maxHP: 95,
-  experience: 1250,
-  experienceToNext: 500,
+  experience: 15625 + 250, // lvl 25 total + 250 progress
+  experienceToNext: 1951,
+  xpSinceLevelUp: 250,
   attacks: [
     {
       name: "Thunderbolt",
@@ -56,8 +57,9 @@ export const mockPokemonWithSecondType: Pokemon = {
   level: 36,
   currentHP: 125,
   maxHP: 140,
-  experience: 2100,
-  experienceToNext: 400,
+  experience: 46656 + 500, // lvl 36 total + 500 progress
+  experienceToNext: 3997,
+  xpSinceLevelUp: 500,
   attacks: [],
   armorClass: 12, // 10 + DEX mod (+2)
   attributes: {
@@ -82,8 +84,9 @@ export const mockPokemonLowHP: Pokemon = {
   level: 18,
   currentHP: 15,
   maxHP: 65,
-  experience: 800,
-  experienceToNext: 200,
+  experience: 5832, // lvl 18 total (start of level)
+  experienceToNext: 1027,
+  xpSinceLevelUp: 0,
   attacks: [
     {
       name: "Quick Attack",
