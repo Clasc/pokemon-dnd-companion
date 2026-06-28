@@ -3,16 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppStore } from "@/store";
-import { Pokemon, TYPE_COLORS } from "@/types/pokemon";
+import { Pokemon, TYPE_COLORS, STATUS_COLORS } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
 import { ATTRIBUTE_NAMES, getAttributeShortName, getAttributeModifier, formatModifier } from "@/utils/attributes";
 import BaseModal from "@/components/shared/ui/BaseModal";
 import BottomSheet from "@/components/shared/ui/BottomSheet";
-import DeleteConfirmationModal from "@/components/shared/DeleteConfirmationModal";
 import AddAttackModal from "../AddAttackModal";
 import AttackCard from "../AttackCard";
 import StatusSelector from "../StatusSelector";
 import QuickStatusDropdown from "../QuickStatusDropdown";
+import ProgressBar from "@/components/shared/ui/ProgressBar";
 import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
 import PokemonForm from "../PokemonForm";
 import { useMediaQuery } from "@/utils/useMediaQuery";
@@ -22,6 +22,7 @@ interface PokemonExpandedModalProps {
   uuid: string;
   isOpen: boolean;
   onClose: () => void;
+  readOnly?: boolean;
 }
 
 export default function PokemonExpandedModal({
@@ -29,11 +30,11 @@ export default function PokemonExpandedModal({
   uuid,
   isOpen,
   onClose,
+  readOnly = false,
 }: PokemonExpandedModalProps) {
   const router = useRouter();
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [isAttacksVisible, setIsAttacksVisible] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showAddAttackModal, setShowAddAttackModal] = useState(false);
   const [showStatusSelector, setShowStatusSelector] = useState(false);
   const [selectedAttackIndex, setSelectedAttackIndex] = useState<number | null>(null);
@@ -47,7 +48,7 @@ export default function PokemonExpandedModal({
 
   const handleDelete = () => {
     removePokemon(uuid);
-    setShowDeleteModal(false);
+    setShowDeleteConfirm(false);
     onClose();
   };
 
@@ -71,12 +72,19 @@ export default function PokemonExpandedModal({
     setIsEditing(false);
   };
 
+  const handleViewFullDetails = () => {
+    router.push("/pokemon");
+    onClose();
+  };
+
   const getTypeColor = (type: string) =>
     TYPE_COLORS[type as keyof typeof TYPE_COLORS] || "#A8A878";
 
   const isMobile = useMediaQuery("(max-width: 767px)");
 
   if (!isOpen) return null;
+
+  const statusCondition = pokemon.primaryStatus?.condition ?? null;
 
   const detailView = (
     <div className="p-space-4 md:p-space-6">
@@ -103,6 +111,13 @@ export default function PokemonExpandedModal({
             <span className="text-sm text-gray-300 bg-white/10 px-2 py-1 rounded">
               Lv.{pokemon.level}
             </span>
+            {statusCondition && (
+              <div
+                className="w-4 h-4 rounded-full border border-white/30 shrink-0"
+                style={{ backgroundColor: STATUS_COLORS[statusCondition as keyof typeof STATUS_COLORS] || "#888" }}
+                title={statusCondition}
+              />
+            )}
           </div>
 
           <div className="flex items-center gap-space-2 mb-space-3">
@@ -122,6 +137,7 @@ export default function PokemonExpandedModal({
                 {pokemon.type2.toUpperCase()}
               </span>
             )}
+            <span className="text-xs text-gray-400">🛡️ {pokemon.armorClass} AC</span>
           </div>
 
           <div className="flex flex-wrap gap-tight">
@@ -152,13 +168,22 @@ export default function PokemonExpandedModal({
               {pokemon.currentHP}/{pokemon.maxHP}
             </span>
           </div>
-          <InteractiveProgress
-            type="hp"
-            current={pokemon.currentHP}
-            max={pokemon.maxHP}
-            onChange={(val) => modifyPokemonHP(uuid, val - pokemon.currentHP)}
-            label="HP"
-          />
+          {readOnly ? (
+            <ProgressBar
+              variant="hp"
+              current={pokemon.currentHP}
+              max={pokemon.maxHP}
+              showValue={false}
+            />
+          ) : (
+            <InteractiveProgress
+              type="hp"
+              current={pokemon.currentHP}
+              max={pokemon.maxHP}
+              onChange={(val) => modifyPokemonHP(uuid, val - pokemon.currentHP)}
+              label="HP"
+            />
+          )}
         </div>
 
         <div>
@@ -168,40 +193,45 @@ export default function PokemonExpandedModal({
               {pokemon.experience}/{pokemon.experience + pokemon.experienceToNext}
             </span>
           </div>
-          <InteractiveProgress
-            type="xp"
-            current={pokemon.experience}
-            max={pokemon.experience + pokemon.experienceToNext}
-            onChange={(val) => gainExperience(uuid, val - pokemon.experience)}
-            label="XP"
-          />
+          {readOnly ? (
+            <ProgressBar
+              variant="xp"
+              current={pokemon.experience}
+              max={pokemon.experience + pokemon.experienceToNext}
+              showValue={false}
+            />
+          ) : (
+            <InteractiveProgress
+              type="xp"
+              current={pokemon.experience}
+              max={pokemon.experience + pokemon.experienceToNext}
+              onChange={(val) => gainExperience(uuid, val - pokemon.experience)}
+              label="XP"
+            />
+          )}
         </div>
       </div>
 
       <div className="mb-space-6">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-semibold text-white">Attacks</h3>
-          {(pokemon.attacks?.length ?? 0) > 0 && (
-            <button
-              onClick={() => setIsAttacksVisible(!isAttacksVisible)}
-              className="text-sm text-gray-400 hover:text-white"
-            >
-              {isAttacksVisible ? "Hide" : "Manage"}
-            </button>
-          )}
-        </div>
+        <h3 className="text-lg font-semibold text-white mb-3">Attacks</h3>
 
-        {(!pokemon.attacks || pokemon.attacks.length === 0) ? (
-          <button
-            onClick={() => {
-              setSelectedAttackIndex(0);
-              setShowAddAttackModal(true);
-            }}
-            className="w-full bg-white/5 hover:bg-white/10 rounded-lg p-space-4 text-sm font-medium text-white/50 hover:text-white transition-colors border border-dashed border-white/20"
-          >
-            + Add First Attack
-          </button>
-        ) : isAttacksVisible ? (
+        {!pokemon.attacks || pokemon.attacks.length === 0 ? (
+          <p className="text-gray-400 text-sm py-2">No attacks</p>
+        ) : readOnly ? (
+          <div className="flex flex-wrap gap-2">
+            {pokemon.attacks.map((attack, i) => (
+              <div
+                key={i}
+                className="bg-white/10 rounded-full px-3 py-1.5 text-sm font-medium text-white flex items-center gap-2"
+              >
+                <span>{attack.name}</span>
+                <span className="text-gray-300 text-xs">
+                  PP {attack.currentPp}/{attack.maxPp}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {[...Array(4)].map((_, i) => {
               const attack = pokemon.attacks?.[i];
@@ -227,48 +257,50 @@ export default function PokemonExpandedModal({
               );
             })}
           </div>
-        ) : (
-          <div className="flex flex-wrap gap-2">
-            {pokemon.attacks.map((attack, i) => (
-              <div
-                key={i}
-                className="bg-white/10 rounded-full px-3 py-1.5 text-sm font-medium text-white flex items-center gap-2"
-              >
-                <span>{attack.name}</span>
-                <span className="text-gray-300">
-                  {attack.currentPp}/{attack.maxPp}
-                </span>
-              </div>
-            ))}
-            {(pokemon.attacks?.length ?? 0) < 4 && (
-              <button
-                onClick={() => {
-                  setSelectedAttackIndex(pokemon.attacks.length);
-                  setShowAddAttackModal(true);
-                }}
-                className="bg-white/5 hover:bg-white/10 rounded-full px-3 py-1.5 text-sm font-medium text-white/50 hover:text-white transition-colors border border-dashed border-white/20"
-              >
-                + Attack
-              </button>
-            )}
-          </div>
         )}
       </div>
 
-      <div className="flex gap-3">
+      {readOnly ? (
         <button
-          onClick={handleEditClick}
-className="flex-1 py-space-3 px-space-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white font-medium"
-          >
-            Edit
-        </button>
-        <button
-          onClick={() => setShowDeleteModal(true)}
-          className="flex-1 py-space-3 px-space-4 rounded-lg bg-red-500/20 hover:bg-red-500/40 transition-colors text-red-300 font-medium"
+          onClick={handleViewFullDetails}
+          className="w-full py-space-3 px-space-4 rounded-lg bg-interactive hover:bg-interactive-hover transition-colors text-white font-medium"
         >
-          Delete
+          View Full Details
         </button>
-      </div>
+      ) : showDeleteConfirm ? (
+        <div className="flex flex-col gap-space-2">
+          <p className="text-sm text-gray-300 text-center">Delete {pokemon.name}?</p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowDeleteConfirm(false)}
+              className="flex-1 py-space-3 px-space-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDelete}
+              className="flex-1 py-space-3 px-space-4 rounded-lg bg-red-500 hover:bg-red-600 transition-colors text-white font-bold"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex gap-3">
+          <button
+            onClick={handleEditClick}
+className="flex-1 py-space-3 px-space-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white font-medium"
+            >
+              Edit
+          </button>
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="flex-1 py-space-3 px-space-4 rounded-lg bg-red-500/20 hover:bg-red-500/40 transition-colors text-red-300 font-medium"
+          >
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 
@@ -295,9 +327,9 @@ className="flex-1 py-space-3 px-space-4 rounded-lg bg-white/10 hover:bg-white/20
   return (
     <>
       {isMobile ? (
-        <BottomSheet isOpen={isOpen} onClose={isEditing ? handleCancel : onClose}>
+        <BottomSheet isOpen={isOpen} onClose={readOnly ? onClose : (isEditing ? handleCancel : onClose)}>
           <div className="space-y-4">
-            {!isEditing && (
+            {!isEditing && !readOnly && (
               <div className="absolute top-3 right-10 z-10">
                 <QuickStatusDropdown pokemonUuid={uuid} />
               </div>
@@ -312,21 +344,16 @@ className="flex-1 py-space-3 px-space-4 rounded-lg bg-white/10 hover:bg-white/20
           size="fullscreen"
           className="md:max-w-2xl md:h-auto md:max-h-[90vh] md:rounded-2xl"
         >
-          <div className="absolute top-3 right-10 z-10">
-            <QuickStatusDropdown pokemonUuid={uuid} />
-          </div>
+          {!readOnly && (
+            <div className="absolute top-3 right-10 z-10">
+              <QuickStatusDropdown pokemonUuid={uuid} />
+            </div>
+          )}
           {isEditing ? editView : detailView}
         </BaseModal>
       )}
 
-      <DeleteConfirmationModal
-        isOpen={showDeleteModal}
-        pokemonName={pokemon.name}
-        onConfirm={handleDelete}
-        onCancel={() => setShowDeleteModal(false)}
-      />
-
-      {selectedAttackIndex !== null && (
+      {!readOnly && selectedAttackIndex !== null && (
         <AddAttackModal
           isOpen={showAddAttackModal}
           onClose={() => {
@@ -338,11 +365,13 @@ className="flex-1 py-space-3 px-space-4 rounded-lg bg-white/10 hover:bg-white/20
         />
       )}
 
-      <StatusSelector
-        pokemonUuid={uuid}
-        isOpen={showStatusSelector}
-        onClose={() => setShowStatusSelector(false)}
-      />
+      {!readOnly && (
+        <StatusSelector
+          pokemonUuid={uuid}
+          isOpen={showStatusSelector}
+          onClose={() => setShowStatusSelector(false)}
+        />
+      )}
     </>
   );
 }

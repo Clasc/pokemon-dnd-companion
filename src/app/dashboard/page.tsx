@@ -1,23 +1,25 @@
 "use client";
 
-import PokemonOverview from "@/features/pokemon/components/PokemonOverview";
-import CreateTrainer from "@/features/trainer/components/CreateTrainer";
-import TrainerOverview from "@/features/trainer/components/TrainerOverview";
-import { useAppStore } from "@/store";
+import { useState } from "react";
 
-/**
- * /dashboard
- *
- * Dashboard aggregates high‑level trainer status and Pokémon team overview.
- * This preserves the original combined home page structure after introducing
- * dedicated navigation routes (/pokemon, /trainer) and a global nav shell.
- */
+import PokemonOverview from "@/features/pokemon/components/PokemonOverview";
+import HPBottomSheet from "@/features/pokemon/components/HPBottomSheet";
+import TrainerStrip from "@/features/trainer/components/TrainerStrip";
+import CreateTrainer from "@/features/trainer/components/CreateTrainer";
+import { useAppStore } from "@/store";
+import type { Pokemon } from "@/types/pokemon";
+
 export default function DashboardPage() {
   const pokemon = useAppStore.use.pokemonTeam();
   const trainer = useAppStore.use.trainer();
   const setTrainer = useAppStore.use.setTrainer();
 
-  // If no trainer exists yet, show the creation flow centered.
+  const [hpEditUuid, setHpEditUuid] = useState<string | null>(null);
+
+  const hpEditPokemon: Pokemon | null = hpEditUuid
+    ? pokemon[hpEditUuid] ?? null
+    : null;
+
   if (!trainer) {
     return (
       <main className="min-h-screen px-4 py-6">
@@ -27,30 +29,33 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen px-4 md:px-space-6 lg:px-8 py-4 space-y-6">
-      <header className="w-full text-center py-4 md:py-space-6">
+    <main className="max-w-3xl mx-auto px-4 py-space-6 space-y-space-6">
+      <header className="text-center">
         <h1 className="text-responsive-xl font-bold text-white mb-1 font-['Poppins']">
-          Pokémon D&D Companion
+          Session Tracker
         </h1>
-        <p className="text-gray-300 text-sm md:text-base">
-          Manage your character and Pokémon team
+        <p className="text-gray-300 text-sm">
+          Quick actions during play
         </p>
       </header>
 
-      <section className="max-w-7xl mx-auto flex flex-col md:grid md:grid-cols-2">
-        <div className="md:border-r md:border-white/10 md:pr-6">
-          <TrainerOverview />
-        </div>
-        <div className="md:pl-6">
-          <PokemonOverview pokemon={pokemon} hideTeamStats />
-        </div>
-      </section>
+      <TrainerStrip trainer={trainer} />
 
-      <footer className="text-center py-4">
-        <p className="text-gray-400 text-xs md:text-sm">
-          Trainer Lv.{trainer.level}
-        </p>
-      </footer>
+      <PokemonOverview
+        pokemon={pokemon}
+        showAttacks
+        hideTeamStats
+        onEditHP={(_, uuid) => setHpEditUuid(uuid)}
+      />
+
+      {hpEditPokemon && hpEditUuid && (
+        <HPBottomSheet
+          pokemon={hpEditPokemon}
+          pokemonUuid={hpEditUuid}
+          isOpen={hpEditUuid !== null}
+          onClose={() => setHpEditUuid(null)}
+        />
+      )}
     </main>
   );
 }

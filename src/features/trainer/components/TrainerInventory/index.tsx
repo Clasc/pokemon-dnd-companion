@@ -27,8 +27,8 @@ export default function TrainerInventory({
   isEditable = true,
 }: TrainerInventoryProps) {
   const isMobile = useMediaQuery("(max-width: 767px)");
-  const [showInventory, setShowInventory] = useState(false);
-  const [showAddItem, setShowAddItem] = useState(false);
+  const [showInventoryList, setShowInventoryList] = useState(false);
+  const [showAddItemForm, setShowAddItemForm] = useState(false);
   const [newItemName, setNewItemName] = useState("");
   const [newItemQuantity, setNewItemQuantity] = useState(1);
   const [newItemDescription, setNewItemDescription] = useState("");
@@ -46,6 +46,13 @@ export default function TrainerInventory({
     setNewItemSpriteUrl(item.spriteUrl);
   };
 
+  const resetItemForm = () => {
+    setNewItemName("");
+    setNewItemQuantity(1);
+    setNewItemDescription("");
+    setNewItemSpriteUrl("");
+  };
+
   const handleAddItem = () => {
     if (newItemName.trim()) {
       const newItem = {
@@ -56,21 +63,20 @@ export default function TrainerInventory({
       };
 
       onAddItem(newItem);
-
-      setNewItemName("");
-      setNewItemQuantity(1);
-      setNewItemDescription("");
-      setNewItemSpriteUrl("");
-      setShowAddItem(false);
+      resetItemForm();
+      setShowAddItemForm(false);
     }
   };
 
   const handleCancelAddItem = () => {
-    setNewItemName("");
-    setNewItemQuantity(1);
-    setNewItemDescription("");
-    setNewItemSpriteUrl("");
-    setShowAddItem(false);
+    resetItemForm();
+    setShowAddItemForm(false);
+  };
+
+  const handleCloseInventoryList = () => {
+    resetItemForm();
+    setShowAddItemForm(false);
+    setShowInventoryList(false);
   };
 
   const handlePokedollarChange = (operation: "add" | "subtract") => {
@@ -120,7 +126,7 @@ export default function TrainerInventory({
             <button
               onClick={() => handlePokedollarChange("subtract")}
               disabled={!pokedollarAmount || parseInt(pokedollarAmount) <= 0}
-              className="px-4 py-2 bg-red-500/80 hover:bg-red-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium"
+              className="px-space-4 py-space-2 bg-red-500/80 hover:bg-red-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium"
             >
               Subtract
             </button>
@@ -128,15 +134,15 @@ export default function TrainerInventory({
         )}
       </div>
 
-      {/* Inventory Section */}
+      {/* Inventory Trigger */}
       <div className="p-space-4 bg-white/5 rounded-lg border border-white/10">
         <button
-          onClick={() => setShowInventory(!showInventory)}
+          onClick={() => setShowInventoryList(true)}
           className="w-full flex items-center justify-between text-lg font-semibold text-white hover:text-gray-300 transition-colors"
         >
           <span>Inventory ({inventory?.length || 0})</span>
           <svg
-            className={`w-5 h-5 transition-transform duration-200 ${showInventory ? "rotate-180" : ""}`}
+            className="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -145,190 +151,192 @@ export default function TrainerInventory({
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M19 9l-7 7-7-7"
+              d="M9 5l7 7-7 7"
             />
           </svg>
         </button>
-
-        {showInventory && (
-          <div className="mt-space-4 space-y-2">
-            {!inventory || inventory.length === 0 ? (
-              <p className="text-gray-400 text-center py-4">
-                No items in inventory
-              </p>
-            ) : (
-              inventory.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between p-space-3 hover:bg-white/5 transition-colors border-b border-white/10 last:border-b-0"
-                >
-                  <div className="flex items-center gap-3 flex-1">
-                    {item.spriteUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={item.spriteUrl}
-                        alt={item.name}
-                        className="w-10 h-10 object-contain"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 flex items-center justify-center text-xl">
-                        📦
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-white font-medium truncate">
-                          {item.name}
-                        </span>
-                        <span className="text-gray-400 text-sm">
-                          x{item.quantity}
-                        </span>
-                      </div>
-                      {item.description && (
-                        <p className="text-gray-400 text-xs mt-1 truncate">
-                          {item.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  {isEditable && (
-                    <div className="flex items-center gap-2 ml-2">
-                      <button
-                        onClick={() => onIncreaseItem(item.id)}
-                        className="w-8 h-8 rounded-md bg-green-500/80 hover:bg-green-500 text-white font-bold transition-colors flex items-center justify-center"
-                      >
-                        +
-                      </button>
-                      <button
-                        onClick={() => onUseItem(item.id)}
-                        className="px-3 py-1 bg-blue-500/80 hover:bg-blue-500 text-white text-sm rounded-md transition-colors"
-                      >
-                        Use
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
-
-            {isEditable && (
-              <button
-                onClick={() => setShowAddItem(true)}
-                className="w-full p-space-3 bg-green-500/20 hover:bg-green-500/30 border border-green-500/50 text-green-400 rounded-lg transition-colors flex items-center justify-center gap-2"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
-                Add Item
-              </button>
-            )}
-          </div>
-        )}
       </div>
 
-      {/* Add Item Modal */}
+      {/* Inventory List Overlay */}
       {(() => {
-        const addItemContent = (
+        const inventoryListContent = (
           <div className="p-space-2">
-            <h2 id="add-item-title" className="text-xl font-bold mb-space-4 text-white">
-              Add New Item
+            <h2 id="inventory-list-title" className="text-xl font-bold mb-space-4 text-white">
+              {showAddItemForm ? "Add New Item" : "Inventory"}
             </h2>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-gray-300 mb-1">
-                  Item Name
-                </label>
-                <ItemAutocomplete
-                  value={newItemName}
-                  onSelect={handleItemSelect}
-                  onChange={setNewItemName}
-                  placeholder="Search for an item..."
-                />
-              </div>
-
-              <input
-                type="number"
-                inputMode="numeric"
-                value={newItemQuantity}
-                onChange={(e) =>
-                  setNewItemQuantity(Math.max(1, parseInt(e.target.value) || 1))
-                }
-                placeholder="Quantity"
-                min="1"
-                className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
-              />
-
-              <div>
-                <label className="block text-sm text-gray-300 mb-1">
-                  Description
-                </label>
-                <textarea
-                  value={newItemDescription}
-                  onChange={(e) => setNewItemDescription(e.target.value)}
-                  placeholder="Description (auto-filled from PokeAPI)"
-                  rows={3}
-                  className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none resize-none"
-                />
-              </div>
-
-              {newItemSpriteUrl && (
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <span>Preview:</span>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={newItemSpriteUrl}
-                    alt="Item preview"
-                    className="w-8 h-8 object-contain"
+            {showAddItemForm ? (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">
+                    Item Name
+                  </label>
+                  <ItemAutocomplete
+                    value={newItemName}
+                    onSelect={handleItemSelect}
+                    onChange={setNewItemName}
+                    placeholder="Search for an item..."
                   />
                 </div>
-              )}
-            </div>
 
-            <div className="flex gap-3 mt-space-6">
-              <button
-                onClick={handleCancelAddItem}
-                className="flex-1 px-space-4 py-space-2 bg-gray-500/80 hover:bg-gray-500 text-white rounded-lg transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddItem}
-                disabled={!newItemName.trim()}
-                className="flex-1 px-space-4 py-space-2 bg-green-500/80 hover:bg-green-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
-              >
-                Add Item
-              </button>
-            </div>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={newItemQuantity}
+                  onChange={(e) =>
+                    setNewItemQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                  }
+                  placeholder="Quantity"
+                  min="1"
+                  className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none"
+                />
+
+                <div>
+                  <label className="block text-sm text-gray-300 mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    value={newItemDescription}
+                    onChange={(e) => setNewItemDescription(e.target.value)}
+                    placeholder="Description (auto-filled from PokeAPI)"
+                    rows={3}
+                    className="w-full bg-surface text-white placeholder-gray-400 rounded-lg p-space-3 border border-white/20 focus:ring-2 focus:ring-interactive focus:outline-none resize-none"
+                  />
+                </div>
+
+                {newItemSpriteUrl && (
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <span>Preview:</span>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={newItemSpriteUrl}
+                      alt="Item preview"
+                      className="w-8 h-8 object-contain"
+                    />
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleCancelAddItem}
+                    className="flex-1 px-space-4 py-space-2 bg-gray-500/80 hover:bg-gray-500 text-white rounded-lg transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleAddItem}
+                    disabled={!newItemName.trim()}
+                    className="flex-1 px-space-4 py-space-2 bg-green-500/80 hover:bg-green-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+                  >
+                    Add Item
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {!inventory || inventory.length === 0 ? (
+                  <p className="text-gray-400 text-center py-4">
+                    No items in inventory
+                  </p>
+                ) : (
+                  <div className="space-y-1">
+                    {inventory.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center justify-between p-space-3 hover:bg-white/5 transition-colors rounded-lg"
+                      >
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          {item.spriteUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={item.spriteUrl}
+                              alt={item.name}
+                              className="w-10 h-10 object-contain shrink-0"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 flex items-center justify-center text-xl shrink-0">
+                              📦
+                            </div>
+                          )}
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="text-white font-medium truncate">
+                                {item.name}
+                              </span>
+                              <span className="text-gray-400 text-sm shrink-0">
+                                x{item.quantity}
+                              </span>
+                            </div>
+                            {item.description && (
+                              <p className="text-gray-400 text-xs mt-1 truncate">
+                                {item.description}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        {isEditable && (
+                          <div className="flex items-center gap-2 ml-2 shrink-0">
+                            <button
+                              onClick={() => onIncreaseItem(item.id)}
+                              className="w-8 h-8 rounded-md bg-green-500/80 hover:bg-green-500 text-white font-bold transition-colors flex items-center justify-center"
+                            >
+                              +
+                            </button>
+                            <button
+                              onClick={() => onUseItem(item.id)}
+                              className="px-3 py-1 bg-blue-500/80 hover:bg-blue-500 text-white text-sm rounded-md transition-colors"
+                            >
+                              Use
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {isEditable && (
+                  <button
+                    onClick={() => setShowAddItemForm(true)}
+                    className="w-full mt-space-4 p-space-3 bg-green-500/20 hover:bg-green-500/30 border border-green-500/50 text-green-400 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                      />
+                    </svg>
+                    Add Item
+                  </button>
+                )}
+              </>
+            )}
           </div>
         );
 
         if (isMobile) {
           return (
-            <BottomSheet isOpen={showAddItem} onClose={handleCancelAddItem}>
-              {addItemContent}
+            <BottomSheet isOpen={showInventoryList} onClose={handleCloseInventoryList}>
+              {inventoryListContent}
             </BottomSheet>
           );
         }
 
         return (
           <BaseModal
-            isOpen={showAddItem}
-            onClose={handleCancelAddItem}
-            size="sm"
-            titleId="add-item-title"
+            isOpen={showInventoryList}
+            onClose={handleCloseInventoryList}
+            size="lg"
+            titleId="inventory-list-title"
           >
-            {addItemContent}
+            {inventoryListContent}
           </BaseModal>
         );
       })()}

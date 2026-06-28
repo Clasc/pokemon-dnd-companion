@@ -1,8 +1,9 @@
 "use client";
 
-import { Pokemon, TYPE_COLORS } from "@/types/pokemon";
+import { Pokemon, TYPE_COLORS, STATUS_COLORS } from "@/types/pokemon";
 import { getPokemonIcon } from "@/utils/IconMapper";
 import InteractiveProgress from "@/components/shared/ui/InteractiveProgress";
+import ProgressBar from "@/components/shared/ui/ProgressBar";
 import QuickStatusDropdown from "../QuickStatusDropdown";
 import { useAppStore } from "@/store";
 
@@ -11,6 +12,8 @@ interface PokemonCompactCardProps {
   uuid: string;
   onClick: () => void;
   showAttacks?: boolean;
+  readOnly?: boolean;
+  onEditHP?: (pokemon: Pokemon, uuid: string) => void;
 }
 
 export default function PokemonCompactCard({
@@ -18,6 +21,8 @@ export default function PokemonCompactCard({
   uuid,
   onClick,
   showAttacks = false,
+  readOnly = false,
+  onEditHP,
 }: PokemonCompactCardProps) {
   const gainExperience = useAppStore.use.gainExperience();
   const modifyPokemonHP = useAppStore.use.modifyPokemonHP();
@@ -32,7 +37,17 @@ export default function PokemonCompactCard({
       className="p-space-2 cursor-pointer hover:bg-white/5 transition-all duration-200 relative z-0 border-b border-white/10 last:border-b-0"
     >
       <div className="absolute top-1 right-1 z-10">
-        <QuickStatusDropdown pokemonUuid={uuid} compact />
+        {readOnly ? (
+          pokemon.primaryStatus && pokemon.primaryStatus.condition !== "none" && (
+            <div
+              className="w-5 h-5 rounded-full border border-white/20"
+              style={{ backgroundColor: STATUS_COLORS[pokemon.primaryStatus.condition as keyof typeof STATUS_COLORS] || "#888" }}
+              title={pokemon.primaryStatus.condition}
+            />
+          )
+        ) : (
+          <QuickStatusDropdown pokemonUuid={uuid} compact />
+        )}
       </div>
       <div className="flex items-center gap-sm">
         <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg bg-[#4a4a4a] flex items-center justify-center text-xl md:text-2xl border border-white/10 overflow-hidden flex-shrink-0">
@@ -92,13 +107,46 @@ export default function PokemonCompactCard({
                 {pokemon.currentHP}/{pokemon.maxHP}
               </span>
             </div>
-            <InteractiveProgress
-              type="hp"
-              current={pokemon.currentHP}
-              max={pokemon.maxHP}
-              onChange={(val) => modifyPokemonHP(uuid, val - pokemon.currentHP)}
-              label="HP"
-            />
+            {onEditHP ? (
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label={`Edit HP for ${pokemon.name}`}
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEditHP(pokemon, uuid);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.stopPropagation();
+                    onEditHP(pokemon, uuid);
+                  }
+                }}
+              >
+                <ProgressBar
+                  variant="hp"
+                  current={pokemon.currentHP}
+                  max={pokemon.maxHP}
+                  showValue={false}
+                />
+              </div>
+            ) : readOnly ? (
+              <ProgressBar
+                variant="hp"
+                current={pokemon.currentHP}
+                max={pokemon.maxHP}
+                showValue={false}
+              />
+            ) : (
+              <InteractiveProgress
+                type="hp"
+                current={pokemon.currentHP}
+                max={pokemon.maxHP}
+                onChange={(val) => modifyPokemonHP(uuid, val - pokemon.currentHP)}
+                label="HP"
+              />
+            )}
 
             <div className="flex items-center justify-between">
               <span className="text-[10px] text-gray-400">XP</span>
@@ -106,13 +154,22 @@ export default function PokemonCompactCard({
                 {pokemon.experience}/{pokemon.experience + pokemon.experienceToNext}
               </span>
             </div>
-            <InteractiveProgress
-              type="xp"
-              current={pokemon.experience}
-              max={pokemon.experience + pokemon.experienceToNext}
-              onChange={(val) => gainExperience(uuid, val - pokemon.experience)}
-              label="XP"
-            />
+            {readOnly || onEditHP ? (
+              <ProgressBar
+                variant="xp"
+                current={pokemon.experience}
+                max={pokemon.experience + pokemon.experienceToNext}
+                showValue={false}
+              />
+            ) : (
+              <InteractiveProgress
+                type="xp"
+                current={pokemon.experience}
+                max={pokemon.experience + pokemon.experienceToNext}
+                onChange={(val) => gainExperience(uuid, val - pokemon.experience)}
+                label="XP"
+              />
+            )}
           </div>
 
           {showAttacks && pokemon.attacks && pokemon.attacks.length > 0 && (

@@ -110,17 +110,17 @@ describe("TrainerInventory", () => {
     expect(screen.getByText("Restores 50 HP")).toBeInTheDocument();
   });
 
-  it("hides inventory items when inventory is collapsed", () => {
+  it("closes inventory modal when Escape is pressed", () => {
     render(<TrainerInventory {...defaultProps} />);
 
     const inventoryButton = screen.getByText("Inventory (3)");
 
-    // Expand
+    // Open inventory overlay
     fireEvent.click(inventoryButton);
     expect(screen.getByText("Potion")).toBeInTheDocument();
 
-    // Collapse
-    fireEvent.click(inventoryButton);
+    // Close by pressing Escape
+    fireEvent.keyDown(document, { key: "Escape" });
     expect(screen.queryByText("Potion")).not.toBeInTheDocument();
   });
 
@@ -228,8 +228,8 @@ describe("TrainerInventory", () => {
     const addItemButton = screen.getByText("Add Item");
     fireEvent.click(addItemButton);
 
-    const closeButton = screen.getByRole("button", { name: /close/i });
-    fireEvent.click(closeButton);
+    // Cancel button returns to list view without adding
+    fireEvent.click(screen.getByText("Cancel"));
 
     expect(screen.queryByText("Add New Item")).not.toBeInTheDocument();
   });
@@ -255,8 +255,7 @@ describe("TrainerInventory", () => {
       target: { value: "Test description" },
     });
 
-    const addButtons = screen.getAllByText("Add Item");
-    const addButton = addButtons[1]; // The second one is in the modal
+    const addButton = screen.getByText("Add Item");
     fireEvent.click(addButton);
 
     expect(mockOnAddItem).toHaveBeenCalledTimes(1);
@@ -283,8 +282,7 @@ describe("TrainerInventory", () => {
     fireEvent.change(nameInput, { target: { value: "Test Item" } });
     fireEvent.change(quantityInput, { target: { value: "3" } });
 
-    const addButtons = screen.getAllByText("Add Item");
-    const addButton = addButtons[1]; // The second one is in the modal
+    const addButton = screen.getByText("Add Item");
     fireEvent.click(addButton);
 
     expect(mockOnAddItem).toHaveBeenCalledWith({
@@ -301,8 +299,7 @@ describe("TrainerInventory", () => {
     const inventoryButton = screen.getByText("Inventory (0)");
     fireEvent.click(inventoryButton);
 
-    const addItemButton = screen.getByText("Add Item");
-    fireEvent.click(addItemButton);
+    fireEvent.click(screen.getByText("Add Item"));
 
     const nameInput = screen.getByTestId("item-autocomplete");
     const quantityInput = screen.getByPlaceholderText("Quantity");
@@ -316,25 +313,19 @@ describe("TrainerInventory", () => {
       target: { value: "Test description" },
     });
 
-    const addButtons = screen.getAllByText("Add Item");
-    const addButton = addButtons[1]; // The second one is in the modal
-    fireEvent.click(addButton);
+    fireEvent.click(screen.getByText("Add Item"));
 
-    // Modal should close and form should reset
+    // Form should close and fields should reset
     expect(screen.queryByText("Add New Item")).not.toBeInTheDocument();
 
-    // Reopen modal to check if fields are reset
-    fireEvent.click(addItemButton);
+    // Reopen form to check if fields are reset
+    fireEvent.click(screen.getByText("Add Item"));
 
-    const newNameInput = screen.getByTestId("item-autocomplete");
-    const newQuantityInput = screen.getByPlaceholderText("Quantity");
-    const newDescriptionInput = screen.getByPlaceholderText(
-      "Description (auto-filled from PokeAPI)",
-    );
-
-    expect(newNameInput).toHaveValue("");
-    expect(newQuantityInput).toHaveValue(1);
-    expect(newDescriptionInput).toHaveValue("");
+    expect(screen.getByTestId("item-autocomplete")).toHaveValue("");
+    expect(screen.getByPlaceholderText("Quantity")).toHaveValue(1);
+    expect(
+      screen.getByPlaceholderText("Description (auto-filled from PokeAPI)"),
+    ).toHaveValue("");
   });
 
   it("disables Add Item button when name is empty", () => {
@@ -346,9 +337,7 @@ describe("TrainerInventory", () => {
     const addItemButton = screen.getByText("Add Item");
     fireEvent.click(addItemButton);
 
-    const addButtons = screen.getAllByText("Add Item");
-    const addButton = addButtons[1]; // The second one is in the modal
-    expect(addButton).toBeDisabled();
+    expect(screen.getByText("Add Item")).toBeDisabled();
   });
 
   it("enables Add Item button when name is provided", () => {
@@ -363,9 +352,7 @@ describe("TrainerInventory", () => {
     const nameInput = screen.getByTestId("item-autocomplete");
     fireEvent.change(nameInput, { target: { value: "Test Item" } });
 
-    const addButtons = screen.getAllByText("Add Item");
-    const addButton = addButtons[1]; // The second one is in the modal
-    expect(addButton).toBeEnabled();
+    expect(screen.getByText("Add Item")).toBeEnabled();
   });
 
   it("enforces minimum quantity of 1", () => {
@@ -410,8 +397,7 @@ describe("TrainerInventory", () => {
     const nameInput = screen.getByTestId("item-autocomplete");
     fireEvent.change(nameInput, { target: { value: "  Test Item  " } });
 
-    const addButtons = screen.getAllByText("Add Item");
-    const addButton = addButtons[1]; // The second one is in the modal
+    const addButton = screen.getByText("Add Item");
     fireEvent.click(addButton);
 
     expect(mockOnAddItem).toHaveBeenCalledWith({
@@ -434,12 +420,11 @@ describe("TrainerInventory", () => {
     const nameInput = screen.getByTestId("item-autocomplete");
     fireEvent.change(nameInput, { target: { value: "   " } });
 
-    const addButtons = screen.getAllByText("Add Item");
-    const addButton = addButtons[1]; // The second one is in the modal
+    const addButton = screen.getByText("Add Item");
     fireEvent.click(addButton);
 
     expect(mockOnAddItem).not.toHaveBeenCalled();
-    expect(screen.getByText("Add New Item")).toBeInTheDocument(); // Modal should stay open
+    expect(screen.getByText("Add New Item")).toBeInTheDocument(); // Form should stay open
   });
 
   describe("Pokedollars", () => {

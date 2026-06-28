@@ -16,6 +16,8 @@ interface PokemonOverviewProps {
   unstyled?: boolean;
   showAttacks?: boolean;
   hideTeamStats?: boolean;
+  readOnly?: boolean;
+  onEditHP?: (pokemon: Pokemon, uuid: string) => void;
 }
 
 export default function PokemonOverview({
@@ -24,6 +26,8 @@ export default function PokemonOverview({
   unstyled = false,
   showAttacks = false,
   hideTeamStats = false,
+  readOnly = false,
+  onEditHP,
 }: PokemonOverviewProps) {
   const [expandedUuid, setExpandedUuid] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -123,6 +127,8 @@ export default function PokemonOverview({
                   uuid={uuid}
                   onClick={() => setExpandedUuid(uuid)}
                   showAttacks={showAttacks}
+                  readOnly={readOnly}
+                  onEditHP={onEditHP}
                 />
               ),
             )
@@ -202,12 +208,13 @@ export default function PokemonOverview({
         )}
       </div>
 
-      {expandedPokemon && (
+      {expandedPokemon && !onEditHP && (
         <PokemonExpandedModal
           pokemon={expandedPokemon}
           uuid={expandedUuid!}
           isOpen={expandedUuid !== null}
           onClose={() => setExpandedUuid(null)}
+          readOnly={readOnly}
         />
       )}
 
