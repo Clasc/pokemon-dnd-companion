@@ -1,8 +1,8 @@
 # Bug: XP bar not resetting on level up
 
-**Status:** Open
+**Status:** Fixed
 **Created:** 2026-04-19
-**Fixed:** 
+**Fixed:** 2026-06-28
 **Severity:** High
 
 ## Description

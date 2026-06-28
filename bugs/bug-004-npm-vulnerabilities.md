@@ -32,6 +32,8 @@ Additionally, npm shows deprecation warnings for:
 
 ## Notes
 
-- Need to identify offending packages and update/remove them
-- Check if vulnerabilities are in devDependencies only
-- Consider updating Next.js and other dependencies to latest stable versions
+- All 11 vulnerabilities are in **transitive dev dependencies** (Jest → babel/glob/minimatch/tar, ESLint → js-yaml/ajv, etc.)
+- The `next` vulnerability (DoS via remote patterns) does not apply — this is a client-only app with no self-hosted image optimization
+- No direct dependency needs updating; vulnerabilities are pinned by Jest 30 and ESLint versions
+- To resolve fully: `npm audit fix` may upgrade transitive deps, but could break test/lint tooling
+- Acceptable-risk for current scope; revisit if moving to production deployment

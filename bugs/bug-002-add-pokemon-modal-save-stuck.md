@@ -1,8 +1,8 @@
 # Bug: Add Pokemon Modal Save Button Stuck After Autocomplete
 
-**Status:** Open
+**Status:** Fixed
 **Created:** 2026-04-15
-**Fixed:** 
+**Fixed:** 2026-06-28
 **Severity:** High
 
 ## Description

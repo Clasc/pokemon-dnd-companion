@@ -1,7 +1,8 @@
 # Bug: Responsive layout breaks on phone screens
 
-**Status:** Open
+**Status:** Fixed
 **Created:** 2026-04-12
+**Fixed:** 2026-06-28
 **Severity:** High
 
 ## Description
@@ -24,4 +25,4 @@ Elements overflow beyond the screen edge and are cut off.
 
 ## Notes
 
-Likely related to CSS layout - need to check flexbox/grid containers and ensure they have proper max-width or use responsive units.
+Dashboard was rewritten from scratch as mobile-first (compact cards, `max-w-3xl mx-auto px-4`, flex-wrap, responsive units). The old layout with fixed-width elements was replaced. Verify on actual phone (Samsung Galaxy S25, ~360px) to confirm.
