@@ -45,7 +45,8 @@ export default function AddPokemonBottomSheet({
   const [speciesLoading, setSpeciesLoading] = useState(false);
   const isMobile = useMediaQuery("(max-width: 767px)");
 
-  const validate = (): string[] => {
+  const handleSave = useCallback(() => {
+    if (submitting || speciesLoading) return;
     const errors: string[] = [];
     if (!pokemon.type.trim()) errors.push("Species is required.");
     if (!pokemon.type1) errors.push("Primary type is required.");
@@ -53,11 +54,6 @@ export default function AddPokemonBottomSheet({
     if (pokemon.currentHP < 0) errors.push("Current HP cannot be negative.");
     if (pokemon.currentHP > pokemon.maxHP)
       errors.push("Current HP cannot exceed Max HP.");
-    return errors;
-  };
-
-  const handleSave = useCallback(() => {
-    const errors = validate();
     if (errors.length) {
       alert(errors.join("\n"));
       return;
@@ -79,7 +75,7 @@ export default function AddPokemonBottomSheet({
 
     setPokemon(initialPokemon);
     onClose();
-  }, [pokemon, addPokemon, onClose]);
+  }, [pokemon, addPokemon, onClose, submitting, speciesLoading]);
 
   const handleCancel = () => {
     setPokemon(initialPokemon);
@@ -118,7 +114,7 @@ export default function AddPokemonBottomSheet({
         <button
           type="button"
           onClick={handleCancel}
-          disabled={submitting || speciesLoading}
+          disabled={submitting}
           className="flex-1 py-3 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-colors disabled:opacity-50"
         >
           Cancel

@@ -45,7 +45,8 @@ export default function NewPokemonPage() {
   const [submitting, setSubmitting] = useState(false);
   const [speciesLoading, setSpeciesLoading] = useState(false);
 
-  const validate = (): string[] => {
+  const handleSave = useCallback(() => {
+    if (submitting || speciesLoading) return;
     const errors: string[] = [];
     if (!pokemon.type.trim()) errors.push("Species is required.");
     if (!pokemon.type1) errors.push("Primary type is required.");
@@ -53,11 +54,6 @@ export default function NewPokemonPage() {
     if (pokemon.currentHP < 0) errors.push("Current HP cannot be negative.");
     if (pokemon.currentHP > pokemon.maxHP)
       errors.push("Current HP cannot exceed Max HP.");
-    return errors;
-  };
-
-  const handleSave = useCallback(() => {
-    const errors = validate();
     if (errors.length) {
       alert(errors.join("\n"));
       return;
@@ -78,7 +74,7 @@ export default function NewPokemonPage() {
     );
 
     router.push("/pokemon");
-  }, [pokemon, addPokemon, router]);
+  }, [pokemon, addPokemon, router, submitting, speciesLoading]);
 
   const handleCancel = () => {
     router.back();
@@ -124,7 +120,7 @@ export default function NewPokemonPage() {
           <button
             type="button"
             onClick={handleCancel}
-            disabled={submitting || speciesLoading}
+            disabled={submitting}
             className="px-space-5 py-space-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-50"
           >
             Cancel
