@@ -100,6 +100,7 @@ All in-session editing happens in BottomSheets (mobile) with `BaseModal` fallbac
 - Full design language: `doc/design_spec.md` (Section 5 covers the tactical dashboard)
 - Color migration guide: `docs/color-migration-guide.md`
 - Component acceptance checklist: see Section 15
+- **Design Guardian skill**: `.opencode/skills/design-guardian/SKILL.md` — enforced rules for color tokens, typography, status labels, card structure, and interaction model. Activates automatically on UI changes.
 
 ---
 ## 5. Repository & Structure Conventions
