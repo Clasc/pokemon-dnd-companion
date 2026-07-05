@@ -17,7 +17,10 @@ interface PokemonOverviewProps {
   showAttacks?: boolean;
   hideTeamStats?: boolean;
   readOnly?: boolean;
-  onEditStat?: (pokemon: Pokemon, uuid: string) => void;
+  onHPTap?: (pokemon: Pokemon, uuid: string) => void;
+  onXPTap?: (pokemon: Pokemon, uuid: string) => void;
+  onAddAttack?: (pokemon: Pokemon, uuid: string, attackIndex: number) => void;
+  onLongPressAttack?: (pokemon: Pokemon, uuid: string, attackIndex: number) => void;
 }
 
 export default function PokemonOverview({
@@ -27,7 +30,10 @@ export default function PokemonOverview({
   showAttacks = false,
   hideTeamStats = false,
   readOnly = false,
-  onEditStat,
+  onHPTap,
+  onXPTap,
+  onAddAttack,
+  onLongPressAttack,
 }: PokemonOverviewProps) {
   const [expandedUuid, setExpandedUuid] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -77,21 +83,23 @@ export default function PokemonOverview({
           unstyled ? "pokemon-overview-unstyled" : "pokemon-overview-card"
         }
       >
-        <header className="flex items-center justify-between">
-          <h2 className="text-xl md:text-2xl font-bold text-white">
-            Pokémon Overview
-          </h2>
+        {!unstyled && (
+          <header className="flex items-center justify-between">
+            <h2 className="text-xl md:text-2xl font-bold text-primary">
+              Pokémon Overview
+            </h2>
 
-          <div className="flex items-center gap-sm">
-            <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-interactive flex items-center justify-center">
-              <span className="text-white text-sm md:text-base font-bold">
-                {pokemonLength}
-              </span>
+            <div className="flex items-center gap-sm">
+              <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-interactive flex items-center justify-center">
+                <span className="text-primary text-sm md:text-base font-bold">
+                  {pokemonLength}
+                </span>
+              </div>
+
+              <span className="text-secondary text-base md:text-lg">/ 6</span>
             </div>
-
-            <span className="text-gray-300 text-base md:text-lg">/ 6</span>
-          </div>
-        </header>
+          </header>
+        )}
 
         <div className="pokemon-grid space-y-3">
           {pokemonLength === 0 ? (
@@ -128,7 +136,18 @@ export default function PokemonOverview({
                   onClick={() => setExpandedUuid(uuid)}
                   showAttacks={showAttacks}
                   readOnly={readOnly}
-                  onEditStat={onEditStat}
+                  onHPTap={onHPTap ? () => onHPTap(poke, uuid) : undefined}
+                  onXPTap={onXPTap ? () => onXPTap(poke, uuid) : undefined}
+                  onAddAttack={
+                    onAddAttack
+                      ? (attackIndex: number) => onAddAttack(poke, uuid, attackIndex)
+                      : undefined
+                  }
+                  onLongPressAttack={
+                    onLongPressAttack
+                      ? (attackIndex: number) => onLongPressAttack(poke, uuid, attackIndex)
+                      : undefined
+                  }
                 />
               ),
             )
@@ -208,7 +227,7 @@ export default function PokemonOverview({
         )}
       </div>
 
-      {expandedPokemon && !onEditStat && (
+      {expandedPokemon && (
         <PokemonExpandedModal
           pokemon={expandedPokemon}
           uuid={expandedUuid!}

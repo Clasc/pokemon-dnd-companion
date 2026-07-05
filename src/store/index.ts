@@ -17,6 +17,7 @@ interface AppState {
   setTrainer: (trainer: Trainer) => void;
   addAttack: (pokemonUuid: string, attackIndex: number, attack: Attack) => void;
   decreaseAttackPP: (pokemonUuid: string, attackIndex: number) => void;
+  modifyAttackPP: (pokemonUuid: string, attackIndex: number, delta: number) => void;
   modifyPokemonHP: (pokemonUuid: string, hpChange: number) => void;
   gainExperience: (pokemonUuid: string, xpGained: number) => void;
   setPrimaryStatus: (pokemonUuid: string, status: StatusEffect | null) => void;
@@ -125,6 +126,29 @@ export const useAppStore = createSelectors(
             if (attack.currentPp > 0) {
               attack.currentPp -= 1;
             }
+            newAttacks[attackIndex] = attack;
+            return {
+              pokemonTeam: {
+                ...state.pokemonTeam,
+                [pokemonUuid]: {
+                  ...pokemon,
+                  attacks: newAttacks,
+                },
+              },
+            };
+          }),
+        modifyAttackPP: (pokemonUuid, attackIndex, delta) =>
+          set((state) => {
+            const pokemon = state.pokemonTeam[pokemonUuid];
+            if (!pokemon || !pokemon.attacks?.[attackIndex]) return state;
+
+            const newAttacks = [...pokemon.attacks];
+            const attack = { ...newAttacks[attackIndex] };
+
+            attack.currentPp = Math.max(
+              0,
+              Math.min(attack.maxPp, attack.currentPp + delta),
+            );
             newAttacks[attackIndex] = attack;
             return {
               pokemonTeam: {
