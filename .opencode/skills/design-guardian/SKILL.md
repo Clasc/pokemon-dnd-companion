@@ -193,22 +193,58 @@ Every card must follow this exact vertical order:
 
 ## 7. Documentation Rules
 
-### When adding new visual elements
-1. Update `mockup-4-final.html` first if the change is significant
-2. Add the pattern to `doc/design_spec.md` Section 5
-3. Update `AGENTS.md` Section 4 if adding new tokens or rules
-4. Update `README.md` Section 6 if the change is user-facing
+**Documentation is part of the change, not an afterthought.** Every UI
+change that affects layout, interaction, visual state, or component
+structure must update the docs. The skill must proactively check and
+sync docs before considering work complete.
 
-### When modifying existing components
-- Remove references to deprecated patterns (glassmorphism, light theme, read-only)
-- Check `doc/design_spec.md`, `doc/project.md`, and relevant specs for conflicts
-- Never leave conflicting documentation in the repo
+### Before Starting Any UI Change
+1. Read `mockup-4-final.html` — confirm the change aligns with the mockup
+2. Read `doc/design_spec.md` Section 5 — confirm no conflicts with documented patterns
+3. Scan `AGENTS.md` Section 4 — confirm design tokens and rules are followed
+4. If the change modifies an existing component, search `doc/`, `docs/`, and `specs/`
+   for any references to that component that may need updating
 
-### Avoid these in docs
+### After Finishing Any UI Change (MANDATORY)
+Run this audit before committing:
+1. **Check `doc/design_spec.md`** — does the change introduce a new pattern?
+   Add it to Section 5. Does it remove an old pattern? Delete or mark historical.
+2. **Check `mockup-4-final.html`** — does the implemented change differ from
+   the mockup? If so, update the mockup first, then the code. The mockup is
+   always the source of truth.
+3. **Check `AGENTS.md`** — did the change introduce a new design token, color
+   rule, or interaction pattern? Add a note to Section 4.
+4. **Check `README.md`** — does the change affect what the app looks like or
+   how users interact with it? Update Section 6 (UI/UX) and Section 2 (Core Features).
+5. **Check `doc/project.md`** — does the feature list or design section need updating?
+6. **Check all specs in `specs/`** — do any specs reference old patterns
+   (glassmorphism, light theme, read-only mode, onEditStat)? Fix them.
+7. **Check `docs/color-migration-guide.md`** — did the change touch any files
+   listed in the migration guide? Update the status.
+
+### Red Flag Terms (must never appear in docs or comments)
 - "glassmorphism", "frosted glass", "backdrop blur" as aesthetic direction
 - "light theme" or "light mode" (only dark theme)
 - "read-only mode" as the primary editing pattern
 - Descriptions of old card layouts (HP/XP pills, separate overview heading)
+- "onEditStat" as a prop name or interaction pattern (deprecated)
+
+### Doc Path Reference
+Use this quick list to know which files to check:
+```
+mockup-4-final.html            ← Canonical visual spec (update FIRST)
+doc/design_spec.md             ← Design language (Section 5 = current)
+doc/project.md                 ← Project features & design section
+README.md                      ← User-facing overview (Section 2, 6)
+AGENTS.md                      ← Agent instructions (Section 4 = design)
+specs/plan-*.md                ← Feature specs (check for stale patterns)
+docs/color-migration-guide.md  ← Color token migration status
+```
+
+### Conflict Signal
+If you find yourself fixing the same kind of documentation issue twice,
+update this section of the skill with a new rule or check so it doesn't
+happen a third time.
 
 ---
 
@@ -216,6 +252,7 @@ Every card must follow this exact vertical order:
 
 Before committing any UI change, verify:
 
+### Code Quality
 - [ ] No hardcoded colors — all colors use design tokens or semantic constants
 - [ ] Status labels use only valid `STATUS_COLORS` conditions
 - [ ] Monospace font on all dashboard card elements
@@ -223,8 +260,20 @@ Before committing any UI change, verify:
 - [ ] Status badge always visible (even when "none")
 - [ ] Fainted Pokémon get full visual treatment (grayscale, strikethrough, disabled)
 - [ ] All interactive elements have independent tap targets
+
+### Mockup Sync
 - [ ] `mockup-4-final.html` updated if the change affects layout
-- [ ] No conflicting docs left in `doc/`, `docs/`, or `specs/`
+- [ ] Implementation matches mockup exactly (same structure, same states)
+
+### Documentation Audit (MANDATORY — see Section 7)
+- [ ] `doc/design_spec.md` — new patterns added, old patterns removed
+- [ ] `AGENTS.md` — new tokens/rules documented
+- [ ] `README.md` — user-facing changes reflected in Sections 2 and 6
+- [ ] `doc/project.md` — feature list checked
+- [ ] `specs/` — no stale pattern references (glassmorphism, read-only, onEditStat)
+- [ ] `docs/color-migration-guide.md` — migration status updated
+
+### Final Checks
 - [ ] `npm run lint` passes
 - [ ] `npm test` passes
 
