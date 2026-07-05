@@ -25,7 +25,7 @@ A mobile‑first Single Page Application (SPA) that helps players manage a hybri
 
 ## 1. Overview
 
-This project provides an intuitive dashboard to:
+This project provides a tactical, mobile-first Session Dashboard to:
 - Create and manage a single Trainer profile
 - Build and maintain a Pokémon team (up to 6)
 - Track dual typing, attributes, HP, XP, levels, and status effects
@@ -61,14 +61,16 @@ It is optimized for touch devices (phones & tablets) while remaining usable on d
 - Smooth animated progress bars
 
 ### Editing Experience
-- Full-screen advanced editing modal
+- All editing in BottomSheets (mobile) / BaseModal (desktop) — no page transitions during play
+- HP/XP: drag-to-adjust via `StatAdjustSheet`
+- Attacks: tap to use, long-press to edit PP or replace
+- Trainer: quick HP/dollars adjust or full edit via `TrainerSheet`
 - Real-time preview of changes before save
-- Validation & controlled inputs
-- Cancel / Save flows with safe exit
 
 ### UI / UX
-- Dark / Light theme with system preference detection
-- Glassmorphism: backdrop blur, layered translucency
+- Tactical monospace dashboard optimized for tabletop sessions
+- All editing in BottomSheets — zero page transitions during play
+- Dark theme with zinc-toned surfaces and orange interactive accents
 - Responsive grid layouts for mobile → tablet → desktop
 - Touch-friendly controls and accessible semantics
 - Consistent theming via CSS variables + Tailwind utility layering
@@ -125,17 +127,23 @@ Persistence Layer:
 
 ## 6. UI / UX & Design System
 
-Highlights:
-- Transition + animation focus on subtle feedback (progress bars, hover states)
-- Glassmorphism surfaces (frosted panels)
-- Responsive breakpoints:
-  - Mobile: ≥ 320px
-  - Tablet: ≥ 768px
-  - Desktop: ≥ 1024px
-- Accessibility:
-  - Clickable cards with proper focus outlines
-  - Keyboard-safe modals (intended pattern)
-  - Semantic structuring where applicable
+**Current design reference**: `mockup-4-final.html` — the canonical visual spec for all UI decisions.
+
+### Tactical Dashboard (Session Tracker)
+The `/dashboard` is the primary in-game interface: a mobile-first, data-dense tactical view optimized for quick actions during tabletop play.
+
+- **Card layout**: Sprite + name/level + XP underline + status badges + HP bar (green/yellow/red tiers) + attributes row + 2×2 attack grid
+- **Interaction model**: Every data point is independently tappable — header opens expanded modal, HP/XP open StatAdjustSheet, attacks tap to use (long-press to edit PP/replace)
+- **Trainer strip**: Persistent top bar with team status dots, HP/Pokédollars/Items cells, condensable attributes
+- **All editing in BottomSheets**: No page transitions during play — TrainerSheet, StatAdjustSheet, AttackQuickEditSheet, AddAttackModal all open inline
+
+### Visual Style
+- **Typography**: `Courier New` monospace on tactical cards for tabletop feel; system sans-serif for page chrome
+- **Colors**: Zinc-toned surfaces (`--color-surface: #222222`, `--color-bg: #1a1a1a`), orange interactive (`--color-interactive: #EE5D20`), blue XP accent (`--color-accent: #3B82F6`)
+- **HP bar tiers**: Green (>50%), Yellow (25-50%), Red (<25%)
+- **States**: Fainted (grayscale sprite, strikethrough name, empty bar), status effects (colored badges), confused (secondary badge)
+- Accessibility: large touch targets, semantic roles, keyboard-safe sheets
+- Responsive: mobile-first with desktop sidebar nav
 
 ---
 

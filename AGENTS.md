@@ -35,7 +35,11 @@ npm run test:coverage# Coverage report
 ```
 
 ---
-## 4. Design System - Color Tokens
+## 4. Design System
+
+**Canonical visual reference**: `mockup-4-final.html` at the project root. This mockup is the source of truth for layout, spacing, typography, interaction model, and visual states. All design decisions should trace back to it.
+
+### Color Tokens
 **Always use these CSS variables instead of hardcoded colors:**
 
 | Token | Usage | Example |
@@ -51,13 +55,13 @@ npm run test:coverage# Coverage report
 **In className (Tailwind):**
 ```tsx
 // Buttons
-className="bg-[var(--color-interactive)]"
+className="bg-interactive"
 
 // Inputs
-className="bg-[#222222]"  // Use #222222 for surface, or --color-surface in CSS
+className="bg-surface"
 
 // Focus rings  
-className="focus:ring-[var(--color-interactive)]"
+className="focus:ring-interactive"
 ```
 
 **When adding new colors:**
@@ -65,11 +69,37 @@ className="focus:ring-[var(--color-interactive)]"
 - Do NOT add ad-hoc colors without documenting them in the system
 - Keep Pokemon semantic colors (blue for XP, status colors) separate from interactive colors
 
-**Migrating Existing Code:**
-When editing files that contain hardcoded colors (`#EE5D20`, `#222222`, etc.), use the utilities and follow the migration guide:
-- Tailwind utilities: `bg-interactive`, `bg-surface`, `ring-interactive`, `focus:ring-interactive`
-- Full migration guide: `docs/color-migration-guide.md`
-- Replace patterns: `bg-[#EE5D20]` → `bg-interactive`, `bg-[#222222]` → `bg-surface`
+### Typography
+
+| Context | Font | Usage |
+|---------|------|-------|
+| Dashboard cards | `'Courier New', monospace` | Tactical tabletop aesthetic — use `style={{ fontFamily: "'Courier New', monospace" }}` on card elements |
+| Page chrome | System sans-serif | Headings (`Poppins`), body text (`Inter`), navigation |
+
+### Editing Pattern: BottomSheet
+All in-session editing happens in BottomSheets (mobile) with `BaseModal` fallback on desktop. Never navigate away from the dashboard for edits. Existing sheet components:
+- `StatAdjustSheet` — HP/XP adjustment
+- `AttackQuickEditSheet` — PP restore/replace
+- `TrainerSheet` — Full trainer profile editing
+- `AddAttackModal` — Attack creation
+
+### HP Bar Tiers
+- Green (`#22c55e`): HP > 50%
+- Yellow (`#eab308`): HP 25–50%  
+- Red (`#ef4444`): HP < 25%
+- Zinc (`#3f3f46`): Fainted (0 HP)
+
+### Visual States (Pokémon Cards)
+- **No status**: Gray "● Status" placeholder badge (always visible)
+- **Status condition**: Colored dot + condition name from `STATUS_COLORS`
+- **Confused**: Secondary smaller "● Conf" badge (coexists with primary status)
+- **Fainted**: Grayscale sprite, strikethrough name, empty HP bar, all attacks disabled
+- **Low HP (<25%)**: Red border accent on card, pulsing HP bar
+
+### Design Documentation
+- Full design language: `doc/design_spec.md` (Section 5 covers the tactical dashboard)
+- Color migration guide: `docs/color-migration-guide.md`
+- Component acceptance checklist: see Section 15
 
 ---
 ## 5. Repository & Structure Conventions

@@ -1,6 +1,91 @@
 # Design Language for the Pokémon & D&D Companion App
 This design language is based on the core concept of being simple yet dynamic, using gradients and blurs to create an aesthetic that is easy on the eyes. The app prioritizes mobile and tablet optimization and supports both a light and dark theme, with the dark theme as the default.
 
+> **Current design reference**: `mockup-4-final.html` at the project root is the canonical visual reference for all design decisions. The dashboard implements a tactical monospace aesthetic with zinc-tone surfaces, amber/orange interactive accents, and dense information layouts optimized for in-session use.
+
+## 5. Tactical Dashboard Design (Current)
+
+The Session Dashboard (`/dashboard`) is the primary in-game interface. It follows a tactical, data-dense mobile-first design optimized for quick actions during tabletop play.
+
+### Design Principles
+- **Glance, don't read**: All critical information (HP, status, attacks, XP) visible at zero taps
+- **Tap target separation**: Every data point has its own action — no overlapping touch zones
+- **Consistent sheet pattern**: All editing happens in BottomSheets; no page transitions during play
+- **Progressive disclosure**: Summary on cards, full details behind header tap
+
+### Layout
+```
+┌──────────────────────────┐
+│ TRAINER STRIP            │  Name, class, level, team status dots
+│ HP / ₽okédollars / Items │  Each cell tappable independently
+│ STR DEX CON INT WIS CHA  │  Attributes row tappable
+├──────────────────────────┤
+│ Roster          4/6      │  Section header with count
+├──────────────────────────┤
+│ Pokémon Card             │
+│  [sprite] Name   Lv ▬▬  >│  Header → expanded modal
+│  ● Status  ● Conf        │  Status row → QuickStatusDropdown
+│  HP ██████████ 100/100   │  HP bar → StatAdjustSheet
+│  🛡️18 STR11 DEX14 ...    │  Attributes row
+│  [Attack] [Attack]       │  Tap = use PP, long-press = edit
+│  [+ Add ] [+ Add ]       │  Tap = add attack
+├──────────────────────────┤
+│ ⋮ more cards             │
+├──────────────────────────┤
+│ + Add Unit               │
+└──────────────────────────┘
+```
+
+### Interaction Model
+
+| Target | Action |
+|---|---|
+| Card header row (chevron) | Opens `PokemonExpandedModal` |
+| HP bar | Opens `StatAdjustSheet` |
+| XP underline (under level) | Opens `StatAdjustSheet` |
+| Status badge | Opens `QuickStatusDropdown` |
+| Attack pill (tap) | Decrements PP |
+| Attack pill (long-press/right-click) | Opens `AttackQuickEditSheet` (PP+/-, Replace) |
+| + Add attack slot | Opens `AddAttackModal` |
+| Trainer header row | Opens `TrainerSheet` |
+| Trainer HP cell | Opens trainer HP quick adjust |
+| Trainer ₽okédollars cell | Inline number input |
+| Trainer Items cell | Opens inventory |
+| Trainer attributes row | Opens `TrainerSheet` |
+
+### Visual States
+
+| State | Treatment |
+|---|---|
+| Healthy (no condition) | Gray "● Status" placeholder badge |
+| Status condition | Colored dot + condition name (Poisoned, Burned, etc.) |
+| Confused | Secondary smaller "● Conf" badge alongside primary |
+| Low HP (<25%) | Red HP bar, red numbers, bold HP label |
+| Medium HP (25-50%) | Yellow HP bar |
+| High HP (>50%) | Green HP bar, green numbers |
+| Fainted | Grayscale sprite, strikethrough name, empty HP bar, all attacks disabled, "● Fainted" badge |
+
+### Typography
+- **Card body**: `'Courier New', monospace` for the tactical tabletop feel
+- **Page chrome**: System sans-serif (`Inter`, `Poppins` for headings) per existing conventions
+- **Size hierarchy**: 10px labels, 11px attack names, 14px names, consistent spacing
+
+### Color Palette (Current Implementation)
+- Surfaces: zinc-toned via `--color-surface` (`#222222`), `--color-bg` (`#1a1a1a`)
+- Interactive: `--color-interactive` (`#EE5D20`) for buttons and focus rings
+- XP/Accent: `--color-accent` (`#3B82F6`) for XP bar and progress indicators
+- Type colors: Pokemon type palette (`TYPE_COLORS`)
+- Status colors: Status condition palette (`STATUS_COLORS`)
+- HP bar: Dynamic green/yellow/red based on percentage thresholds
+
+### Editing Pattern: BottomSheet
+All in-session editing uses the `BottomSheet` pattern (mobile) with `BaseModal` fallback on desktop:
+- `PokemonExpandedModal` — full Pokémon detail/edit
+- `StatAdjustSheet` — HP drag + XP input
+- `AttackQuickEditSheet` — PP ±/restore/replace
+- `TrainerSheet` — full trainer profile edit
+- `AddAttackModal` — attack creation form
+
 1. Visual Identity
 Aesthetic Direction
 The aesthetic blends the fantasy elements of Dungeons & Dragons with the vibrant energy of Pokémon. This is achieved through a mix of organic, flowing shapes and clean, structured layouts. The design should feel both magical and functional, like a well-organized spellbook.

@@ -1,10 +1,12 @@
 ---
 title: Session Dashboard — Combat Tracker Hub
-version: 1.0
+version: 1.1
 date_created: 2026-06-27
 tags: design, feature, dashboard, session
 status: done
 ---
+
+> **Final design reference**: `mockup-4-final.html` — the canonical visual spec. See `doc/design_spec.md` Section 5 and `AGENTS.md` Section 4 for the implemented design system.
 
 # Session Dashboard
 
