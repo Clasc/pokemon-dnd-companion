@@ -64,7 +64,7 @@ Provide an intuitive autocomplete experience when creating or editing Pokemon en
 ### Guidelines
 
 - **GUD-001**: Follow existing component patterns in `src/features/pokemon/components/`
-- **GUD-002**: Use Tailwind CSS classes consistent with existing glassmorphism styling
+- **GUD-002**: Use Tailwind CSS classes consistent with existing tactical styling
 - **GUD-003**: Implement proper TypeScript types for PokeAPI responses
 - **GUD-004**: Handle network errors with user-friendly fallback messages
 

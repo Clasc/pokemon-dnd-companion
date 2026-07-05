@@ -83,8 +83,8 @@ The primary user is a **player** in a campaign. The Game Master (DM) is not the 
 #### 4.4. User Interface & Experience
 
 **Design System:**
-* Dark/light theme support with system preference detection
-* Glassmorphism effects with backdrop blur
+* Dark theme with zinc-toned surfaces and orange interactive accents
+* Tactical monospace dashboard with BottomSheet editing
 * Responsive grid layouts for different screen sizes
 * Custom CSS variables for consistent theming
 * Smooth animations and transitions
@@ -141,7 +141,7 @@ The primary user is a **player** in a campaign. The Game Master (DM) is not the 
 
 * ✅ Status condition tracking with duration
 
-* ✅ Advanced UI with glassmorphism design
+* ✅ Tactical mobile-first dashboard with monospace typography
 
 * ✅ Comprehensive responsive design
 

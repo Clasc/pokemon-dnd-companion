@@ -176,7 +176,7 @@ const PRIMARY_STATUS_OPTIONS: StatusCondition[] = [
 ```
 
 ### Visual Integration
-- Button uses glassmorphism to match card style
+- Button uses tactical styling to match card aesthetic
 - Status color shown as dot next to each option
 - Active status shown as colored badge on card
 
