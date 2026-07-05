@@ -97,9 +97,12 @@ All in-session editing happens in BottomSheets (mobile) with `BaseModal` fallbac
 - **Low HP (<25%)**: Red border accent on card, pulsing HP bar
 
 ### Design Documentation
+- **Design system**: `doc/design/README.md` — entry point that routes to domain files
+- Domain files: `tokens.md`, `pokemon-card.md`, `trainer-strip.md`, `interaction-model.md`, `attack-edit.md`
+- **Canonical mockup**: `doc/design/mockup.html` — visual source of truth
+- **Decision log**: `doc/design/decisions/` — why things are the way they are
 - Full design language: `doc/design_spec.md` (Section 5 covers the tactical dashboard)
 - Color migration guide: `docs/color-migration-guide.md`
-- Component acceptance checklist: see Section 15
 - **Design Guardian skill**: `.opencode/skills/design-guardian/SKILL.md` — enforced rules for color tokens, typography, status labels, card structure, and interaction model. Activates automatically on UI changes.
 
 ---

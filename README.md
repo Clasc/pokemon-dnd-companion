@@ -127,7 +127,9 @@ Persistence Layer:
 
 ## 6. UI / UX & Design System
 
-**Current design reference**: `mockup-4-final.html` — the canonical visual spec for all UI decisions.
+**Current design reference**: `doc/design/mockup.html` — the canonical visual spec.
+
+**Design docs**: `doc/design/` — domain-specific documentation (tokens, card structure, interaction model, trainer strip, attack editing).
 
 ### Tactical Dashboard (Session Tracker)
 The `/dashboard` is the primary in-game interface: a mobile-first, data-dense tactical view optimized for quick actions during tabletop play.

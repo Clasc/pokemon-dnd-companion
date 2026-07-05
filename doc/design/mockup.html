@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockup: Mobile Tactical + Trainer Context (Interactive)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --color-bg: #18181b;
+            --color-surface: #27272a;
+            --color-interactive: #f59e0b;
+        }
+        body { background-color: var(--color-bg); font-family: 'Courier New', monospace; }
+        [data-tap] { cursor: pointer; }
+        [data-tap]:hover { filter: brightness(1.2); }
+        .chevron { transition: transform 0.15s; }
+        [data-tap-header]:hover .chevron { transform: translateX(2px); }
+    </style>
+</head>
+<body class="min-h-screen text-zinc-300 max-w-md mx-auto p-4 space-y-5">
+
+    <!-- ===== INTERACTION LEGEND ===== -->
+    <div class="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3 text-[10px] text-zinc-500 space-y-1">
+        <div class="text-amber-500 uppercase tracking-wider mb-1.5">Tap Targets (test each one)</div>
+        <div class="font-bold text-zinc-300 uppercase mb-1">Pokémon cards</div>
+        <div>🔵 <span class="text-zinc-300">Header row</span> Pokémon expanded modal</div>
+        <div>🔵 <span class="text-zinc-300">Status badge</span> QuickStatusDropdown (primary + confused)</div>
+        <div>🔵 <span class="text-zinc-300">HP bar</span> StatAdjustSheet (drag HP)</div>
+        <div>🔵 <span class="text-zinc-300">XP underline</span> StatAdjustSheet (add XP)</div>
+        <div>🔵 <span class="text-zinc-300">Attack pill</span> Use attack (decrement PP)</div>
+        <div>🔵 <span class="text-zinc-300">+ Add slot</span> AddAttackModal</div>
+        <div class="font-bold text-zinc-300 uppercase mt-2 mb-1">Trainer strip</div>
+        <div>🔵 <span class="text-zinc-300">Header row</span> Trainer edit modal</div>
+        <div>🔵 <span class="text-zinc-300">HP cell</span> StatAdjustSheet (trainer HP)</div>
+        <div>🔵 <span class="text-zinc-300">Pokédollars cell</span> Inline edit (adjust $)</div>
+        <div>🔵 <span class="text-zinc-300">Items cell</span> Inventory modal</div>
+        <div>🔵 <span class="text-zinc-300">Attributes row</span> Trainer edit modal</div>
+        <div class="font-bold text-zinc-300 uppercase mt-2 mb-1">HP Bar Tiers</div>
+        <div>🟢 Green: &gt;50%  🟡 Yellow: 25-50%  🔴 Red: &lt;25%</div>
+        <div class="font-bold text-zinc-300 uppercase mt-2 mb-1">Fainted</div>
+        <div>Grayscale sprite, empty HP, all attacks disabled, still expandable</div>
+    </div>
+
+    <!-- ===== PERSISTENT TRAINER STRIP ===== -->
+    <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-3">
+        <!-- Row 1: Identity + Team Dots (tap → trainer edit modal) -->
+        <div
+            data-tap
+            onclick="alert('Trainer header tapped → opens trainer edit modal (name, class, level, attributes, HP, inventory)')"
+            class="flex items-center justify-between mb-2"
+        >
+            <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 bg-zinc-800 rounded flex items-center justify-center text-lg border border-zinc-700">
+                    🧙‍♂️
+                </div>
+                <div>
+                    <div class="text-sm font-bold text-white leading-tight">Prof. Oak</div>
+                    <div class="text-[10px] text-zinc-500">Researcher • Lv 20</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <!-- Team Status Dots (status conditions only: green=healthy, colored=condition) -->
+                <div class="flex gap-1">
+                    <div class="w-2.5 h-2.5 rounded-full bg-green-500" title="Blastoise"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-green-500" title="Venusaur"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-green-500" title="Charizard"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-purple-500" title="Arbok: Poisoned"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-zinc-500" title="Pikachu: Fainted"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-zinc-700" title="Empty"></div>
+                </div>
+                <svg class="chevron w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Row 2: HP + Pokédollars + Inventory (each independently tappable) -->
+        <div class="grid grid-cols-3 gap-2">
+            <div
+                data-tap
+                onclick="alert('Trainer HP tapped → opens StatAdjustSheet (trainer HP drag + damage buttons)')"
+                class="bg-zinc-800/50 rounded p-2 text-center"
+            >
+                <div class="text-[10px] text-zinc-500 uppercase">HP</div>
+                <div class="text-sm font-bold text-green-400 font-mono">45/50</div>
+            </div>
+            <div
+                data-tap
+                onclick="alert('Pokédollars tapped → inline edit (number input to adjust dollars)')"
+                class="bg-zinc-800/50 rounded p-2 text-center"
+            >
+                <div class="text-[10px] text-zinc-500 uppercase">₽okédollars</div>
+                <div class="text-sm font-bold text-amber-400 font-mono">₽ 12,400</div>
+            </div>
+            <div
+                data-tap
+                onclick="alert('Items tapped → opens trainer inventory modal (add/use/remove items)')"
+                class="bg-zinc-800/50 rounded p-2 text-center"
+            >
+                <div class="text-[10px] text-zinc-500 uppercase">Items</div>
+                <div class="text-sm font-bold text-white font-mono">12</div>
+            </div>
+        </div>
+
+        <!-- Row 3: Attributes (condensed) — tap → trainer edit modal -->
+        <div
+            data-tap
+            onclick="alert('Attributes row tapped → opens trainer edit modal (adjust attributes)')"
+            class="flex justify-between mt-2 pt-2 border-t border-zinc-800"
+        >
+            <span class="text-[10px] text-zinc-500">STR <span class="text-zinc-300 font-bold">14</span></span>
+            <span class="text-[10px] text-zinc-500">DEX <span class="text-zinc-300 font-bold">12</span></span>
+            <span class="text-[10px] text-zinc-500">CON <span class="text-zinc-300 font-bold">16</span></span>
+            <span class="text-[10px] text-zinc-500">INT <span class="text-zinc-300 font-bold">10</span></span>
+            <span class="text-[10px] text-zinc-500">WIS <span class="text-zinc-300 font-bold">13</span></span>
+            <span class="text-[10px] text-zinc-500">CHA <span class="text-zinc-300 font-bold">11</span></span>
+        </div>
+    </div>
+
+    <!-- ===== ROSTER HEADER ===== -->
+    <div class="flex justify-between items-center">
+        <h2 class="text-xs text-zinc-500 uppercase tracking-wider">Roster</h2>
+        <span class="text-[10px] text-zinc-600">5 / 6</span>
+    </div>
+
+    <!-- ===== POKÉMON CARDS ===== -->
+    <div class="space-y-3">
+
+        <!-- Unit 1: Blastoise — Healthy -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-3">
+            <!-- ===== HEADER ROW (tap → expanded modal) ===== -->
+            <div
+                data-tap
+                data-tap-header
+                onclick="alert('Header tapped → opens PokemonExpandedModal (full details, edit, delete, manage attacks)')"
+                class="flex items-center justify-between mb-2"
+            >
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 bg-zinc-800 rounded flex items-center justify-center text-lg border border-zinc-700">
+                        🐢
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-sm font-bold text-white leading-tight">Blastoise</span>
+                            <div class="flex flex-col">
+                                <!-- ===== XP UNDERLINE (tap → XP adjust) ===== -->
+                                <div
+                                    data-tap
+                                    onclick="event.stopPropagation(); alert('XP underline tapped → opens StatAdjustSheet (XP tab)')"
+                                    class="flex flex-col"
+                                >
+                                    <span class="text-[10px] text-zinc-500 uppercase leading-none">Lv 14</span>
+                                    <div class="w-12 h-0.5 bg-zinc-800 overflow-hidden mt-0.5">
+                                        <div class="h-full bg-blue-500" style="width: 60%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-[10px] text-zinc-500">Water</span>
+                        </div>
+                    </div>
+                </div>
+                <svg class="chevron w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </div>
+
+            <!-- ===== STATUS ROW (tap → QuickStatusDropdown) ===== -->
+            <div class="flex items-center gap-2 mb-2">
+                <span
+                    data-tap
+                    onclick="alert('Status tapped → opens QuickStatusDropdown (set status condition)')"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] rounded bg-zinc-800/50 text-zinc-500 border border-zinc-700 uppercase cursor-pointer"
+                >
+                    <span class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span>
+                    Status
+                </span>
+            </div>
+
+            <!-- ===== HP BAR (tap → HP adjust) ===== -->
+            <div
+                data-tap
+                onclick="alert('HP bar tapped → opens StatAdjustSheet (HP drag + damage buttons)')"
+                class="flex items-center gap-2 mb-2"
+            >
+                <span class="text-[10px] text-zinc-500 w-6">HP</span>
+                <div class="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
+                    <div class="h-full bg-green-500 rounded-full" style="width: 100%"></div>
+                </div>
+                <span class="text-[10px] text-zinc-300 w-14 text-right font-mono">100/100</span>
+            </div>
+
+            <!-- Stats Row: AC + Attributes -->
+            <div class="flex items-center justify-between mb-2 text-[10px] text-zinc-500">
+                <span>🛡️ <span class="text-zinc-300 font-bold">18</span></span>
+                <div class="flex gap-2">
+                    <span>STR <span class="text-zinc-300 font-bold">12</span></span>
+                    <span>DEX <span class="text-zinc-300 font-bold">14</span></span>
+                    <span>CON <span class="text-zinc-300 font-bold">16</span></span>
+                    <span>INT <span class="text-zinc-300 font-bold">8</span></span>
+                    <span>WIS <span class="text-zinc-300 font-bold">10</span></span>
+                    <span>CHA <span class="text-zinc-300 font-bold">10</span></span>
+                </div>
+            </div>
+
+            <!-- ===== ATTACKS: 2x2 Grid (tap → use, + Add → add modal) ===== -->
+            <div class="grid grid-cols-2 gap-1.5">
+                <button
+                    data-tap
+                    onclick="alert('Attack tapped → decrements PP (Hydro Pump: 5→4)')"
+                    class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded px-2 py-1.5 text-left transition-colors"
+                >
+                    <div class="text-[11px] text-white font-medium truncate">Hydro Pump</div>
+                    <div class="text-[9px] text-zinc-500">PP 5/8</div>
+                </button>
+                <button
+                    data-tap
+                    onclick="alert('Attack tapped → decrements PP (Bite: 25→24)')"
+                    class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded px-2 py-1.5 text-left transition-colors"
+                >
+                    <div class="text-[11px] text-white font-medium truncate">Bite</div>
+                    <div class="text-[9px] text-zinc-500">PP 25/25</div>
+                </button>
+                <button
+                    data-tap
+                    onclick="alert('Attack tapped → decrements PP (Protect: 10→9)')"
+                    class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded px-2 py-1.5 text-left transition-colors"
+                >
+                    <div class="text-[11px] text-white font-medium truncate">Protect</div>
+                    <div class="text-[9px] text-zinc-500">PP 10/10</div>
+                </button>
+                <button
+                    data-tap
+                    onclick="alert('+ Add tapped → opens AddAttackModal at slot 4')"
+                    class="bg-zinc-800/50 border border-zinc-700/50 border-dashed rounded px-2 py-1.5 text-left text-zinc-600 hover:bg-zinc-800"
+                >
+                    <div class="text-[11px] font-medium">+ Add</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Unit 2: Charizard — Low HP -->
+        <div class="bg-zinc-900 border border-red-900/50 rounded-lg p-3 ring-1 ring-red-500/10">
+            <div
+                data-tap
+                data-tap-header
+                onclick="alert('Header tapped → opens PokemonExpandedModal')"
+                class="flex items-center justify-between mb-2"
+            >
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 bg-zinc-800 rounded flex items-center justify-center text-lg border border-zinc-700">
+                        🐉
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-sm font-bold text-white leading-tight">Charizard</span>
+                            <div
+                                data-tap
+                                onclick="event.stopPropagation(); alert('XP underline tapped → opens StatAdjustSheet (XP tab)')"
+                                class="flex flex-col"
+                            >
+                                <span class="text-[10px] text-zinc-500 uppercase leading-none">Lv 16</span>
+                                <div class="w-12 h-0.5 bg-zinc-800 overflow-hidden mt-0.5">
+                                    <div class="h-full bg-blue-500" style="width: 35%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-[10px] text-orange-400">Fire</span>
+                            <span class="text-[10px] text-zinc-600">/</span>
+                            <span class="text-[10px] text-slate-400">Flying</span>
+                        </div>
+                    </div>
+                </div>
+                <svg class="chevron w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </div>
+
+            <!-- ===== STATUS ROW (tap → QuickStatusDropdown) ===== -->
+            <div class="flex items-center gap-2 mb-2">
+                <span
+                    data-tap
+                    onclick="alert('Status tapped → opens QuickStatusDropdown (set status condition)')"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] rounded bg-zinc-800/50 text-zinc-500 border border-zinc-700 uppercase cursor-pointer"
+                >
+                    <span class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span>
+                    Status
+                </span>
+            </div>
+
+            <div
+                data-tap
+                onclick="alert('HP bar tapped → opens StatAdjustSheet (HP drag + damage buttons)')"
+                class="flex items-center gap-2 mb-2"
+            >
+                <span class="text-[10px] text-red-400 w-6 font-bold">HP</span>
+                <div class="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
+                    <div class="h-full bg-red-500 rounded-full" style="width: 14%"></div>
+                </div>
+                <span class="text-[10px] text-red-400 w-14 text-right font-mono font-bold">12/85</span>
+            </div>
+
+            <div class="flex items-center justify-between mb-2 text-[10px] text-zinc-500">
+                <span>🛡️ <span class="text-zinc-300 font-bold">14</span></span>
+                <div class="flex gap-2">
+                    <span>STR <span class="text-zinc-300 font-bold">14</span></span>
+                    <span>DEX <span class="text-zinc-300 font-bold">12</span></span>
+                    <span>CON <span class="text-zinc-300 font-bold">13</span></span>
+                    <span>INT <span class="text-zinc-300 font-bold">8</span></span>
+                    <span>WIS <span class="text-zinc-300 font-bold">10</span></span>
+                    <span>CHA <span class="text-zinc-300 font-bold">12</span></span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-1.5">
+                <button
+                    disabled
+                    class="bg-zinc-800/50 border border-zinc-700/50 rounded px-2 py-1.5 text-left opacity-50 cursor-not-allowed"
+                >
+                    <div class="text-[11px] text-white font-medium truncate">Flamethrower</div>
+                    <div class="text-[9px] text-zinc-500">PP 0/15</div>
+                </button>
+                <button
+                    data-tap
+                    onclick="alert('Attack tapped → decrements PP (Air Slash: 20→19)')"
+                    class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded px-2 py-1.5 text-left transition-colors"
+                >
+                    <div class="text-[11px] text-white font-medium truncate">Air Slash</div>
+                    <div class="text-[9px] text-zinc-500">PP 20/20</div>
+                </button>
+                <button
+                    data-tap
+                    onclick="alert('+ Add tapped → opens AddAttackModal at slot 3')"
+                    class="bg-zinc-800/50 border border-zinc-700/50 border-dashed rounded px-2 py-1.5 text-left text-zinc-600 hover:bg-zinc-800"
+                >
+                    <div class="text-[11px] font-medium">+ Add</div>
+                </button>
+                <button
+                    data-tap
+                    onclick="alert('+ Add tapped → opens AddAttackModal at slot 4')"
+                    class="bg-zinc-800/50 border border-zinc-700/50 border-dashed rounded px-2 py-1.5 text-left text-zinc-600 hover:bg-zinc-800"
+                >
+                    <div class="text-[11px] font-medium">+ Add</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Unit 3: Arbok — Poisoned + Confused (primary + secondary status) -->
+        <div class="bg-zinc-900 border border-purple-900/50 rounded-lg p-3 opacity-85">
+            <div
+                data-tap
+                data-tap-header
+                onclick="alert('Header tapped → opens PokemonExpandedModal')"
+                class="flex items-center justify-between mb-2"
+            >
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 bg-zinc-800 rounded flex items-center justify-center text-lg border border-zinc-700 grayscale">
+                        🐍
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-sm font-bold text-white leading-tight">Arbok</span>
+                            <div
+                                data-tap
+                                onclick="event.stopPropagation(); alert('XP underline tapped → opens StatAdjustSheet (XP tab)')"
+                                class="flex flex-col"
+                            >
+                                <span class="text-[10px] text-zinc-500 uppercase leading-none">Lv 11</span>
+                                <div class="w-12 h-0.5 bg-zinc-800 overflow-hidden mt-0.5">
+                                    <div class="h-full bg-blue-500" style="width: 45%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-[10px] text-purple-400">Poison</span>
+                        </div>
+                    </div>
+                </div>
+                <svg class="chevron w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </div>
+
+            <!-- ===== STATUS ROW: primary badge + secondary confused dot ===== -->
+            <div class="flex items-center gap-2 mb-2">
+                <span
+                    data-tap
+                    onclick="alert('Status badge tapped → opens QuickStatusDropdown (primary + confused)')"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] rounded bg-purple-900/30 text-purple-400 border border-purple-900 uppercase cursor-pointer"
+                >
+                    <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                    Poisoned
+                </span>
+                <span
+                    data-tap
+                    onclick="alert('Confused dot tapped → opens QuickStatusDropdown (confused section)')"
+                    class="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9px] rounded bg-amber-900/20 text-amber-400 border border-amber-900/50 cursor-pointer"
+                    title="Confused (secondary)"
+                >
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    Conf
+                </span>
+            </div>
+
+            <div
+                data-tap
+                onclick="alert('HP bar tapped → opens StatAdjustSheet (HP drag + damage buttons)')"
+                class="flex items-center gap-2 mb-2"
+            >
+                <span class="text-[10px] text-zinc-500 w-6">HP</span>
+                <div class="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
+                    <div class="h-full bg-yellow-500 rounded-full" style="width: 65%"></div>
+                </div>
+                <span class="text-[10px] text-zinc-300 w-14 text-right font-mono">56/86</span>
+            </div>
+
+            <div class="flex items-center justify-between mb-2 text-[10px] text-zinc-500">
+                <span>🛡️ <span class="text-zinc-300 font-bold">12</span></span>
+                <div class="flex gap-2">
+                    <span>STR <span class="text-zinc-300 font-bold">14</span></span>
+                    <span>DEX <span class="text-zinc-300 font-bold">10</span></span>
+                    <span>CON <span class="text-zinc-300 font-bold">12</span></span>
+                    <span>INT <span class="text-zinc-300 font-bold">6</span></span>
+                    <span>WIS <span class="text-zinc-300 font-bold">8</span></span>
+                    <span>CHA <span class="text-zinc-300 font-bold">10</span></span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-1.5">
+                <button
+                    data-tap
+                    onclick="alert('Attack tapped → decrements PP (Poison Fang: 15→14)')"
+                    class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded px-2 py-1.5 text-left transition-colors"
+                >
+                    <div class="text-[11px] text-white font-medium truncate">Poison Fang</div>
+                    <div class="text-[9px] text-zinc-500">PP 15/15</div>
+                </button>
+                <button
+                    data-tap
+                    onclick="alert('Attack tapped → decrements PP (Bite: 25→24)')"
+                    class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded px-2 py-1.5 text-left transition-colors"
+                >
+                    <div class="text-[11px] text-white font-medium truncate">Bite</div>
+                    <div class="text-[9px] text-zinc-500">PP 25/25</div>
+                </button>
+                <button
+                    data-tap
+                    onclick="alert('+ Add tapped → opens AddAttackModal at slot 3')"
+                    class="bg-zinc-800/50 border border-zinc-700/50 border-dashed rounded px-2 py-1.5 text-left text-zinc-600 hover:bg-zinc-800"
+                >
+                    <div class="text-[11px] font-medium">+ Add</div>
+                </button>
+                <button
+                    data-tap
+                    onclick="alert('+ Add tapped → opens AddAttackModal at slot 4')"
+                    class="bg-zinc-800/50 border border-zinc-700/50 border-dashed rounded px-2 py-1.5 text-left text-zinc-600 hover:bg-zinc-800"
+                >
+                    <div class="text-[11px] font-medium">+ Add</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Unit 4: Venusaur — Healthy -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-3">
+            <div
+                data-tap
+                data-tap-header
+                onclick="alert('Header tapped → opens PokemonExpandedModal')"
+                class="flex items-center justify-between mb-2"
+            >
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 bg-zinc-800 rounded flex items-center justify-center text-lg border border-zinc-700">
+                        🌿
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-sm font-bold text-white leading-tight">Venusaur</span>
+                            <div
+                                data-tap
+                                onclick="event.stopPropagation(); alert('XP underline tapped → opens StatAdjustSheet (XP tab)')"
+                                class="flex flex-col"
+                            >
+                                <span class="text-[10px] text-zinc-500 uppercase leading-none">Lv 15</span>
+                                <div class="w-12 h-0.5 bg-zinc-800 overflow-hidden mt-0.5">
+                                    <div class="h-full bg-blue-500" style="width: 80%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-[10px] text-green-400">Grass</span>
+                            <span class="text-[10px] text-zinc-600">/</span>
+                            <span class="text-[10px] text-purple-400">Poison</span>
+                        </div>
+                    </div>
+                </div>
+                <svg class="chevron w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </div>
+
+            <!-- ===== STATUS ROW (tap → QuickStatusDropdown) ===== -->
+            <div class="flex items-center gap-2 mb-2">
+                <span
+                    data-tap
+                    onclick="alert('Status tapped → opens QuickStatusDropdown (set status condition)')"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] rounded bg-zinc-800/50 text-zinc-500 border border-zinc-700 uppercase cursor-pointer"
+                >
+                    <span class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span>
+                    Status
+                </span>
+            </div>
+
+            <div
+                data-tap
+                onclick="alert('HP bar tapped → opens StatAdjustSheet (HP drag + damage buttons)')"
+                class="flex items-center gap-2 mb-2"
+            >
+                <span class="text-[10px] text-zinc-500 w-6">HP</span>
+                <div class="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
+                    <div class="h-full bg-green-500 rounded-full" style="width: 95%"></div>
+                </div>
+                <span class="text-[10px] text-zinc-300 w-14 text-right font-mono">88/92</span>
+            </div>
+
+            <div class="flex items-center justify-between mb-2 text-[10px] text-zinc-500">
+                <span>🛡️ <span class="text-zinc-300 font-bold">14</span></span>
+                <div class="flex gap-2">
+                    <span>STR <span class="text-zinc-300 font-bold">12</span></span>
+                    <span>DEX <span class="text-zinc-300 font-bold">10</span></span>
+                    <span>CON <span class="text-zinc-300 font-bold">14</span></span>
+                    <span>INT <span class="text-zinc-300 font-bold">10</span></span>
+                    <span>WIS <span class="text-zinc-300 font-bold">12</span></span>
+                    <span>CHA <span class="text-zinc-300 font-bold">8</span></span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-1.5">
+                <button
+                    data-tap
+                    onclick="alert('Attack tapped → decrements PP (Razor Leaf: 25→24)')"
+                    class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded px-2 py-1.5 text-left transition-colors"
+                >
+                    <div class="text-[11px] text-white font-medium truncate">Razor Leaf</div>
+                    <div class="text-[9px] text-zinc-500">PP 25/25</div>
+                </button>
+                <button
+                    data-tap
+                    onclick="alert('Attack tapped → decrements PP (Sludge Bomb: 10→9)')"
+                    class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded px-2 py-1.5 text-left transition-colors"
+                >
+                    <div class="text-[11px] text-white font-medium truncate">Sludge Bomb</div>
+                    <div class="text-[9px] text-zinc-500">PP 10/10</div>
+                </button>
+                <button
+                    data-tap
+                    onclick="alert('Attack tapped → decrements PP (Sleep Powder: 5→4)')"
+                    class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded px-2 py-1.5 text-left transition-colors"
+                >
+                    <div class="text-[11px] text-white font-medium truncate">Sleep Powder</div>
+                    <div class="text-[9px] text-zinc-500">PP 5/10</div>
+                </button>
+                <button
+                    data-tap
+                    onclick="alert('+ Add tapped → opens AddAttackModal at slot 4')"
+                    class="bg-zinc-800/50 border border-zinc-700/50 border-dashed rounded px-2 py-1.5 text-left text-zinc-600 hover:bg-zinc-800"
+                >
+                    <div class="text-[11px] font-medium">+ Add</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Unit 5: Pikachu — Fainted -->
+        <div class="bg-zinc-900 border border-zinc-700/50 rounded-lg p-3 opacity-60">
+            <div
+                data-tap
+                data-tap-header
+                onclick="alert('Header tapped → opens PokemonExpandedModal (heal from here)')"
+                class="flex items-center justify-between mb-2"
+            >
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 bg-zinc-800 rounded flex items-center justify-center text-lg border border-zinc-700 grayscale">
+                        ⚡
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-sm font-bold text-zinc-500 leading-tight line-through">Pikachu</span>
+                            <div
+                                data-tap
+                                onclick="event.stopPropagation(); alert('XP underline tapped → opens StatAdjustSheet (XP tab)')"
+                                class="flex flex-col"
+                            >
+                                <span class="text-[10px] text-zinc-600 uppercase leading-none">Lv 14</span>
+                                <div class="w-12 h-0.5 bg-zinc-800 overflow-hidden mt-0.5">
+                                    <div class="h-full bg-blue-500/50" style="width: 40%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-[10px] text-zinc-600">Electric</span>
+                        </div>
+                    </div>
+                </div>
+                <svg class="chevron w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </div>
+
+            <!-- Fainted status badge -->
+            <div class="flex items-center gap-2 mb-2">
+                <span
+                    data-tap
+                    onclick="alert('Status badge tapped → opens QuickStatusDropdown (clear fainted to revive)')"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] rounded bg-zinc-800 text-zinc-500 border border-zinc-700 uppercase cursor-pointer"
+                >
+                    <span class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span>
+                    Fainted
+                </span>
+            </div>
+
+            <div
+                data-tap
+                onclick="alert('HP bar tapped → opens StatAdjustSheet (revive/heal HP)')"
+                class="flex items-center gap-2 mb-2"
+            >
+                <span class="text-[10px] text-zinc-600 w-6">HP</span>
+                <div class="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
+                    <div class="h-full bg-zinc-700 rounded-full" style="width: 0%"></div>
+                </div>
+                <span class="text-[10px] text-zinc-600 w-14 text-right font-mono">0/38</span>
+            </div>
+
+            <div class="flex items-center justify-between mb-2 text-[10px] text-zinc-600">
+                <span>🛡️ <span class="text-zinc-500 font-bold">11</span></span>
+                <div class="flex gap-2">
+                    <span>STR <span class="text-zinc-500 font-bold">8</span></span>
+                    <span>DEX <span class="text-zinc-500 font-bold">14</span></span>
+                    <span>CON <span class="text-zinc-500 font-bold">10</span></span>
+                    <span>INT <span class="text-zinc-500 font-bold">6</span></span>
+                    <span>WIS <span class="text-zinc-500 font-bold">10</span></span>
+                    <span>CHA <span class="text-zinc-500 font-bold">12</span></span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-1.5">
+                <button disabled class="bg-zinc-800/30 border border-zinc-700/30 rounded px-2 py-1.5 text-left opacity-40 cursor-not-allowed">
+                    <div class="text-[11px] text-zinc-600 font-medium truncate">Thunderbolt</div>
+                    <div class="text-[9px] text-zinc-700">PP 8/15</div>
+                </button>
+                <button disabled class="bg-zinc-800/30 border border-zinc-700/30 rounded px-2 py-1.5 text-left opacity-40 cursor-not-allowed">
+                    <div class="text-[11px] text-zinc-600 font-medium truncate">Quick Attack</div>
+                    <div class="text-[9px] text-zinc-700">PP 20/30</div>
+                </button>
+                <button disabled class="bg-zinc-800/30 border border-zinc-700/30 rounded px-2 py-1.5 text-left opacity-40 cursor-not-allowed">
+                    <div class="text-[11px] text-zinc-600 font-medium truncate">Iron Tail</div>
+                    <div class="text-[9px] text-zinc-700">PP 5/10</div>
+                </button>
+                <button disabled class="bg-zinc-800/30 border border-zinc-700/30 rounded px-2 py-1.5 text-left opacity-40 cursor-not-allowed">
+                    <div class="text-[11px] text-zinc-600 font-medium truncate">Thunder</div>
+                    <div class="text-[9px] text-zinc-700">PP 2/10</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Add Unit -->
+        <button class="w-full py-3 border-2 border-dashed border-zinc-700 rounded-lg text-zinc-600 hover:text-amber-500 hover:border-amber-500/50 transition-all text-xs uppercase tracking-wider">
+            + Add Unit
+        </button>
+    </div>
+
+</body>
+</html>
